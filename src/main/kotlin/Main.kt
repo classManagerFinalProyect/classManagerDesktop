@@ -1,32 +1,69 @@
 // Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-import androidx.compose.material.MaterialTheme
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import Navigation.NavigationHost
+import Screens.theme.ClassManagerTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.application
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyShortcut
+import androidx.compose.ui.res.loadImageBitmap
+import androidx.compose.ui.res.useResource
+import androidx.compose.ui.window.*
+import data.local.Item
 
-@Composable
-@Preview
-fun App() {
-    var text by remember { mutableStateOf("Hello, World!") }
 
-    MaterialTheme {
-        Button(onClick = {
-            text = "Hello, Desktop!"
-        }) {
-            Text(text)
+@OptIn(ExperimentalComposeUiApi::class)
+fun main() = application {
+    val icon = BitmapPainter(useResource("logo_sin_fondo.png", ::loadImageBitmap))
+
+
+    val trayState = rememberTrayState()
+    val notification = rememberNotification("Notification", "App is active")
+
+    var action by remember { mutableStateOf("Last action: None") }
+
+
+    Tray(
+        state = trayState,
+        icon = icon,
+        menu = {
+            Item(
+                text ="Send notification",
+                onClick = { trayState.sendNotification(notification) }
+            )
+            Item(
+                text = "Quit App",
+                onClick = ::exitApplication
+            )
+        }
+    )
+
+    Window(
+        onCloseRequest = ::exitApplication,
+        icon = icon,
+        title = "Class Manager"
+    ) {
+        MenuBar(
+            content = {
+                Menu(
+                    text = "-",
+                    mnemonic = 'F',
+                    content = {
+                        Item("Copy", onClick = { action = "Last action: Copy" }, shortcut = KeyShortcut(Key.C, ctrl = true))
+                        Item("Paste", onClick = { action = "Last action: Paste" }, shortcut = KeyShortcut(Key.V, ctrl = true))
+                    }
+                )
+            }
+        )
+
+        ClassManagerTheme{
+            NavigationHost()
         }
     }
+
 }
 
-fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
-        App()
-    }
-}
+
