@@ -1,6 +1,6 @@
 package Screens.ScreenComponents.TopAppBar.Profile
 
-import ScreenItems.bigTextFieldWithErrorMesaje
+import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.ScreenComponents.TopAppBar.Profile.ViewModelProfile.Companion.isValidDescription
 import Screens.ScreenItems.longButton
 import Utils.AsyncImage
@@ -93,12 +93,12 @@ fun mainProfile() {
                                 )
                             }
                             item {
-                                bigTextFieldWithErrorMesaje(
+                                bigTextFieldWithErrorMessage(
                                     text = "Nombre de usuario",
                                     value = userText,
                                     onValueChange = onValueChangeUserText,
                                     validateError = ViewModelProfile::isValidName,
-                                    errorMesaje = nameOfUserError,
+                                    errorMessage = nameOfUserError,
                                     changeError = userErrorChange,
                                     error = userError,
                                     mandatory = false,
@@ -107,12 +107,12 @@ fun mainProfile() {
                             }
 
                             item {
-                                bigTextFieldWithErrorMesaje(
+                                bigTextFieldWithErrorMessage(
                                     text = "Descripción",
                                     value = descriptionText,
                                     onValueChange = onValueChangeUserdescription,
                                     validateError = ViewModelProfile::isValidDescription,
-                                    errorMesaje = nameOfDescriptionError,
+                                    errorMessage = nameOfDescriptionError,
                                     changeError = descriptionErrorChange,
                                     error = descriptionError,
                                     mandatory = false,

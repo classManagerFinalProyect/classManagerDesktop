@@ -1,37 +1,30 @@
 package data.api
 
-import data.remote.Class
+import data.remote.Course
+import data.remote.Practice
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.POST
 import retrofit2.http.Path
 
-interface ApiServiceClass {
+interface ApiServicePractice {
 
-
-    @GET("class/{id}")
-    suspend fun getClassById(
+    @GET("practice/{id}")
+    suspend fun getPracticeById(
         @Path("id") id: String
-    ): Response<Class>
-
-    @POST("class")
-    suspend fun postClass(
-        @Body newClass: Class
-    ): Response<Class>
+    ): Response<Practice>
 
     companion object {
-        private var apiService: ApiServiceClass? = null
+        private var apiService: ApiServicePractice? = null
 
-        fun getInstance() : ApiServiceClass {
+        fun getInstance() : ApiServicePractice {
             if (apiService == null) {
                 apiService = Retrofit.Builder()
                     .baseUrl("http://192.168.18.2:8080/api/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
-                    .create(ApiServiceClass::class.java)
+                    .create(ApiServicePractice::class.java)
             }
             return apiService!!
         }

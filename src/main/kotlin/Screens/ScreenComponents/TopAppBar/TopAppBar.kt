@@ -1,9 +1,9 @@
 package Screens.MainAppScreen.Components
 
 import Screens.MainAppScreen.Items.dropDownMenuButton
-import Screens.MainAppScreen.Items.dropDownMenuClass
+import Screens.Course.Components.MainBody.Events.Items.dropDownMenuClass
+import Screens.MainAppScreen.Items.dropDownMenuClassTransparent
 import Screens.MainAppScreen.Items.dropDownMenuUserImg
-import Screens.ScreenComponents.TopAppBar.items.dialogProfile
 import Screens.ScreenItems.dropDownMenuCourses
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,8 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.toSize
 import data.local.CurrentUser
 import data.remote.Course
 import data.remote.Class
@@ -26,7 +24,8 @@ fun topBar(
     onClickCourse: (Course) -> Unit,
     onClickClass: (Class) -> Unit,
     onClickBeginning: () -> Unit,
-    onCloseSession: () -> Unit
+    onCloseSession: () -> Unit,
+    onChangeGetDates: (Boolean) -> Unit
 ) {
     var profileIsOpen by remember { mutableStateOf(false) }
 
@@ -49,7 +48,7 @@ fun topBar(
                     onClickCourse(it)
                 }
             )
-            dropDownMenuClass(
+            dropDownMenuClassTransparent(
                 suggestions = CurrentUser.myClasses,
                 nameOfMenu = "Mis Clases",
                 onClick = {
@@ -57,7 +56,8 @@ fun topBar(
                 }
             )
             dropDownMenuButton(
-                textOfButton = "Nuevo"
+                textOfButton = "Nuevo",
+                onChangeGetDates = { onChangeGetDates(it) }
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,

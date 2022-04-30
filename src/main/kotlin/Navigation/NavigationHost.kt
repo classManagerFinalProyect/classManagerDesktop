@@ -48,8 +48,14 @@ fun NavigationHost() {
                     screenState = Screen.ClassScreen
                     getDates = true
                 },
-                onClickBeginning  = { screenState = Screen.MainAppScreen},
-                onCloseSession = { screenState = Screen.Login }
+                onClickBeginning  = {
+                    screenState = Screen.MainAppScreen
+                    getDates = true
+
+                },
+                onCloseSession = { screenState = Screen.Login },
+                getDates = getDates,
+                onChangeGetDates = { getDates = it },
             )
 
         is Screen.CourseScreen ->
@@ -66,10 +72,13 @@ fun NavigationHost() {
                     screenState = Screen.ClassScreen
                     getDates = true
                 },
-                onClickBeginning  = { screenState = Screen.MainAppScreen},
+                onClickBeginning  = {
+                    screenState = Screen.MainAppScreen
+                    getDates = true
+                },
                 getDates = getDates,
-                onChangeGetDates = { getDates = false },
-                onCloseSession = { screenState = Screen.Login}
+                onChangeGetDates = { getDates = it },
+                onCloseSession = { screenState = Screen.Login }
             )
 
         is Screen.ClassScreen ->
@@ -85,8 +94,14 @@ fun NavigationHost() {
                     screenState = Screen.ClassScreen
                     getDates = true
                 },
-                onClickBeginning  = { screenState = Screen.MainAppScreen},
-                onCloseSession =  { screenState = Screen.Login }
+                onClickBeginning  = {
+                    screenState = Screen.MainAppScreen
+                    getDates = true
+
+                },
+                onCloseSession =  { screenState = Screen.Login },
+                onChangeGetDates = { getDates = it },
+                getDates = getDates
             )
 
         is Screen.ForgotPasswordScreen ->

@@ -8,17 +8,19 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.*
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import java.awt.Cursor
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun bigTextFieldWithErrorMesaje(
+fun bigTextFieldWithErrorMessage(
     text: String,
     value: String,
     onValueChange: (String) -> Unit,
     validateError: (String) -> Boolean,
-    errorMesaje: String,
+    errorMessage: String,
     changeError: (Boolean) -> Unit,
     error: Boolean,
     mandatory: Boolean,
@@ -50,11 +52,11 @@ fun bigTextFieldWithErrorMesaje(
                     .onPreviewKeyEvent { keyEvent ->
                         when {
                             (keyEvent.key == Key.DirectionRight) -> {
-
+                              //  CursorSelectionBehaviour
                                 true
                             }
                             (keyEvent.key == Key.DirectionLeft) -> {
-                                //TextRange(0, emailText.length - 1)
+                                TextRange(1, 0)
                                 true
                             }
                             (keyEvent.key  == Key.Delete && keyEvent.type == KeyEventType.KeyDown) -> {
@@ -69,12 +71,13 @@ fun bigTextFieldWithErrorMesaje(
                         }
                     },
             )
-            val assistiveElementText = if (error) errorMesaje else if (mandatory) "*Obligatorio" else ""
+            val assistiveElementText = if (error) errorMessage else if (mandatory) "*Obligatorio" else ""
             val assistiveElementColor = if (error) {
                 MaterialTheme.colors.error
             } else {
                 MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.medium)
             }
+            Spacer(modifier = Modifier.padding(2.dp))
             Text(
                 text = assistiveElementText,
                 color = assistiveElementColor,

@@ -1,5 +1,7 @@
 package Screens.MainAppScreen
 
+import Screens.Course.Components.MainBody.ContentState
+import Screens.Course.ViewModelCourse
 import Screens.MainAppScreen.Components.topBar
 import Screens.MainAppScreen.Items.rectangleCard
 import androidx.compose.foundation.*
@@ -26,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.local.CurrentUser
+import data.local.Item
 import data.remote.Course
 import data.remote.Class
 
@@ -37,17 +40,32 @@ fun MainAppScreen(
     onClickClass: (Class) -> Unit ,
     onBack: () -> Unit,
     onClickBeginning: () -> Unit,
-    onCloseSession: () -> Unit
+    onCloseSession: () -> Unit,
+    getDates: Boolean,
+    onChangeGetDates: (Boolean) -> Unit
 ){
 
-        //Help variables
-        val clipboardManager: ClipboardManager = LocalClipboardManager.current
-        var expanded by remember { mutableStateOf(false) }
-        val state = rememberLazyListState()
-        val density = LocalDensity.current
-        val stateHorizontal = rememberScrollState(0)
-        val stateVertical = rememberScrollState(0)
+    //Help variables
+    val clipboardManager: ClipboardManager = LocalClipboardManager.current
+    var expanded by remember { mutableStateOf(false) }
+    val state = rememberLazyListState()
+    val density = LocalDensity.current
+    val stateHorizontal = rememberScrollState(0)
+    val stateVertical = rememberScrollState(0)
+    val composableScope = rememberCoroutineScope()
+    var numOfCourses by remember { mutableStateOf(0) }
 
+    LaunchedEffect(getDates) {
+        if (getDates) {
+            ViewModelMainAppScreen.getCompleteCourses(
+                composableScope = composableScope,
+                allCourses = CurrentUser.myCourses,
+                onFinished = {
+                    onChangeGetDates(false)
+                }
+            )
+        }
+    }
 
         Scaffold(
             topBar = {
@@ -61,7 +79,8 @@ fun MainAppScreen(
                    onClickBeginning = {
                        onClickBeginning()
                    },
-                   onCloseSession = { onCloseSession() }
+                   onCloseSession = { onCloseSession() },
+                   onChangeGetDates = { onChangeGetDates(it) }
                )
             },
             content = {
@@ -158,7 +177,6 @@ fun MainAppScreen(
                                         .fillMaxHeight()
                                         .fillMaxWidth()
                                         .padding(PaddingValues(30.dp)),
-                                    //.border(BorderStroke(1.dp,Color.LightGray)),
                                     content = {
                                         Text(
                                             text = "Cursos en los que participas",
@@ -170,76 +188,86 @@ fun MainAppScreen(
                                                 .padding(PaddingValues(top = 10.dp, bottom = 20.dp))
                                         )
 
-                                        //LazyGrid
-                                        LazyColumn(
-                                            content = {
-                                                itemsIndexed(CurrentUser.myCourses) { index, item ->
-                                                    Card(
-                                                        elevation = 3.dp,
-                                                        shape = RoundedCornerShape(4.dp),
-                                                        content = {
-
-                                                            Column(
-                                                                modifier = Modifier
-                                                                    .fillMaxWidth()
-                                                                    .padding(PaddingValues(all = 20.dp)),
-                                                                horizontalAlignment = Alignment.Start,
-                                                                content = {
-                                                                    Row(
-                                                                        modifier = Modifier
-                                                                            .fillMaxWidth()
-                                                                            .padding(bottom = 10.dp),
-                                                                        content = {
-                                                                            Column(
-                                                                                horizontalAlignment = Alignment.Start,
-                                                                                content = {
-                                                                                    Text(text = "Curso: ${item.name}")
-
-                                                                                }
-                                                                            )
-                                                                            Column(
-                                                                                horizontalAlignment = Alignment.End,
-                                                                                content = {
-                                                                                    Text(text = "Número de clases: ${item.classes.size}")
-                                                                                }
-                                                                            )
-                                                                        }
+                                        if(!getDates) {
+                                            LazyColumn(
+                                                content = {
+                                                    itemsIndexed(ViewModelMainAppScreen.completeCourses) { index, item ->
+                                                        Card(
+                                                            elevation = 3.dp,
+                                                            shape = RoundedCornerShape(4.dp),
+                                                            modifier = Modifier
+                                                                .clickable {
+                                                                    var listOfClassesIds: MutableList<String> = arrayListOf()
+                                                                    item.classes.forEach { listOfClassesIds.add(it.id)}
+                                                                    var selectedCourse = Course(
+                                                                        users = item.users,
+                                                                        classes = listOfClassesIds,
+                                                                        events = item.events,
+                                                                        name = item.name,
+                                                                        description = item.description,
+                                                                         id = item.id
                                                                     )
+                                                                    onClickCourse(selectedCourse)
+                                                               },
+                                                            content = {
 
+                                                                Column(
+                                                                    modifier = Modifier
+                                                                        .fillMaxWidth()
+                                                                        .padding(PaddingValues(all = 20.dp)),
+                                                                    horizontalAlignment = Alignment.Start,
+                                                                    content = {
+                                                                        Row(
+                                                                            modifier = Modifier
+                                                                                .fillMaxWidth()
+                                                                                .padding(bottom = 10.dp),
+                                                                            content = {
+                                                                                Column(
+                                                                                    horizontalAlignment = Alignment.Start,
+                                                                                    content = {
+                                                                                        Text(text = "Curso: ${item.name}")
 
-                                                                    Box(
-                                                                        modifier = Modifier
-                                                                            .fillMaxWidth(),
-                                                                        content = {
-                                                                            /*HorizontalScrollbar(
-                                                                                modifier = Modifier.align(Alignment.Bottom)
-                                                                                    .fillMaxWidth()
-                                                                                    .padding(end = 12.dp),
-                                                                                adapter = rememberScrollbarAdapter(stateHorizontal)
-                                                                            )*/
-                                                                            LazyRow(
-
-                                                                                content = {
-                                                                                    this.itemsIndexed(item.classes){ index, item ->
-                                                                                        rectangleCard(
-                                                                                            title = item,
-                                                                                            subtitle = "Subtitle",
-                                                                                            onClick = { /*Go to selected class*/}
-                                                                                        )
                                                                                     }
-                                                                                }
-                                                                            )
-                                                                        }
-                                                                    )
-                                                                }
-                                                            )
+                                                                                )
+                                                                                Column(
+                                                                                    horizontalAlignment = Alignment.End,
+                                                                                    content = {
+                                                                                        Text(text = "Número de clases: ${item.classes.size}")
+                                                                                    }
+                                                                                )
+                                                                            }
+                                                                        )
 
-                                                        }
-                                                    )
-                                                    Spacer(modifier = Modifier.padding(20.dp))
+                                                                        Box(
+                                                                            modifier = Modifier
+                                                                                .fillMaxWidth(),
+                                                                            content = {
+                                                                                LazyRow(
+                                                                                    content = {
+
+                                                                                        this.itemsIndexed(item.classes){ index, item ->
+                                                                                            rectangleCard(
+                                                                                                title = item.name,
+                                                                                                subtitle = "Subtitle",
+                                                                                                onClick = { onClickClass(item) }
+                                                                                            )
+                                                                                        }
+
+                                                                                    }
+                                                                                )
+                                                                            }
+                                                                        )
+                                                                    }
+                                                                )
+
+                                                            }
+                                                        )
+                                                        Spacer(modifier = Modifier.padding(20.dp))
+                                                    }
                                                 }
-                                            }
-                                        )
+                                            )
+                                        }
+
                                     }
                                 )
 

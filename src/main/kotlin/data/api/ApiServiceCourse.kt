@@ -1,11 +1,12 @@
 package data.api
 
+import data.local.RolUser
+import data.remote.Class
 import data.remote.Course
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface ApiServiceCourse {
 
@@ -20,6 +21,33 @@ interface ApiServiceCourse {
     suspend fun getCourserByListOfIds(
         @Path("listOfIds") listOfIds: MutableList<String>
     ): Response<MutableList<Course>>
+
+    @POST("course")
+    suspend fun postCourse(
+        @Body newCourse: Course
+    ): Response<Course>
+
+    @PUT("course")
+    suspend fun putCourse(
+        @Body updateCourse: Course
+    ): Response<Course>
+
+
+    /*
+    @POST("addNewMember/{idOfCourse}")
+    suspend fun addNewMember(
+        @Path("idOfCourse") idOfCourse: String,
+        @Body rolUser: RolUser,
+    ): Response<Course>
+
+    @POST("addNewMember/{idOfUser}/{rol}/{idOfCourse}")
+    suspend fun addNewMember(
+        @Path("rol") rol: String,
+        @Body("idOfUser") idOfUser: String,
+        @Body("idOfCourse") idOfCourse: String,
+    ): Response<Course>
+*/
+
 
     companion object {
         private var apiService: ApiServiceCourse? = null

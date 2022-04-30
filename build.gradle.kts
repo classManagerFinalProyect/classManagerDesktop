@@ -24,6 +24,7 @@ dependencies {
     implementation("io.taig.android:parcelable_2.11:2.4.1")
     implementation("dev.icerock.moko:parcelize:0.8.0")
     implementation("com.google.firebase:firebase-admin:8.1.0")
+    implementation("org.webjars.npm:bootstrap-datepicker:1.9.0")
 
     //Decompose
     val decomposeVersion = "0.6.0"

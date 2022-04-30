@@ -21,7 +21,7 @@ import data.remote.Course
 import data.remote.Class
 
 @Composable
-fun dropDownMenuClass(
+fun dropDownMenuClassTransparent(
     suggestions: MutableList<Class>,
     nameOfMenu: String,
     onClick: (Class) -> Unit
@@ -41,7 +41,9 @@ fun dropDownMenuClass(
             TextField(
                 colors = TextFieldDefaults.textFieldColors(
                     textColor = Color.White,
-                    backgroundColor = Color.Transparent
+                    backgroundColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent
                 ),
                 value = selectedText,
                 textStyle = TextStyle(fontSize = 14.sp),

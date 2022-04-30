@@ -1,8 +1,7 @@
-package Screens.ScreenItems
+package Screens.Course.Components.MainBody.Events.Items
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -17,13 +16,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import data.remote.Course
+import data.remote.Class
 
 @Composable
-fun dropDownMenuCourses(
-    suggestions: MutableList<Course>,
+fun dropDownMenuClass(
+    suggestions: MutableList<Class>,
     nameOfMenu: String,
-    onClick: (Course) -> Unit
+    onClick: (Class) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(nameOfMenu) }
@@ -37,26 +36,22 @@ fun dropDownMenuCourses(
 
     Column(
         content = {
-            TextField(
-                colors = TextFieldDefaults.textFieldColors(
-                    textColor = Color.White,
-                    backgroundColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                textStyle = TextStyle(fontSize = 14.sp),
+            OutlinedTextField(
                 value = selectedText,
-                onValueChange = {  },
-                enabled = true,
+                textStyle = TextStyle(fontSize = 14.sp),
+                onValueChange = {
+
+                },
+                enabled = false,
                 modifier = Modifier
                     .onGloballyPositioned { coordinates ->
                         textfieldSize = coordinates.size.toSize()
                     }
-                    .width(200.dp),
+                    .fillMaxWidth()
+                    .padding(PaddingValues(start = 40.dp, end = 40.dp)),
                 trailingIcon = {
                     Icon(
                         imageVector =  icon,
-                        tint = Color.White,
                         contentDescription = "arrowExpanded",
                         modifier = Modifier
                             .clickable { expanded = !expanded }
@@ -73,6 +68,7 @@ fun dropDownMenuCourses(
                         DropdownMenuItem(
                             onClick = {
                                 expanded = false
+                                selectedText = label.name
                                 onClick(label)
                             },
                             content = {

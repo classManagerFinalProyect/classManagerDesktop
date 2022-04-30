@@ -1,10 +1,12 @@
 package data.local
 
+import Screens.ScreenComponents.TopAppBar.CreateClass.ViewModelCreateClass
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import data.api.ApiServiceClass
 import data.api.ApiServiceCourse
+import data.api.ApiServiceUser
 import data.remote.Class
 import data.remote.Course
 import data.remote.appUser
@@ -20,6 +22,25 @@ class CurrentUser {
         val myClasses: MutableList<Class> = mutableListOf()
         var currentUser: appUser = appUser("","","", mutableListOf<String>(), arrayListOf<String>(),"","")
 
+        fun updateCurrentUser(
+            composableScope: CoroutineScope,
+            onFinished: () -> Unit,
+            updateUser: appUser
+        ) {
+            composableScope.launch {
+                val apiService = ApiServiceUser.getInstance()
+                try {
+                    val result = apiService.putUser(updateUser)
+                    if (result.isSuccessful) {
+                        currentUser = result.body()!!
+                        onFinished()
+                    }
+
+                } catch (e: Exception) {
+                    errorMessage = e.message.toString()
+                }
+            }
+        }
 
 
         fun getMyCourses(
@@ -27,9 +48,10 @@ class CurrentUser {
             onFinished: () -> Unit
         ) {
             myCourses.clear()
-            var countTmp = 0
-            var firstAcces = true
+            var count = 0
+
             if(currentUser.courses.size == 0) onFinished()
+
             currentUser.courses.forEach {
                 composableScope.launch {
                     val apiService = ApiServiceCourse.getInstance()
@@ -37,13 +59,10 @@ class CurrentUser {
                         val result = apiService.getCourserById(it)
                         if (result.isSuccessful) {
                             myCourses.add(result.body()!!)
-                            if (firstAcces) {
-                                firstAcces = false
-                            }
                         }
-                        countTmp++
+                        count++
 
-                        if(countTmp.equals(currentUser.courses.size)) {
+                        if(count == currentUser.courses.size) {
                             onFinished()
                         }
 
@@ -75,8 +94,10 @@ class CurrentUser {
             onFinished: () -> Unit
         ) {
             myClasses.clear()
-            var firstAcces = true
+            var count = 0
+
             if(currentUser.classes.size == 0) onFinished()
+
             currentUser.classes.forEach{
                 composableScope.launch {
                      val apiService = ApiServiceClass.getInstance()
@@ -85,10 +106,10 @@ class CurrentUser {
                         val result = apiService.getClassById(it)
                         if (result.isSuccessful) {
                             myClasses.add(result.body()!!)
-                            if(firstAcces) {
-                                firstAcces = false
-                                onFinished()
-                            }
+                        }
+                        count++
+                        if(count == currentUser.classes.size) {
+                            onFinished()
                         }
                     } catch (e: Exception) {
                         errorMessage = e.message.toString()

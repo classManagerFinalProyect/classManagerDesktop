@@ -136,7 +136,7 @@ fun MainLogin(
                                             onClick = {
                                                 ViewModelLogin.getCurrentUser(
                                                     composableScope = composableScope,
-                                                    idOfUser = "kU6RXIM8OdSr1UE2NRViuwbBrWR2",
+                                                    idOfUser = "wGJ3ViLAKuPYGMhm2mM2B5dAT6u2",
                                                     onFinished = {
                                                         onLoginClick()
                                                     },

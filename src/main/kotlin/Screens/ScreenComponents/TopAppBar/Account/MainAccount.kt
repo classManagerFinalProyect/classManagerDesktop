@@ -1,6 +1,6 @@
 package Screens.ScreenComponents.TopAppBar.Account
 
-import ScreenItems.bigTextFieldWithErrorMesaje
+import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.Register.PrivacyPolicies.MainPrivacyPolicies
 import Screens.Register.PrivacyPolicies.PrivacyPoliciesDialog
 import Screens.ScreenComponents.TopAppBar.Profile.ViewModelProfile
@@ -87,12 +87,12 @@ fun MainAccount(
                         modifier = Modifier.fillMaxSize(0.9f),
                         content = {
                             item {
-                                bigTextFieldWithErrorMesaje(
+                                bigTextFieldWithErrorMessage(
                                     text = "Email del usuario",
                                     value = emailText,
                                     onValueChange = onValueChangeEmailText,
                                     validateError = ViewModelAccount::isValidEmail,
-                                    errorMesaje = emailOfUserError,
+                                    errorMessage = emailOfUserError,
                                     changeError = emailErrorChange,
                                     error = emailError,
                                     mandatory = false,

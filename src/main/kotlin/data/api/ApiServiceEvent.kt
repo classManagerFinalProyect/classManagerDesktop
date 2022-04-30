@@ -5,8 +5,7 @@ import data.remote.appUser
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface ApiServiceEvent {
 
@@ -14,6 +13,22 @@ interface ApiServiceEvent {
     suspend fun getEventById(
         @Path("id") id: String
     ): Response<Event>
+
+    @POST("event")
+    suspend fun postEvent(
+        @Body uploadEvent: Event
+    ): Response<Event>
+
+    @PUT("event")
+    suspend fun updateEvent(
+        @Body updateEvent: Event
+    ): Response<Event>
+
+    @DELETE("event/{id}")
+    suspend fun deleteEventById(
+        @Path("id") id: String
+    ): Response<Unit>
+
 
 
     companion object {

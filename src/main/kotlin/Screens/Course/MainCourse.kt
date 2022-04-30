@@ -5,10 +5,9 @@ import Screens.Course.Components.MainBody.classes
 import Screens.Course.Components.MainBody.events
 import Screens.Course.Components.MainBody.members
 import Screens.MainAppScreen.Components.topBar
+import Screens.theme.blueDesaturated
 import Utils.LazyGridFor
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -19,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.remote.Course
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
@@ -33,7 +33,7 @@ fun MainCourse(
     onClickClass: (Class) -> Unit,
     onClickBeginning: () -> Unit,
     getDates: Boolean,
-    onChangeGetDates: () -> Unit,
+    onChangeGetDates: (Boolean) -> Unit,
     onCloseSession: () -> Unit
 ){
     val composableScope = rememberCoroutineScope()
@@ -41,8 +41,11 @@ fun MainCourse(
 
 
     LaunchedEffect(getDates) {
+        ViewModelCourse.updateContentState(newValue = ContentState.CLASSES)
+
         if (getDates) {
             showMainContent = false
+            ViewModelCourse.selectedCourse = selectedCourse
             ViewModelCourse.getCurrentClasses(
                 selectedCourse = selectedCourse,
                 composableScope = composableScope,
@@ -50,10 +53,13 @@ fun MainCourse(
                     showMainContent = true
                 }
             )
+
             ViewModelCourse.getCurrentEvents(
                 composableScope = composableScope,
                 selectedCourse = selectedCourse,
-                onFinished = {}
+                onFinished = {
+
+                }
             )
 
             ViewModelCourse.getCurrentMembers(
@@ -61,7 +67,7 @@ fun MainCourse(
                 selectedCourse = selectedCourse,
                 onFinished = {}
             )
-            onChangeGetDates()
+            onChangeGetDates(false)
         }
     }
 
@@ -75,30 +81,39 @@ fun MainCourse(
                 onClickCourse = { onClickCourse(it) },
                 onClickClass= { onClickClass(it) },
                 onClickBeginning = { onClickBeginning() },
-                onCloseSession = { onCloseSession() }
+                onCloseSession = { onCloseSession() },
+                onChangeGetDates = { onChangeGetDates(it) }
              )
         },
         content = {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize(),
                 content = {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
+                    Column(
+                        modifier = Modifier
+                            .background(blueDesaturated),
                         content = {
-                            Column(
-                                content =  {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        content = {
-                                            Image(
-                                                painter = painterResource(resourcePath = "books.jpg"),
-                                                contentDescription = "logo",
-                                                modifier = Modifier.size(100.dp)
-                                            )
-                                            Text(
-                                                text = selectedCourse.name,
-                                                fontSize = 20.sp
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center,
+                                content = {
+                                    Column(
+                                        content =  {
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                content = {
+                                                    Image(
+                                                        painter = painterResource(resourcePath = "books.jpg"),
+                                                        contentDescription = "logo",
+                                                        modifier = Modifier.size(100.dp)
+                                                    )
+                                                    Text(
+                                                        text = selectedCourse.name,
+                                                        fontSize = 20.sp,
+                                                        color = Color.White
+                                                    )
+                                                }
                                             )
                                         }
                                     )
@@ -106,8 +121,6 @@ fun MainCourse(
                             )
                         }
                     )
-
-
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically,
@@ -119,7 +132,7 @@ fun MainCourse(
                                     ViewModelCourse.updateContentState(newValue = ContentState.CLASSES)
                                 },
                                 content = {
-                                    Text(text = "Classes")
+                                    Text(text = "Clases")
                                 }
                             )
                             TextButton(
@@ -140,7 +153,15 @@ fun MainCourse(
                             )
                         }
                     )
-
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(BorderStroke(1.dp, Color.LightGray)),
+                        content = {
+                            Spacer(modifier = Modifier.padding(1.dp))
+                        }
+                    )
+                    Spacer(modifier = Modifier.padding(5.dp))
 
                     Row(
                         horizontalArrangement = Arrangement.Center,
@@ -150,6 +171,7 @@ fun MainCourse(
                                 MainContent(
                                     onClickClass = onClickClass,
                                     contentState = contentState,
+                                    selectedCourse = selectedCourse
                                 )
                             }
                         }
@@ -164,7 +186,8 @@ fun MainCourse(
 @Composable
 private fun MainContent(
     contentState: ContentState,
-    onClickClass: (Class) -> Unit
+    onClickClass: (Class) -> Unit,
+    selectedCourse: Course
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -179,7 +202,9 @@ private fun MainContent(
                     )
                 }
                 ContentState.MEMBERS -> {
-                    members()
+                    members(
+                        selectedCourse = selectedCourse
+                    )
                 }
                 ContentState.EVENTS -> {
                     events()

@@ -112,7 +112,7 @@ fun dropDownMenuUserImg(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
                                     .clickable {
-                                        //auth.signOut()
+                                        onCloseSession()
 
                                     },
                                 content = {
