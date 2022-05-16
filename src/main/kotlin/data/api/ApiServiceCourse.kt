@@ -32,6 +32,10 @@ interface ApiServiceCourse {
         @Body updateCourse: Course
     ): Response<Course>
 
+    @DELETE("course/{id}")
+    suspend fun deleteCourseById(
+        @Path(value = "id") id: String
+    ): Response<Unit>
 
     /*
     @POST("addNewMember/{idOfCourse}")

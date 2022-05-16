@@ -17,11 +17,11 @@ import data.remote.Class
 class ViewModelCreateClass {
     companion object {
         private var errorMessage: String by mutableStateOf ("")
-        var newClass = Class("","","", arrayListOf(), arrayListOf(),"")
+        var newClass = Class("","","", arrayListOf(), arrayListOf(),"","")
 
         fun createNewClass(
             composableScope: CoroutineScope,
-            onFinished: () -> Unit,
+            onFinished: (Class) -> Unit,
             uploadClass: Class
         ) {
             //Tener en cuenta q no lo puedes asignar por defecto a un curso
@@ -40,7 +40,7 @@ class ViewModelCreateClass {
                                 updateDates(
                                     composableScope = composableScope,
                                     onFinished = {
-                                        onFinished()
+                                        onFinished(newClass)
                                     }
                                 )
                             }

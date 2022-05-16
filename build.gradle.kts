@@ -42,6 +42,7 @@ dependencies {
 
     //Others
    // implementation("io.coil-kt:coil-compose:2.0.0-rc03")
+   // implementation("com.github.tfaki:ComposableSweetToast:1.0.1")
 
     //Firebase
     implementation("io.github.navidjalali:firebaseauth_2.13:0.0.4")

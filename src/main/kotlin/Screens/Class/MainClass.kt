@@ -4,30 +4,30 @@ import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.Class.Components.MainBody.ContentState
 import Screens.Class.Components.MainBody.Members.members
 import Screens.Class.Components.MainBody.Practices.practices
-import Screens.Course.Components.MainBody.classes
-import Screens.Course.ViewModelCourse
-import Screens.Course.ViewModelCourse.Companion.selectedCourse
+import Screens.Class.Components.editClass
 import Screens.MainAppScreen.Components.topBar
-import Screens.theme.blueDesaturated
-import Utils.isDate
+import Screens.ScreenComponents.Header.header
+import Screens.ScreenComponents.NavigationBar.navigationBar
+import Screens.ScreenItems.Dialogs.defaultDialog
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.WindowPosition
+import androidx.compose.ui.window.rememberDialogState
 import data.remote.Class
 import data.remote.Course
-import data.remote.Practice
+import java.awt.SystemColor.text
 
 @Composable
 fun MainClass(
@@ -42,8 +42,16 @@ fun MainClass(
     ) {
     val composableScope = rememberCoroutineScope()
     var showMainContent by remember { mutableStateOf(false) }
-
+    var editClass by remember { mutableStateOf(false) }
     val contentState by ViewModelClass.contentState
+
+
+    if(editClass) {
+        editClass(
+            editClass = { editClass = it },
+            onClickBeginning = { onClickBeginning() }
+        )
+    }
 
     LaunchedEffect(getDates) {
         if (getDates) {
@@ -54,7 +62,20 @@ fun MainClass(
                     showMainContent = true
                 }
             )
+            ViewModelClass.getCurrentCourse(
+                composableScope = composableScope,
+                onFinished =  {
+
+                }
+            )
+            ViewModelClass.getCurrentMembers(
+                composableScope = composableScope,
+                onFinished =  {
+
+                }
+            )
             onChangeGetDates(false)
+
         }
     }
 
@@ -73,44 +94,36 @@ fun MainClass(
                 modifier = Modifier
                     .fillMaxSize(),
                 content = {
-                    Column(
-                        modifier = Modifier
-                            .background(blueDesaturated),
+                    header(
                         content = {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Center,
+                            Image(
+                                painter = painterResource(resourcePath = "books.jpg"),
+                                contentDescription = "logo",
+                                modifier = Modifier.size(100.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(10.dp))
+                            Text(
+                                text = selectedClass.name,
+                                fontSize = 20.sp,
+                                color = Color.White
+                            )
+                            IconButton(
+                                onClick = {
+                                    editClass = true
+                                },
                                 content = {
-                                    Column(
-                                        content = {
-                                            Row(
-                                                verticalAlignment = Alignment.CenterVertically,
-                                                content = {
-                                                    Image(
-                                                        painter = painterResource(resourcePath = "books.jpg"),
-                                                        contentDescription = "logo",
-                                                        modifier = Modifier.size(100.dp)
-                                                    )
-                                                    Text(
-                                                        text = selectedCourse.name,
-                                                        fontSize = 20.sp,
-                                                        color = Color.White
-                                                    )
-                                                }
-                                            )
-                                        }
+                                    Icon(
+                                        tint = Color.White,
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = "Editar Clase"
                                     )
                                 }
                             )
                         }
                     )
 
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth(),
+                    navigationBar(
                         content = {
-
                             TextButton(
                                 onClick = {
                                     ViewModelClass.updateContentState(newValue = ContentState.PRACTICES)
@@ -130,15 +143,6 @@ fun MainClass(
                         }
                     )
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .border(BorderStroke(1.dp, Color.LightGray)),
-                        content = {
-                            Spacer(modifier = Modifier.padding(1.dp))
-                        }
-                    )
-                    Spacer(modifier = Modifier.padding(5.dp))
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier.fillMaxWidth(),

@@ -4,9 +4,7 @@ import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.Course.ViewModelCourse
 import Screens.ScreenComponents.TopAppBar.CreateClass.ViewModelCreateClass
 import Screens.theme.blue
-import Utils.isAlphabetic
-import Utils.isDate
-import Utils.isTime
+import Utils.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -36,19 +34,15 @@ fun modifierEvent(
     //Texts
     var (textName,onValueChangeNameText) = remember{ mutableStateOf(event.name) }
     var (nameError,nameErrorChange) = remember { mutableStateOf(false) }
-    val messageNameClassError by remember { mutableStateOf("El nombre debe de contener únicamente caracteres alfabeticos") }
 
     var (textDate,onValueChangeDateText) = remember{ mutableStateOf(event.date) }
     var (dateError,dateErrorChange) = remember { mutableStateOf(false) }
-    val messageDateClassError by remember { mutableStateOf("La fecha debe seguir el siguiente formato: dd/mm/yyyy") }
 
     var (textStartTime,onValueChangeStartTimeText) = remember{ mutableStateOf(event.initialTime) }
     var (startTimeError,startTimeErrorChange) = remember { mutableStateOf(false) }
-    val messageStartTimeClassError by remember { mutableStateOf("Las horas deben seguir el siguente formato: hh:mm") }
 
     var (textFinalTime,onValueChangeFinalTimeText) = remember{ mutableStateOf(event.finalTime) }
     var (finalTimeError,finalTimeErrorChange) = remember { mutableStateOf(false) }
-    val messageFinalTimeClassError by remember { mutableStateOf("Las horas deben seguir el siguente formato: hh:mm") }
 
     //Help variables
     val composableScope = rememberCoroutineScope()
@@ -82,12 +76,13 @@ fun modifierEvent(
                         text = "Nombre del evento",
                         value = textName,
                         onValueChange = onValueChangeNameText,
-                        validateError = ::isAlphabetic,
-                        errorMessage = messageNameClassError,
+                        validateError = ::isValidName,
+                        errorMessage = CommonErrors.notValidName,
                         changeError = nameErrorChange,
                         error = nameError,
                         mandatory = true,
-                        KeyboardType = KeyboardType.Text
+                        KeyboardType = KeyboardType.Text,
+                        enabled = true
                     )
 
                     bigTextFieldWithErrorMessage(
@@ -95,11 +90,12 @@ fun modifierEvent(
                         value = textDate,
                         onValueChange = onValueChangeDateText,
                         validateError = ::isDate,
-                        errorMessage = messageDateClassError,
+                        errorMessage = CommonErrors.notValidDate,
                         changeError = dateErrorChange,
                         error = dateError,
                         mandatory = true,
-                        KeyboardType = KeyboardType.Text
+                        KeyboardType = KeyboardType.Text,
+                        enabled = true
                     )
 
                     bigTextFieldWithErrorMessage(
@@ -107,11 +103,12 @@ fun modifierEvent(
                         value = textStartTime,
                         onValueChange = onValueChangeStartTimeText,
                         validateError = ::isTime,
-                        errorMessage = messageStartTimeClassError,
+                        errorMessage = CommonErrors.notValidDate,
                         changeError = startTimeErrorChange,
                         error = startTimeError,
                         mandatory = true,
-                        KeyboardType = KeyboardType.Text
+                        KeyboardType = KeyboardType.Text,
+                        enabled = true
                     )
 
                     bigTextFieldWithErrorMessage(
@@ -119,11 +116,12 @@ fun modifierEvent(
                         value = textFinalTime,
                         onValueChange = onValueChangeFinalTimeText,
                         validateError = ::isTime,
-                        errorMessage = messageFinalTimeClassError,
+                        errorMessage = CommonErrors.notValidDate,
                         changeError = finalTimeErrorChange,
                         error = finalTimeError,
                         mandatory = true,
-                        KeyboardType = KeyboardType.Text
+                        KeyboardType = KeyboardType.Text,
+                        enabled = true
                     )
 
                     Spacer(modifier = Modifier.padding(8.dp))
@@ -171,24 +169,27 @@ fun modifierEvent(
                                     bottom = 6.dp
                                 ),
                                 onClick = {
-                                    val updateEvent = Event(
-                                        id = event.id,
-                                        idOfCourse = event.idOfCourse,
-                                        name = textName,
-                                        nameOfClass = event.nameOfClass,
-                                        finalTime = textFinalTime,
-                                        initialTime = textStartTime,
-                                        date = textDate
-                                    )
+                                    if(isValidName(textName) && isDate(textDate) && isTime(textFinalTime) && isTime(textStartTime)) {
 
-                                    ViewModelCourse.updateEvent(
-                                        composableScope = composableScope,
-                                        event = updateEvent,
-                                        onFinished = {
-                                            ViewModelCourse.currentEvents.remove(event)
-                                            onCloseRequest()
-                                        }
-                                    )
+                                        val updateEvent = Event(
+                                            id = event.id,
+                                            idOfCourse = event.idOfCourse,
+                                            name = textName,
+                                            nameOfClass = event.nameOfClass,
+                                            finalTime = textFinalTime,
+                                            initialTime = textStartTime,
+                                            date = textDate
+                                        )
+
+                                        ViewModelCourse.updateEvent(
+                                            composableScope = composableScope,
+                                            event = updateEvent,
+                                            onFinished = {
+                                                ViewModelCourse.currentEvents.remove(event)
+                                                onCloseRequest()
+                                            }
+                                        )
+                                    }
                                 },
                                 content = {
                                     Text(text = "Guardar")

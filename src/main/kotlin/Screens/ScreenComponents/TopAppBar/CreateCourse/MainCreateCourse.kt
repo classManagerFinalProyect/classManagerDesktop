@@ -2,8 +2,7 @@ package Screens.ScreenComponents.TopAppBar.CreateCourse
 
 import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.ScreenComponents.TopAppBar.Profile.ViewModelProfile
-import Utils.isAlphabetic
-import Utils.isAlphanumeric
+import Utils.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -23,7 +22,8 @@ import data.remote.Course
 @Composable
 fun mainCreateCourse(
     onClickCancel: () -> Unit,
-    onChangeGetDates: (Boolean) -> Unit
+    onChangeGetDates: (Boolean) -> Unit,
+    onCreateCourse: (Course) -> Unit
 ) {
 
     //Texts
@@ -43,8 +43,8 @@ fun mainCreateCourse(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxSize(),
-
+            .fillMaxHeight()
+            .width(470.dp),
         content = {
 
             Text(
@@ -59,24 +59,26 @@ fun mainCreateCourse(
                 text = "Nombre del curso",
                 value = textNameCourse,
                 onValueChange = onValueChangeNameCourseText,
-                validateError = ::isAlphabetic,
-                errorMessage = messageNameCourseError,
+                validateError = { isValidName(it) },
+                errorMessage = CommonErrors.notValidName,
                 changeError = nameCourseErrorChange,
                 error = nameCourseError,
                 mandatory = true,
-                KeyboardType = KeyboardType.Text
+                KeyboardType = KeyboardType.Text,
+                enabled = true
             )
 
             bigTextFieldWithErrorMessage(
                 text = "Descripción del curso",
                 value = textDescriptionCourse,
                 onValueChange = onValueChangeDescriptionCourseText,
-                validateError = ::isAlphanumeric,
-                errorMessage = messageDescriptionCourseError,
+                validateError = { isValidDescription(it) },
+                errorMessage = CommonErrors.notValidDescription,
                 changeError = nameDescriptionErrorChange,
                 error = nameDescriptionError,
                 mandatory = false,
-                KeyboardType = KeyboardType.Text
+                KeyboardType = KeyboardType.Text,
+                enabled = true
             )
             Spacer(modifier = Modifier.padding(5.dp))
 
@@ -116,26 +118,30 @@ fun mainCreateCourse(
                 modifier = Modifier
                     .padding(start = 10.dp, end = 20.dp),
                 onClick = {
-                    val newCourse = Course(
-                         users = arrayListOf(
-                             RolUser(
-                                 id = CurrentUser.currentUser.id,
-                                 rol = "admin"
-                             )
-                         ),
-                         classes = arrayListOf(),
-                         events = arrayListOf(),
-                         name = textNameCourse,
-                         description = textDescriptionCourse,
-                         id = ""
-                    )
-                    ViewModelCreateCourse.createNewCourse(
-                        composableScope = composableScope,
-                        uploadCourse = newCourse,
-                        onFinished =  {
-                            onChangeGetDates(true)
-                        },
-                    )
+                    if(isValidName(textNameCourse) && isValidDescription(textDescriptionCourse)) {
+                        val newCourse = Course(
+                            users = arrayListOf(
+                                RolUser(
+                                    id = CurrentUser.currentUser.id,
+                                    rol = "admin"
+                                )
+                            ),
+                            classes = arrayListOf(),
+                            events = arrayListOf(),
+                            name = textNameCourse,
+                            description = textDescriptionCourse,
+                            id = "",
+                            img = "gs://class-manager-58dbf.appspot.com/user/defaultUserImg.png"
+                        )
+                        ViewModelCreateCourse.createNewCourse(
+                            composableScope = composableScope,
+                            uploadCourse = newCourse,
+                            onFinished =  {
+                                onChangeGetDates(true)
+                                onCreateCourse(it)
+                            },
+                        )
+                    }
                 },
                 content = {
                     Text(text = "Crear")

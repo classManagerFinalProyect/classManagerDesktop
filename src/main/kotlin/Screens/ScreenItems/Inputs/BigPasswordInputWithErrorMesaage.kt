@@ -4,22 +4,27 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.*
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun bigPasswordInputWithErrorMessage(
     value: String,
     onValueChangeValue: (String) -> Unit,
     valueError: Boolean,
     onValueChangeError: (Boolean) -> Unit,
-    errorMesaje: String,
+    errorMessage: String,
     validateError: (String) -> Boolean,
     mandatory: Boolean,
     keyboardType: KeyboardType
@@ -40,6 +45,7 @@ fun bigPasswordInputWithErrorMessage(
                   onValueChangeValue(it2)
                   onValueChangeError(!validateError(it2))
               },
+
               keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
               placeholder = { Text(text = "Escribe su contraseña") },
               label = { Text(text = "Contraseña") },
@@ -47,15 +53,19 @@ fun bigPasswordInputWithErrorMessage(
               visualTransformation = if (hidden) PasswordVisualTransformation() else VisualTransformation.None,
               trailingIcon = {
                   IconButton(onClick = { hidden = !hidden }) {
-                      /*
+
                       val vector =
-                          rememberImagePainter(
-                              data =
-                              if (hidden) "https://firebasestorage.googleapis.com/v0/b/class-manager-58dbf.appspot.com/o/appImages%2Fic_visibility_off.png?alt=media&token=0806f411-e1a8-4fd9-b803-ec53c4a7b4ac"
-                              else "https://firebasestorage.googleapis.com/v0/b/class-manager-58dbf.appspot.com/o/appImages%2Fic_visibility.png?alt=media&token=93177a8c-40c9-4368-b6bc-6223a3fdb98b"
+                          painterResource(
+                              resourcePath =
+                              if (hidden) "ic_visibility_off.png"
+                              else "ic_visibility.png"
                           )
                       val description = if (hidden) "Ocultar contraseña" else "Revelar contraseña"
-                      Icon(painter = vector, contentDescription = description)*/
+                      Icon(
+                          painter = vector,
+                          contentDescription = description,
+                          modifier = Modifier.size(28.dp)
+                      )
                   }
               },
               singleLine = true,
@@ -66,8 +76,29 @@ fun bigPasswordInputWithErrorMessage(
               modifier = Modifier
                   .fillMaxWidth()
                   .focusRequester(focusRequester)
+                  .onPreviewKeyEvent { keyEvent ->
+                      when {
+                          (keyEvent.key == Key.DirectionRight) -> {
+                              //  CursorSelectionBehaviour
+                              true
+                          }
+                          (keyEvent.key == Key.DirectionLeft) -> {
+                              TextRange(1, 0)
+                              true
+                          }
+                          (keyEvent.key == Key.Delete && keyEvent.type == KeyEventType.KeyDown) -> {
+                              if (value.isNotEmpty()) onValueChangeValue(value.substring(0, value.length - 1))
+                              true
+                          }
+                          (keyEvent.key == Key.Backspace && keyEvent.type == KeyEventType.KeyDown) -> {
+                              if (value.isNotEmpty()) onValueChangeValue(value.substring(0, value.length - 1))
+                              true
+                          }
+                          else -> false
+                      }
+                  }
           )
-          val assistiveElementText = if (valueError) errorMesaje else if (mandatory) "*Obligatorio" else ""
+          val assistiveElementText = if (valueError) errorMessage else if (mandatory) "*Obligatorio" else ""
           val assistiveElementColor = if (valueError) {
               MaterialTheme.colors.error
           } else {

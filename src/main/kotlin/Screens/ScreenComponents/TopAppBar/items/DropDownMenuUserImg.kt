@@ -1,7 +1,8 @@
 package Screens.MainAppScreen.Items
 
-import Screens.ScreenComponents.TopAppBar.Account.dialogAccount
-import Screens.ScreenComponents.TopAppBar.items.dialogProfile
+import Screens.ScreenComponents.TopAppBar.Account.MainAccount
+import Screens.ScreenComponents.TopAppBar.Profile.mainProfile
+import Screens.ScreenItems.Dialogs.defaultDialog
 import Utils.AsyncImage
 import Utils.loadImageBitmap
 import androidx.compose.foundation.border
@@ -22,8 +23,11 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.window.WindowPosition
+import androidx.compose.ui.window.rememberDialogState
 import data.local.CurrentUser
 
 @Composable
@@ -36,18 +40,31 @@ fun dropDownMenuUserImg(
     var accountIsOpen by remember { mutableStateOf(false) }
 
     if (profileIsOpen) {
-        dialogProfile(
-            onClose = {
-                profileIsOpen = false
-            }
+        defaultDialog(
+            content = { mainProfile() },
+            title = "Mi Profile",
+            onClose = { profileIsOpen = it},
+            resizable = true,
+            state = rememberDialogState(
+                position = WindowPosition(Alignment.Center),
+                size = DpSize(900.dp, 700.dp)
+            )
         )
     }
     if (accountIsOpen) {
-        dialogAccount(
-            onClose = {
-                accountIsOpen = false
+        defaultDialog(
+            content = {
+                MainAccount(
+                    onCloseSession = { onCloseSession() }
+                )
             },
-            onCloseSession = { onCloseSession() }
+            title = "Mi Account",
+            onClose = { accountIsOpen = it},
+            resizable = true,
+            state = rememberDialogState(
+                position = WindowPosition(Alignment.Center),
+                size = DpSize(900.dp, 700.dp)
+            )
         )
     }
 

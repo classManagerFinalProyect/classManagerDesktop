@@ -15,8 +15,8 @@ import data.remote.Class
 @Composable
 fun NavigationHost() {
     var screenState by remember { mutableStateOf<Screen>(Screen.Login) }
-    var selectedCourse by remember { mutableStateOf(Course(arrayListOf(), arrayListOf(), arrayListOf(),"","","",)) }
-    var selectedClass by remember { mutableStateOf(Class("","","", arrayListOf(), arrayListOf(),"")) }
+    var selectedCourse by remember { mutableStateOf(Course(arrayListOf(), arrayListOf(), arrayListOf(),"","","","")) }
+    var selectedClass by remember { mutableStateOf(Class("","","", arrayListOf(), arrayListOf(),"","")) }
     var getDates by remember { mutableStateOf(true) }
 
     when (
@@ -32,7 +32,7 @@ fun NavigationHost() {
 
         is Screen.Register ->
             MainRegister(
-                onBack = { screenState = Screen.Login}
+                onBack = { screenState = Screen.Login},
             )
 
         is Screen.MainAppScreen ->
@@ -42,7 +42,6 @@ fun NavigationHost() {
                     screenState = Screen.CourseScreen
                     getDates = true
                 },
-                onBack = { screenState = Screen.Login },
                 onClickClass = {
                     selectedClass = it
                     screenState = Screen.ClassScreen

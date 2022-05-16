@@ -1,5 +1,6 @@
 package Screens.MainAppScreen.Items
 
+import Screens.ScreenComponents.TopAppBar.CreateClass.ViewModelCreateClass
 import Screens.ScreenComponents.TopAppBar.CreateClass.mainCreateClass
 import Screens.ScreenComponents.TopAppBar.CreateCourse.mainCreateCourse
 import Screens.ScreenComponents.TopAppBar.Profile.mainProfile
@@ -28,20 +29,22 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.Popup
 import com.example.classmanagerandroid.Views.CreateClass.selectedDropDownMenuCurseItem
-import com.example.classmanagerandroid.Views.ViewsItems.createRowList
 import data.local.CurrentUser
 import data.remote.Course
+import data.remote.Class
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 @Composable
 fun dropDownMenuButton(
     textOfButton: String,
-    onChangeGetDates: (Boolean) -> Unit
+    onChangeGetDates: (Boolean) -> Unit,
+    onCreateClass: (Class) -> Unit,
+    onCreateCourse: (Course) -> Unit
 ) {
 
-    var expanded by remember { mutableStateOf(false) }
     var size by remember { mutableStateOf(Size.Zero) }
+    var expanded by remember { mutableStateOf(false) }
     var createNewCourse by remember { mutableStateOf(false) }
     var createNewClass by remember { mutableStateOf(false) }
 
@@ -98,6 +101,9 @@ fun dropDownMenuButton(
                         onClickCancel = {
                             createNewCourse = false
                             expanded = true
+                        },
+                        onCreateCourse = {
+                            onCreateCourse(it)
                         }
                     )
                 }
@@ -111,13 +117,13 @@ fun dropDownMenuButton(
                         onClickCancel = {
                             createNewClass = false
                             expanded = true
+                        },
+                        onCreateClass = {
+                            onCreateClass(it)
                         }
                     )
                 }
             )
-
-
-
         }
     )
 }

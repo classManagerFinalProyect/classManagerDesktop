@@ -3,8 +3,7 @@ package Screens.Course.Components.MainBody.Classes
 import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.Course.ViewModelCourse
 import Screens.ScreenComponents.TopAppBar.CreateClass.ViewModelCreateClass
-import Utils.isAlphabetic
-import Utils.isAlphanumeric
+import Utils.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -30,7 +29,8 @@ fun addNewClass(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxHeight()
+            .width(470.dp),
         content = {
 
             //Help variables
@@ -58,12 +58,13 @@ fun addNewClass(
                 text = "Nombre de la clase",
                 value = textName,
                 onValueChange = onValueChangeNameText,
-                validateError = ::isAlphabetic,
-                errorMessage = messageNameClassError,
+                validateError = { isValidName(it) },
+                errorMessage = CommonErrors.notValidName,
                 changeError = nameErrorChange,
                 error = nameError,
                 mandatory = true,
-                KeyboardType = KeyboardType.Text
+                KeyboardType = KeyboardType.Text,
+                enabled = true
             )
             Spacer(modifier = Modifier.padding(5.dp))
 
@@ -71,21 +72,14 @@ fun addNewClass(
                 text = "Descripción de la clase",
                 value = textDescription,
                 onValueChange = onValueChangeDescriptionText,
-                validateError = ::isAlphanumeric,
-                errorMessage = messageDescriptionError,
+                validateError = { isValidDescription(it) },
+                errorMessage = CommonErrors.notValidDescription,
                 changeError = nameDescriptionErrorChange,
                 error = nameDescriptionError,
                 mandatory = false,
-                KeyboardType = KeyboardType.Text
+                KeyboardType = KeyboardType.Text,
+                enabled = true
             )
-            /*
-            selectedDropDownMenuCurseItem(
-                textOfRow = "Curso",
-                suggestions = CurrentUser.myCourses,
-                onValueChangeTextSelectedItem = onValueChangeItemSelectedCurse
-            )
-            */
-
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -120,28 +114,31 @@ fun addNewClass(
                         modifier = Modifier
                             .padding(start = 10.dp, end = 20.dp),
                         onClick = {
-                            val newClass = Class(
-                                id = "",
-                                name = textName,
-                                description = textDescription,
-                                idPractices = arrayListOf(),
-                                users = arrayListOf(
-                                    RolUser(
-                                        id = CurrentUser.currentUser.id,
-                                        rol = "admin"
-                                    )
-                                ),
-                                idOfCourse = ViewModelCourse.selectedCourse.id
-                            )
+                            if(isValidDescription(textDescription) && isValidName(textName)) {
+                                val newClass = Class(
+                                    id = "",
+                                    name = textName,
+                                    description = textDescription,
+                                    idPractices = arrayListOf(),
+                                    users = arrayListOf(
+                                        RolUser(
+                                            id = CurrentUser.currentUser.id,
+                                            rol = "admin"
+                                        )
+                                    ),
+                                    idOfCourse = ViewModelCourse.selectedCourse.id,
+                                    img = "gs://class-manager-58dbf.appspot.com/user/defaultUserImg.png"
+                                )
 
-                            ViewModelCourse.addNewClass(
-                                composableScope = composableScope,
-                                uploadClass = newClass,
-                                onFinished = {
-                                    reload()
-                                    Log.debug("Se ha creado la clase")
-                                }
-                            )
+                                ViewModelCourse.addNewClass(
+                                    composableScope = composableScope,
+                                    uploadClass = newClass,
+                                    onFinished = {
+                                        reload()
+                                        Log.debug("Se ha creado la clase")
+                                    }
+                                )
+                            }
                         },
                         content = {
                             Text(text = "Crear")

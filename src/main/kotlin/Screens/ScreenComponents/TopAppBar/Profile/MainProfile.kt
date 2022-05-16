@@ -1,13 +1,10 @@
 package Screens.ScreenComponents.TopAppBar.Profile
 
 import ScreenItems.bigTextFieldWithErrorMessage
-import Screens.ScreenComponents.TopAppBar.Profile.ViewModelProfile.Companion.isValidDescription
 import Screens.ScreenItems.longButton
 import Utils.AsyncImage
 import Utils.loadImageBitmap
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -22,14 +19,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
 import data.local.CurrentUser
-import data.remote.appUser
-import java.awt.SystemColor.text
-import java.util.regex.Pattern
 
 @Composable
 fun mainProfile() {
@@ -102,7 +94,8 @@ fun mainProfile() {
                                     changeError = userErrorChange,
                                     error = userError,
                                     mandatory = false,
-                                    KeyboardType = KeyboardType.Text
+                                    KeyboardType = KeyboardType.Text,
+                                    enabled = true
                                 )
                             }
 
@@ -116,7 +109,8 @@ fun mainProfile() {
                                     changeError = descriptionErrorChange,
                                     error = descriptionError,
                                     mandatory = false,
-                                    KeyboardType = KeyboardType.Text
+                                    KeyboardType = KeyboardType.Text,
+                                    enabled = true
                                 )
                             }
 

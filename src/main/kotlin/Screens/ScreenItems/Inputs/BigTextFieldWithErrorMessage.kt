@@ -3,6 +3,7 @@ package ScreenItems
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -24,7 +25,8 @@ fun bigTextFieldWithErrorMessage(
     changeError: (Boolean) -> Unit,
     error: Boolean,
     mandatory: Boolean,
-    KeyboardType : KeyboardType
+    KeyboardType : KeyboardType,
+    enabled: Boolean
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceAround,
@@ -33,6 +35,7 @@ fun bigTextFieldWithErrorMessage(
             .padding(PaddingValues(start = 40.dp, end = 40.dp)),
         content = {
             OutlinedTextField(
+                enabled = enabled,
                 value = value,
                 onValueChange = {
                     onValueChange(it)
@@ -43,7 +46,6 @@ fun bigTextFieldWithErrorMessage(
                 singleLine = true,
                 isError = error,
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType),
-
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Color.Gray,
                     unfocusedBorderColor = Color.LightGray

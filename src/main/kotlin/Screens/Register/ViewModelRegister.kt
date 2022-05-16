@@ -1,11 +1,13 @@
 package Screens.Register
 
+import Utils.isValidEmail
+import Utils.isValidPassword
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import data.api.ApiServiceAuthentication
 import data.local.NewUser
-import data.remote.appUser
+import data.remote.AppUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -13,11 +15,11 @@ class ViewModelRegister {
     companion object {
         private var errorMessage: String by mutableStateOf ("")
         var createUser = NewUser("","","")
-        var createAppUser = appUser("","","", arrayListOf(), arrayListOf(),"","")
+        var createAppUser = AppUser("","","", arrayListOf(), arrayListOf(),"","")
 
         fun createUserWithEmailAndPassword(
             composableScope: CoroutineScope,
-            onFinish: () -> Unit,
+            onFinish: (Boolean) -> Unit,
             newUser: NewUser
         ) {
             composableScope.launch {
@@ -27,13 +29,28 @@ class ViewModelRegister {
                     val result = apiService.register(newUser)
                     if (result.isSuccessful) {
                         createUser = result.body()!!
-                        onFinish()
-
+                        onFinish(true)
+                    }
+                    else {
+                        onFinish(false)
                     }
                 } catch (e: Exception) {
                     errorMessage = e.message.toString()
                 }
             }
+        }
+
+        fun checkAllValidations(
+            textEmail: String,
+            textPassword: String,
+            checkedStatePrivacyPolicies: Boolean
+        ): Boolean {
+            if (
+                !isValidEmail(text = textEmail) ||
+                !isValidPassword(text = textPassword) ||
+                !checkedStatePrivacyPolicies
+            )  return false
+            return  true
         }
 /*
         private fun setInformationUser(

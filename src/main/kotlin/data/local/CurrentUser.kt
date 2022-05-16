@@ -1,6 +1,5 @@
 package data.local
 
-import Screens.ScreenComponents.TopAppBar.CreateClass.ViewModelCreateClass
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,7 +8,7 @@ import data.api.ApiServiceCourse
 import data.api.ApiServiceUser
 import data.remote.Class
 import data.remote.Course
-import data.remote.appUser
+import data.remote.AppUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -20,12 +19,12 @@ class CurrentUser {
 
         var myCourses: MutableList<Course> = mutableListOf()
         val myClasses: MutableList<Class> = mutableListOf()
-        var currentUser: appUser = appUser("","","", mutableListOf<String>(), arrayListOf<String>(),"","")
+        var currentUser: AppUser = AppUser("","","", mutableListOf<String>(), arrayListOf<String>(),"","")
 
         fun updateCurrentUser(
             composableScope: CoroutineScope,
             onFinished: () -> Unit,
-            updateUser: appUser
+            updateUser: AppUser
         ) {
             composableScope.launch {
                 val apiService = ApiServiceUser.getInstance()

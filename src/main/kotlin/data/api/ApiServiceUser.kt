@@ -1,6 +1,6 @@
 package data.api
 
-import data.remote.appUser
+import data.remote.AppUser
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -9,22 +9,22 @@ import retrofit2.http.*
 interface ApiServiceUser {
 
     @GET("users")
-    suspend fun getUsers() : Response<List<appUser>>
+    suspend fun getUsers() : Response<List<AppUser>>
 
     @GET("user/{id}")
     suspend fun getUserById(
         @Path("id") id: String
-    ): Response<appUser>
+    ): Response<AppUser>
 
     @POST("user")
     suspend fun postUser(
-        @Body newUser: appUser
-    ): Response<appUser>
+        @Body newUser: AppUser
+    ): Response<AppUser>
 
     @PUT("user")
     suspend fun putUser(
-        @Body newUser: appUser
-    ): Response<appUser>
+        @Body newUser: AppUser
+    ): Response<AppUser>
 
     companion object {
         private var apiService: ApiServiceUser? = null

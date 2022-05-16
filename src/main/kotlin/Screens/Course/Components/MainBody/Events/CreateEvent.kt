@@ -3,9 +3,7 @@ package Screens.Course.Components.MainBody.Events
 import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.Course.ViewModelCourse
 import Screens.Course.Components.MainBody.Events.Items.dropDownMenuClass
-import Utils.isAlphabetic
-import Utils.isDate
-import Utils.isTime
+import Utils.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -24,21 +22,17 @@ fun createEvent(
     //Texts
     var (textName,onValueChangeNameText) = remember{ mutableStateOf("") }
     var (nameError,nameErrorChange) = remember { mutableStateOf(false) }
-    val messageNameClassError by remember { mutableStateOf("El nombre debe de contener únicamente caracteres alfabeticos") }
 
     var (textDate,onValueChangeDateText) = remember{ mutableStateOf("") }
     var (dateError,dateErrorChange) = remember { mutableStateOf(false) }
-    val messageDateClassError by remember { mutableStateOf("La fecha debe seguir el siguiente formato: dd/mm/yyyy") }
 
     var (textStartTime,onValueChangeStartTimeText) = remember{ mutableStateOf("") }
     var (startTimeError,startTimeErrorChange) = remember { mutableStateOf(false) }
-    val messageStartTimeClassError by remember { mutableStateOf("Las horas deben seguir el siguente formato: hh:mm") }
 
     var (textFinalTime,onValueChangeFinalTimeText) = remember{ mutableStateOf("") }
     var (finalTimeError,finalTimeErrorChange) = remember { mutableStateOf(false) }
-    val messageFinalTimeClassError by remember { mutableStateOf("Las horas deben seguir el siguente formato: hh:mm") }
 
-    var textClasses by remember{ mutableStateOf(Class("","","", arrayListOf(), arrayListOf(),"")) }
+    var textClasses by remember{ mutableStateOf(Class("","","", arrayListOf(), arrayListOf(),"","")) }
 
 
     //Help variables
@@ -67,12 +61,13 @@ fun createEvent(
                 text = "Nombre del evento",
                 value = textName,
                 onValueChange = onValueChangeNameText,
-                validateError = ::isAlphabetic,
-                errorMessage = messageNameClassError,
+                validateError = { isValidName(it) },
+                errorMessage = CommonErrors.notValidName,
                 changeError = nameErrorChange,
                 error = nameError,
                 mandatory = true,
-                KeyboardType = KeyboardType.Text
+                KeyboardType = KeyboardType.Text,
+                enabled = true
             )
 
             bigTextFieldWithErrorMessage(
@@ -80,11 +75,12 @@ fun createEvent(
                 value = textDate,
                 onValueChange = onValueChangeDateText,
                 validateError = ::isDate,
-                errorMessage = messageDateClassError,
+                errorMessage = CommonErrors.notValidDate,
                 changeError = dateErrorChange,
                 error = dateError,
                 mandatory = true,
-                KeyboardType = KeyboardType.Text
+                KeyboardType = KeyboardType.Text,
+                enabled = true
             )
 
             bigTextFieldWithErrorMessage(
@@ -92,11 +88,12 @@ fun createEvent(
                 value = textStartTime,
                 onValueChange = onValueChangeStartTimeText,
                 validateError = ::isTime,
-                errorMessage = messageStartTimeClassError,
+                errorMessage = CommonErrors.notValidTime,
                 changeError = startTimeErrorChange,
                 error = startTimeError,
                 mandatory = true,
-                KeyboardType = KeyboardType.Text
+                KeyboardType = KeyboardType.Text,
+                enabled = true
             )
 
             bigTextFieldWithErrorMessage(
@@ -104,11 +101,12 @@ fun createEvent(
                 value = textFinalTime,
                 onValueChange = onValueChangeFinalTimeText,
                 validateError = ::isTime,
-                errorMessage = messageFinalTimeClassError,
+                errorMessage = CommonErrors.notValidTime,
                 changeError = finalTimeErrorChange,
                 error = finalTimeError,
                 mandatory = true,
-                KeyboardType = KeyboardType.Text
+                KeyboardType = KeyboardType.Text,
+                enabled = true
             )
 
             Spacer(modifier = Modifier.padding(8.dp))
@@ -124,24 +122,25 @@ fun createEvent(
                     .fillMaxWidth()
                     .padding(PaddingValues(start = 40.dp, end = 40.dp)),
                 onClick = {
-                    val newEvent = Event(
-                        id = "",
-                        idOfCourse = ViewModelCourse.selectedCourse.id,
-                        name = textName,
-                        nameOfClass = textClasses.name,
-                        finalTime = textFinalTime,
-                        initialTime = textStartTime,
-                        date = textDate
-                    )
+                    if(isValidName(textName) && isDate(textDate) && isTime(textFinalTime) && isTime(textStartTime)) {
+                        val newEvent = Event(
+                            id = "",
+                            idOfCourse = ViewModelCourse.selectedCourse.id,
+                            name = textName,
+                            nameOfClass = textClasses.name,
+                            finalTime = textFinalTime,
+                            initialTime = textStartTime,
+                            date = textDate
+                        )
 
-                    ViewModelCourse.addNewEvent(
-                        composableScope = composableScope,
-                        newEvent = newEvent,
-                        onFinished = {
-                            onCloseRequest()
-                        }
-                    )
-
+                        ViewModelCourse.addNewEvent(
+                            composableScope = composableScope,
+                            newEvent = newEvent,
+                            onFinished = {
+                                onCloseRequest()
+                            }
+                        )
+                    }
 
                 },
                 content = {

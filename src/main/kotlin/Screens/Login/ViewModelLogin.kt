@@ -2,13 +2,11 @@ package Screens.Login
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import auth.FirebaseAuth
 import data.api.ApiServiceAuthentication
 import data.api.ApiServiceUser
 import data.local.CurrentUser
-import data.remote.appUser
+import data.remote.AppUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
@@ -18,7 +16,7 @@ class ViewModelLogin {
 
 
         private var errorMessage: String by mutableStateOf ("")
-        var user: appUser by mutableStateOf(appUser("","","", arrayListOf(), arrayListOf(),"",""))
+        var user: AppUser by mutableStateOf(AppUser("","","", arrayListOf(), arrayListOf(),"",""))
 
         fun sendEmailToChangePassword(
             composableScope: CoroutineScope,
@@ -42,7 +40,7 @@ class ViewModelLogin {
 
         fun getCurrentUser(
             composableScope: CoroutineScope,
-            onFinished: () -> Unit,
+            onFinished: (Boolean) -> Unit,
             idOfUser: String
         ) {
 
@@ -56,9 +54,12 @@ class ViewModelLogin {
                         CurrentUser.updateDates(
                             composableScope = composableScope,
                             onFinished = {
-                              onFinished()
+                              onFinished(true)
                             }
                         )
+                    }
+                    else {
+                        onFinished(false)
                     }
                 } catch (e: Exception) {
                     errorMessage = e.message.toString()

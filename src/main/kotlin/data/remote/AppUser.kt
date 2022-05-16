@@ -1,6 +1,6 @@
 package data.remote
 
-data class appUser (
+data class AppUser (
     val email: String,
     var imgPath: String,
     var name: String,

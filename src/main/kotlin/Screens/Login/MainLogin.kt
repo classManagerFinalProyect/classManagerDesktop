@@ -1,17 +1,23 @@
 package Screens.Login
 
 import ScreenItems.bigPasswordInput
+import ScreenItems.bigPasswordInputWithErrorMessage
+import Screens.ScreenItems.Dialogs.loadingDialog
+import Screens.ScreenItems.Others.floatToast
+import Utils.CommonErrors
 import Utils.LazyGridFor
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import Utils.isValidEmail
+import Utils.isValidPassword
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -23,6 +29,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
@@ -35,12 +43,30 @@ fun MainLogin(
 
     //Help variables
     val composableScope = rememberCoroutineScope()
+    var showToast = remember { mutableStateOf(false) }
+    var textToast = remember { mutableStateOf("") }
+    var loading = remember { mutableStateOf(false) }
 
     //Texts
     var emailText by remember{ mutableStateOf("test@gmail.com") }
-    var passwordText by remember{ mutableStateOf("") }
+    var passwordText by remember{ mutableStateOf("11111111") }
     var passwordError by remember { mutableStateOf(false) }
     var textValue by remember { mutableStateOf(TextFieldValue()) }
+
+    LaunchedEffect(showToast.value) {
+        if (showToast.value) {
+            delay(1800L)
+            showToast.value = false
+        }
+    }
+
+    if(loading.value) {
+        loadingDialog(
+            loading = loading,
+            informativeText = "Iniciando sesión"
+        )
+    }
+
 
 
     Column(
@@ -63,6 +89,14 @@ fun MainLogin(
                                     Text(text = "Login")
                                 },
                             )
+                        },
+                        floatingActionButton = {
+                            if(showToast.value) {
+                                floatToast(
+                                    message = textToast.value,
+                                    showToast = showToast
+                                )
+                            }
                         },
                         content = {
 
@@ -120,12 +154,15 @@ fun MainLogin(
 
                                     item {
 
-                                        bigPasswordInput(
+                                        bigPasswordInputWithErrorMessage(
                                             value = passwordText,
-                                            onValueChangeValue = {  passwordText = it},
+                                            onValueChangeValue = { passwordText = it },
                                             valueError = passwordError,
-                                            onValueChangeError = { passwordError = it},
-                                            validateError = ::isValidPassword
+                                            onValueChangeError = { passwordError = it },
+                                            errorMessage = CommonErrors.notValidPassword,
+                                            validateError = { isValidPassword(it) },
+                                            mandatory = false,
+                                            keyboardType = KeyboardType.Text,
                                         )
                                     }
                                     item {
@@ -134,13 +171,29 @@ fun MainLogin(
                                                 Text(text = "Iniciar sesión")
                                             },
                                             onClick = {
-                                                ViewModelLogin.getCurrentUser(
-                                                    composableScope = composableScope,
-                                                    idOfUser = "wGJ3ViLAKuPYGMhm2mM2B5dAT6u2",
-                                                    onFinished = {
-                                                        onLoginClick()
-                                                    },
-                                                )
+                                                if(isValidPassword(passwordText) && isValidEmail(emailText)) {
+                                                    loading.value = true
+                                                    ViewModelLogin.getCurrentUser(
+                                                        composableScope = composableScope,
+                                                        idOfUser = "N5LgCdejDJfRcmePyLhhNv0Ds8n1",
+                                                        onFinished = {
+                                                            if(it) {
+                                                                loading.value = false
+                                                                onLoginClick()
+                                                            }
+                                                            else{
+                                                                loading.value = false
+                                                                textToast.value = "No se ha podido logear correctamente"
+                                                                showToast.value = true
+                                                            }
+                                                        },
+                                                    )
+                                                }
+                                                else {
+                                                    textToast.value = CommonErrors.incompleteFields
+                                                    showToast.value = true
+                                                }
+
 
                                             },
                                             modifier = Modifier
@@ -207,7 +260,3 @@ fun MainLogin(
     )
 
 }
-
-//Validaciones
-fun isValidPassword(text: String) = Pattern.compile("^[a-zA-Z0-9_]{8,}\$", Pattern.CASE_INSENSITIVE).matcher(text).find()
-fun test(text: String) = Pattern.compile("(\\d{2})[.:](\\d{2})[.:](\\d{2})[.](\\d{1,10})([+-]\\d{2}:?\\d{2}|Z)?", Pattern.CASE_INSENSITIVE).matcher(text).find()

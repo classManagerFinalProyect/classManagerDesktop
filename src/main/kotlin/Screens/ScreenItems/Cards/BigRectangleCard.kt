@@ -26,7 +26,6 @@ fun bigRectangleCard(
             .width(350.dp)
             .height(100.dp)
             .clickable {
-                //Navegación
                 onClick()
             },
         shape = RoundedCornerShape(8.dp),

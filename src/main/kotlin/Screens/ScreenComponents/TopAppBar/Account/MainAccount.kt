@@ -2,8 +2,8 @@ package Screens.ScreenComponents.TopAppBar.Account
 
 import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.Register.PrivacyPolicies.MainPrivacyPolicies
-import Screens.Register.PrivacyPolicies.PrivacyPoliciesDialog
 import Screens.ScreenComponents.TopAppBar.Profile.ViewModelProfile
+import Screens.ScreenItems.Dialogs.defaultDialog
 import Screens.ScreenItems.confirmAlertDialog
 import Screens.ScreenItems.longButton
 import Utils.AsyncImage
@@ -25,7 +25,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.WindowPosition
+import androidx.compose.ui.window.rememberDialogState
 import data.local.CurrentUser
 
 @Composable
@@ -65,8 +68,17 @@ fun MainAccount(
     }
 
     if(showPolicy){
-        PrivacyPoliciesDialog(
-            onClose = { showPolicy = false }
+        defaultDialog(
+            onClose = { showPolicy = it },
+            title = "Privacy Policies",
+            state = rememberDialogState(
+                position = WindowPosition(Alignment.Center),
+                size = DpSize(800.dp, 600.dp)
+            ),
+            resizable = false,
+            content = {
+                MainPrivacyPolicies()
+            }
         )
     }
 
@@ -96,7 +108,8 @@ fun MainAccount(
                                     changeError = emailErrorChange,
                                     error = emailError,
                                     mandatory = false,
-                                    KeyboardType = KeyboardType.Text
+                                    KeyboardType = KeyboardType.Text,
+                                    enabled = true
                                 )
                             }
                             item {

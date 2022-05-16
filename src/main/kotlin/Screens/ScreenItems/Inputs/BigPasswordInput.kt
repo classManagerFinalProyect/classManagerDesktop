@@ -12,7 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -56,7 +58,7 @@ fun bigPasswordInput(
                 Icon(
                     painter = vector,
                     contentDescription = description,
-                    modifier = Modifier.size(30.dp)
+                    modifier = Modifier.size(28.dp)
                 )
             }
         },
@@ -69,6 +71,27 @@ fun bigPasswordInput(
             .fillMaxWidth()
             .padding(PaddingValues(start = 40.dp, end = 40.dp))
             .focusRequester(focusRequester)
+            .onPreviewKeyEvent { keyEvent ->
+                when {
+                    (keyEvent.key == Key.DirectionRight) -> {
+                        //  CursorSelectionBehaviour
+                        true
+                    }
+                    (keyEvent.key == Key.DirectionLeft) -> {
+                        TextRange(1, 0)
+                        true
+                    }
+                    (keyEvent.key == Key.Delete && keyEvent.type == KeyEventType.KeyDown) -> {
+                        if (value.isNotEmpty()) onValueChangeValue(value.substring(0, value.length - 1))
+                        true
+                    }
+                    (keyEvent.key == Key.Backspace && keyEvent.type == KeyEventType.KeyDown) -> {
+                        if (value.isNotEmpty()) onValueChangeValue(value.substring(0, value.length - 1))
+                        true
+                    }
+                    else -> false
+                }
+            }
     )
 
 }

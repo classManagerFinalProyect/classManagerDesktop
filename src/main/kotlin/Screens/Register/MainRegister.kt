@@ -2,8 +2,14 @@ package Screens.Register
 
 import ScreenItems.bigPasswordInputWithErrorMessage
 import ScreenItems.bigTextFieldWithErrorMessage
-import Screens.Login.isValidPassword
-import Screens.Register.PrivacyPolicies.PrivacyPoliciesDialog
+import Screens.Register.PrivacyPolicies.MainPrivacyPolicies
+import Screens.Register.ViewModelRegister.Companion.checkAllValidations
+import Screens.ScreenItems.Dialogs.defaultDialog
+import Screens.ScreenItems.Dialogs.loadingDialog
+import Screens.ScreenItems.Others.floatToast
+import Utils.CommonErrors
+import Utils.isValidEmail
+import Utils.isValidPassword
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -18,11 +24,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
 import com.example.classmanagerandroid.Views.Register.labelledCheckbox
 import data.local.NewUser
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
@@ -35,29 +43,53 @@ fun MainRegister(
     //Texts
     var (emailText,onValueChangeEmailText) = remember{ mutableStateOf("test@gmail.com") }
     var (emailError,emailErrorChange) = remember { mutableStateOf(false) }
-    val nameOfEmailError = remember { mutableStateOf("El email no es válido: ejemplo@ejemplo.eje") }
 
     var (passwordText,onValueChangePasswordText) = remember{ mutableStateOf("11111111") }
     var (passwordError,passwordErrorChange) = remember { mutableStateOf(false) }
-    val passwordTextErrorMesaje = remember { mutableStateOf("La contraseña no puede ser inferior a 8 caracteres ni contener caracteres especiales") }
 
     var (repeatPasswordText,onValueChangeRepeatPasswordText) = remember{ mutableStateOf("11111111") }
     var (repeatPasswordError,repeatPasswordErrorChange) = remember { mutableStateOf(false) }
-    val repeatPasswordTextErrorMesaje = remember { mutableStateOf("La contraseña no puede ser inferior a 8 caracteres ni contener caracteres especiales") }
 
     //Help variables
-    val (checkedStatePrivacyPolicies,onValueChangecheckedStatePrivacyPolicies) = remember { mutableStateOf(false) }
-    val scaffoldState = rememberScaffoldState()
-    val snackbarCoroutineScope = rememberCoroutineScope()
+    val (checkedStatePrivacyPolicies,onValueChangecheckedStatePrivacyPolicies) = remember { mutableStateOf(true) }
     val composableScope = rememberCoroutineScope()
     var isOpen by remember { mutableStateOf(false) }
+    var toastMessage = remember { mutableStateOf("") }
+    var showToast = remember { mutableStateOf(false) }
+    var loading = remember { mutableStateOf(false) }
 
 
-    if(isOpen) {
-        PrivacyPoliciesDialog(
-            onClose = { isOpen = it }
+
+    LaunchedEffect(showToast.value) {
+        if (showToast.value) {
+            delay(1800L)
+            showToast.value = false
+        }
+    }
+
+    if(loading.value) {
+        loadingDialog(
+            loading = loading,
+            informativeText = "Creando usuario"
         )
     }
+
+    if(isOpen) {
+        defaultDialog(
+            onClose = { isOpen = it },
+            title = "Privacy Policies",
+            state = rememberDialogState(
+                position = WindowPosition(Alignment.Center),
+                size = DpSize(800.dp, 600.dp)
+            ),
+            resizable = false,
+            content = {
+                MainPrivacyPolicies()
+            }
+        )
+    }
+
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -72,6 +104,14 @@ fun MainRegister(
                     .border(1.dp, Color.LightGray),
                 content = {
                     Scaffold(
+                        floatingActionButton = {
+                            if(showToast.value) {
+                                floatToast(
+                                    message = toastMessage.value,
+                                    showToast = showToast
+                                )
+                            }
+                        },
                         topBar = {
                             TopAppBar(
                                 title = {
@@ -122,12 +162,13 @@ fun MainRegister(
                                                         text = "Email",
                                                         value = emailText,
                                                         onValueChange = onValueChangeEmailText,
-                                                        validateError =  ::isValidEmail,
-                                                        errorMessage = nameOfEmailError.value,
+                                                        validateError = { isValidEmail(it) },
+                                                        errorMessage = CommonErrors.notValidEmail,
                                                         changeError = emailErrorChange,
                                                         error = emailError,
                                                         mandatory = true,
-                                                        KeyboardType = KeyboardType.Text
+                                                        KeyboardType = KeyboardType.Text,
+                                                        enabled = true
                                                     )
                                                 }
 
@@ -137,10 +178,10 @@ fun MainRegister(
                                                         onValueChangeValue = onValueChangePasswordText,
                                                         valueError = passwordError,
                                                         onValueChangeError = passwordErrorChange,
-                                                        errorMesaje = passwordTextErrorMesaje.value,
-                                                        validateError = ::isValidPassword,
+                                                        errorMessage = CommonErrors.notValidPassword,
+                                                        validateError = { isValidPassword(it) },
                                                         mandatory = true,
-                                                        keyboardType = KeyboardType.Text
+                                                        keyboardType = KeyboardType.Text,
                                                     )
                                                 }
                                                 item {
@@ -149,8 +190,8 @@ fun MainRegister(
                                                         onValueChangeValue = onValueChangeRepeatPasswordText,
                                                         valueError = repeatPasswordError,
                                                         onValueChangeError = repeatPasswordErrorChange,
-                                                        errorMesaje = repeatPasswordTextErrorMesaje.value,
-                                                        validateError = ::isValidPassword,
+                                                        errorMessage = CommonErrors.notValidPassword,
+                                                        validateError = { isValidPassword(it) },
                                                         mandatory = true,
                                                         keyboardType = KeyboardType.Text
                                                     )
@@ -177,37 +218,46 @@ fun MainRegister(
                                                             Text(text = "Registrarse")
                                                         },
                                                         onClick = {
-                                                            if (repeatPasswordText.equals(passwordText)) {
-                                                                if (
-                                                                    checkAllValidations(
-                                                                        textEmail = emailText,
-                                                                        textPassword = passwordText,
-                                                                        checkedStatePrivacyPolicies = checkedStatePrivacyPolicies
-                                                                    )
-                                                                ) {
-
-
+                                                            if (
+                                                                checkAllValidations(
+                                                                    textEmail = emailText,
+                                                                    textPassword = passwordText,
+                                                                    checkedStatePrivacyPolicies = checkedStatePrivacyPolicies
+                                                                )
+                                                            ) {
+                                                                if (repeatPasswordText.equals(passwordText)) {
+                                                                    loading.value = true
                                                                     ViewModelRegister.createUserWithEmailAndPassword (
                                                                         composableScope = composableScope,
                                                                         newUser = NewUser("", emailText, passwordText),
                                                                         onFinish = {
+                                                                            if(it) {
+                                                                                loading.value = false
+                                                                                toastMessage.value = "La cuenta se ha creado correctamente"
+                                                                                showToast.value = true
+                                                                                onBack()
+                                                                            }
+                                                                            else {
+                                                                                toastMessage.value = "La cuenta no se ha podido crear correctamente"
+                                                                                showToast.value = true
+                                                                            }
+
+
+                                                                            /*
                                                                             snackbarCoroutineScope.launch {
                                                                                 scaffoldState.snackbarHostState.showSnackbar("La cuenta se ha creado correctamente")
-                                                                            }
+                                                                            }*/
                                                                         }
                                                                     )
-
                                                                 }
                                                                 else {
-                                                                    snackbarCoroutineScope.launch {
-                                                                        scaffoldState.snackbarHostState.showSnackbar("Debes rellenar todos los campos correctamente")
-                                                                    }
+                                                                    toastMessage.value = "Las claves deben ser iguales"
+                                                                    showToast.value = true
                                                                 }
                                                             }
                                                             else {
-                                                                snackbarCoroutineScope.launch {
-                                                                    scaffoldState.snackbarHostState.showSnackbar("Las claves deben ser iguales\"")
-                                                                }
+                                                                toastMessage.value = CommonErrors.incompleteFields
+                                                                showToast.value = true
                                                             }
                                                         },
                                                         modifier = Modifier
@@ -232,22 +282,9 @@ fun MainRegister(
 
 
 
-//Validaciones
-fun isValidEmail(text: String) = Pattern.compile("^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*\$", Pattern.CASE_INSENSITIVE).matcher(text).find()
-fun isValidPassword(text: String) = Pattern.compile("^[a-zA-Z0-9_]{8,}\$", Pattern.CASE_INSENSITIVE).matcher(text).find()
 
-fun checkAllValidations(
-    textEmail: String,
-    textPassword: String,
-    checkedStatePrivacyPolicies: Boolean
-): Boolean {
-    if (
-        !isValidEmail(text = textEmail) ||
-        !isValidPassword(text = textPassword) ||
-        !checkedStatePrivacyPolicies
-    )  return false
-    return  true
-}
+
+
 
 
 

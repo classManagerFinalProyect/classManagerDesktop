@@ -1,16 +1,18 @@
 package Screens.Course
 
+import Screens.Class.Components.editClass
 import Screens.Course.Components.MainBody.ContentState
 import Screens.Course.Components.MainBody.classes
 import Screens.Course.Components.MainBody.events
 import Screens.Course.Components.MainBody.members
+import Screens.Course.Components.editCourse
 import Screens.MainAppScreen.Components.topBar
+import Screens.ScreenComponents.Header.header
+import Screens.ScreenComponents.NavigationBar.navigationBar
 import Screens.theme.blueDesaturated
 import Utils.LazyGridFor
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -18,8 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.remote.Course
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.TextButton
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import data.remote.Class
@@ -38,7 +41,14 @@ fun MainCourse(
 ){
     val composableScope = rememberCoroutineScope()
     var showMainContent by remember { mutableStateOf(false) }
+    var editCourse by remember { mutableStateOf(false) }
 
+    if(editCourse) {
+        editCourse(
+            editCourse = { editCourse = it },
+            onClickBeginning = { onClickBeginning() }
+        )
+    }
 
     LaunchedEffect(getDates) {
         ViewModelCourse.updateContentState(newValue = ContentState.CLASSES)
@@ -90,43 +100,38 @@ fun MainCourse(
                 modifier = Modifier
                     .fillMaxSize(),
                 content = {
-                    Column(
-                        modifier = Modifier
-                            .background(blueDesaturated),
+                    header(
                         content = {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Center,
+                            Image(
+                                painter = painterResource(resourcePath = "books.jpg"),
+                                contentDescription = "logo",
+                                modifier = Modifier.size(100.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(10.dp))
+
+                            Text(
+                                text = selectedCourse.name,
+                                fontSize = 20.sp,
+                                color = Color.White
+                            )
+
+                            IconButton(
+                                onClick = {
+                                    editCourse = true
+                                },
                                 content = {
-                                    Column(
-                                        content =  {
-                                            Row(
-                                                verticalAlignment = Alignment.CenterVertically,
-                                                content = {
-                                                    Image(
-                                                        painter = painterResource(resourcePath = "books.jpg"),
-                                                        contentDescription = "logo",
-                                                        modifier = Modifier.size(100.dp)
-                                                    )
-                                                    Text(
-                                                        text = selectedCourse.name,
-                                                        fontSize = 20.sp,
-                                                        color = Color.White
-                                                    )
-                                                }
-                                            )
-                                        }
+                                    Icon(
+                                        tint = Color.White,
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = "Editar Clase"
                                     )
                                 }
                             )
                         }
                     )
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth(),
-                        content = {
 
+                    navigationBar(
+                        content = {
                             TextButton(
                                 onClick = {
                                     ViewModelCourse.updateContentState(newValue = ContentState.CLASSES)
@@ -153,15 +158,6 @@ fun MainCourse(
                             )
                         }
                     )
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .border(BorderStroke(1.dp, Color.LightGray)),
-                        content = {
-                            Spacer(modifier = Modifier.padding(1.dp))
-                        }
-                    )
-                    Spacer(modifier = Modifier.padding(5.dp))
 
                     Row(
                         horizontalArrangement = Arrangement.Center,

@@ -27,7 +27,6 @@ fun topBar(
     onCloseSession: () -> Unit,
     onChangeGetDates: (Boolean) -> Unit
 ) {
-    var profileIsOpen by remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier
@@ -55,9 +54,18 @@ fun topBar(
                     onClickClass(it)
                 }
             )
+
             dropDownMenuButton(
                 textOfButton = "Nuevo",
-                onChangeGetDates = { onChangeGetDates(it) }
+                onChangeGetDates = {
+                    onChangeGetDates(it)
+                },
+                onCreateClass = {
+                    onClickClass(it)
+                },
+                onCreateCourse = {
+                    onClickCourse(it)
+                }
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,

@@ -1,9 +1,9 @@
 package data.local
 
-import data.remote.appUser
+import data.remote.AppUser
 
 data class UserWithRol(
-    val user: appUser,
+    val user: AppUser,
     var rol: String
 )
 

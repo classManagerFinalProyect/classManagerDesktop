@@ -7,22 +7,3 @@ enum class RolState {
     PARENTS,
     STUDENT
 }
-/*
-        when(rolState) {
-                RolState.ALL ->  {
-
-                }
-                RolState.PARENTS -> {
-
-                }
-                RolState.STUDENT -> {
-
-                }
-                RolState.ADMIN -> {
-
-                }
-                RolState.TEACHER -> {
-
-                }
-            }
- */

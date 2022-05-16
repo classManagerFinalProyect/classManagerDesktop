@@ -3,38 +3,26 @@ package Screens.Course.Components.MainBody
 import Screens.Course.Components.MainBody.Members.RolState
 import Screens.Course.Components.MainBody.Members.addMember
 import Screens.Course.ViewModelCourse
-import Screens.Course.ViewModelCourse.Companion.rolState
+import Screens.MainAppScreen.Items.bigSelectedDropDownMenu
 import Screens.theme.blueDesaturated
-import Utils.LazyGridFor
-import akka.parboiled2.CharPredicate.All
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.*
-import com.example.classmanagerandroid.Views.Course.bigSelectedDropDownMenu
-import data.local.RolUser
 import data.local.UserWithRol
 import data.remote.Course
-import data.remote.appUser
-import kotlinx.coroutines.delay
+import data.remote.AppUser
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -45,7 +33,7 @@ fun members(
     var composableScope = rememberCoroutineScope()
     var deleteUser by remember { mutableStateOf(false) }
     var rolFilter by remember { mutableStateOf("ALL") }
-    var selectedUserWithRol by remember { mutableStateOf(UserWithRol(appUser("","","", arrayListOf(), arrayListOf(),"",""),"")) }
+    var selectedUserWithRol by remember { mutableStateOf(UserWithRol(AppUser("","","", arrayListOf(), arrayListOf(),"",""),"")) }
     val suggestions: MutableList<String> = mutableListOf("admin","profesor","padre","alumno")
 
     var sizeDropMenu by remember { mutableStateOf(IntSize.Zero) }
@@ -333,7 +321,7 @@ fun members(
                                                                         IconButton(
                                                                             onClick = {
                                                                                 deleteUser = true
-                                                                                selectedUserWithRol = it
+                                                                                selectedUserWithRol = item
                                                                             },
                                                                             content = {
                                                                                 Icon(
@@ -358,8 +346,6 @@ fun members(
                                                                     style = MaterialTheme.typography.subtitle1
                                                                 )
                                                             }
-
-
                                                         }
                                                     )
                                                 }
@@ -371,10 +357,6 @@ fun members(
 
                             }
                         )
-
-
-
-
                 }
             )
         }

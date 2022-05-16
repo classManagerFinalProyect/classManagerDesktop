@@ -4,10 +4,7 @@ import data.remote.Class
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface ApiServiceClass {
 
@@ -21,6 +18,16 @@ interface ApiServiceClass {
     suspend fun postClass(
         @Body newClass: Class
     ): Response<Class>
+
+    @PUT("class")
+    suspend fun putClass(
+        @Body newClass: Class
+    ): Response<Class>
+
+    @DELETE("class/{id}")
+    suspend fun deleteClassById(
+        @Path(value = "id") id: String
+    ): Response<Unit>
 
     companion object {
         private var apiService: ApiServiceClass? = null

@@ -2,9 +2,6 @@ package Screens.Course
 
 import Screens.Course.Components.MainBody.ContentState
 import Screens.Course.Components.MainBody.Members.RolState
-import Screens.ScreenComponents.TopAppBar.CreateClass.ViewModelCreateClass
-import Screens.ScreenComponents.TopAppBar.CreateClass.ViewModelCreateClass.Companion.newClass
-import Utils.isDate
 import androidx.compose.runtime.*
 import data.api.ApiServiceClass
 import data.api.ApiServiceCourse
@@ -16,9 +13,8 @@ import data.local.UserWithRol
 import data.remote.Class
 import data.remote.Course
 import data.remote.Event
-import data.remote.appUser
+import data.remote.AppUser
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.skia.impl.Log
 
@@ -28,10 +24,108 @@ class ViewModelCourse {
         var currentClasses: MutableList<Class> = arrayListOf()
         var currentEvents: MutableList<Event> = arrayListOf()
         var currentMembers: MutableList<UserWithRol> = arrayListOf()
-        var selectedCourse : Course = Course(arrayListOf(), arrayListOf(), arrayListOf(),"","","")
-        var newClass = Class("","","", arrayListOf(), arrayListOf(),"")
+        var selectedCourse : Course = Course(arrayListOf(), arrayListOf(), arrayListOf(),"","","","")
+        var newClass = Class("","","", arrayListOf(), arrayListOf(),"","")
 
-        var currentUser: UserWithRol = UserWithRol( appUser("","","", arrayListOf(), arrayListOf(),"",""),"")
+        var currentUser: UserWithRol = UserWithRol( AppUser("","","", arrayListOf(), arrayListOf(),"",""),"")
+
+        fun updateCurrentCourse(
+            composableScope: CoroutineScope,
+            newName: String,
+            newDescription: String,
+            onFinished: () -> Unit
+        ){
+            selectedCourse.name = newName
+            selectedCourse.description = newDescription
+            updateCourse(
+                composableScope = composableScope,
+                updateCourse = selectedCourse,
+                onFinished = {
+                    CurrentUser.updateDates(
+                        composableScope = composableScope,
+                        onFinished = {
+                            onFinished()
+                        }
+                    )
+                }
+            )
+        }
+
+        fun deleteCurrentCourse(
+            composableScope: CoroutineScope,
+            onFinished: () -> Unit
+        ){
+            currentMembers.forEach{
+                it.user.courses.remove(selectedCourse.id)
+                currentClasses.forEach{ currentClass ->
+                    it.user.classes.remove(currentClass.id)
+                    deleteClass(
+                        composableScope = composableScope,
+                        idOfClass = currentClass.id,
+                        onFinished = {
+
+                        }
+                    )
+                }
+
+                updateUser(
+                    composableScope = composableScope,
+                    updateUser = it.user,
+                    onFinished = {
+
+                    }
+                )
+            }
+
+            deleteCourse(
+                composableScope = composableScope,
+                idOfCourse = selectedCourse.id,
+                onFinished = {
+                    CurrentUser.updateDates(
+                        composableScope = composableScope,
+                        onFinished = {
+                            onFinished()
+                        }
+                    )
+                }
+            )
+        }
+
+        fun deleteClass(
+            composableScope: CoroutineScope,
+            idOfClass: String,
+            onFinished: () -> Unit
+        ){
+            composableScope.launch {
+                val apiService = ApiServiceClass.getInstance()
+                try {
+                    val result = apiService.deleteClassById(idOfClass)
+                    if (result.isSuccessful) {
+                        onFinished()
+                    }
+                } catch (e: Exception) {
+                    errorMessage = e.message.toString()
+                }
+            }
+        }
+
+        fun deleteCourse(
+            composableScope: CoroutineScope,
+            idOfCourse: String,
+            onFinished: () -> Unit
+        ) {
+            composableScope.launch {
+                val apiService = ApiServiceCourse.getInstance()
+                try {
+                    val result = apiService.deleteCourseById(idOfCourse)
+                    if (result.isSuccessful) {
+                        onFinished()
+                    }
+                } catch (e: Exception) {
+                    errorMessage = e.message.toString()
+                }
+            }
+        }
 
         fun deleteEvent(
             composableScope: CoroutineScope,
@@ -178,7 +272,7 @@ class ViewModelCourse {
         }
 
        fun updateUser(
-           updateUser: appUser,
+           updateUser: AppUser,
            composableScope: CoroutineScope,
            onFinished: () -> Unit,
        ) {
@@ -202,7 +296,7 @@ class ViewModelCourse {
         fun changeRol(
             composableScope: CoroutineScope,
             newRol: String,
-            appUser: appUser,
+            appUser: AppUser,
             onFinished: () -> Unit,
         ) {
             var deleteRolUser = RolUser("","")
@@ -213,6 +307,14 @@ class ViewModelCourse {
             }
             selectedCourse.users.remove(deleteRolUser)
             selectedCourse.users.add(RolUser(appUser.id,newRol))
+            changeRolInCurrentClasses(
+                composableScope = composableScope,
+                newRolUser =  newRol,
+                appUser = appUser,
+                onFinished = {
+
+                }
+            )
 
             updateCourse(
                 updateCourse = selectedCourse,
@@ -222,6 +324,33 @@ class ViewModelCourse {
                 }
             )
         }
+
+        fun changeRolInCurrentClasses(
+            composableScope: CoroutineScope,
+            newRolUser: String,
+            appUser: AppUser,
+            onFinished: () -> Unit
+        ) {
+            var deleteRolUser = RolUser("","")
+
+            currentClasses.forEach {
+                it.users.forEach{ rolUser ->
+                    if(rolUser.id  == appUser.id) {
+                        deleteRolUser = rolUser
+                    }
+                }
+                it.users.remove(deleteRolUser)
+                it.users.add(RolUser(appUser.id, newRolUser))
+                updateClass(
+                    composableScope = composableScope,
+                    updateClass = it,
+                    onFinished = {
+                        onFinished()
+                    }
+                )
+            }
+        }
+
 
         fun updateCourse(
            updateCourse: Course,
@@ -261,16 +390,27 @@ class ViewModelCourse {
                         if (result.isSuccessful) {
                             val newUser = result.body()!!
                             newUser.courses.add(selectedCourse.id)
+                            
+                            currentClasses.forEach { newClass ->
+                                newUser.classes.add(newClass.id)
+                            }
 
                             updateUser(
                                 composableScope = composableScope,
                                 updateUser = newUser,
                                 onFinished =  {
-                                    selectedCourse.users.add(
-                                        RolUser(
-                                            id  = idOfUser,
-                                            rol = rol
-                                        )
+                                    val newRolUser = RolUser(
+                                        id  = idOfUser,
+                                        rol = rol
+                                    )
+
+                                    selectedCourse.users.add(newRolUser)
+                                    addNewMemberInCLasses(
+                                        composableScope = composableScope,
+                                        rolUser = newRolUser ,
+                                        onFinished = {
+
+                                        }
                                     )
                                     updateCourse(
                                         composableScope = composableScope,
@@ -292,6 +432,43 @@ class ViewModelCourse {
                 }
             }
 
+        }
+
+        fun addNewMemberInCLasses(
+            composableScope: CoroutineScope,
+            onFinished: () -> Unit,
+            rolUser: RolUser
+        ){
+            currentClasses.forEach{
+                it.users.add(rolUser)
+
+                updateClass(
+                    composableScope = composableScope,
+                    updateClass = it,
+                    onFinished = {
+                        onFinished()
+                    }
+                )
+            }
+
+        }
+        fun updateClass(
+            composableScope: CoroutineScope,
+            updateClass: Class,
+            onFinished: () -> Unit,
+        ) {
+            composableScope.launch {
+                val apiService = ApiServiceClass.getInstance()
+
+                try {
+                    val result = apiService.putClass(updateClass)
+                    if (result.isSuccessful) {
+                        onFinished()
+                    }
+                } catch (e: Exception) {
+                    errorMessage = e.message.toString()
+                }
+            }
         }
 
         fun updateEvent(
@@ -358,6 +535,13 @@ class ViewModelCourse {
             selectedCourse.users.forEach { if (it.id == user.user.id) deleteRolUser = it }
             selectedCourse.users.remove(deleteRolUser)
 
+            deleteUserInCurrentClasses(
+                composableScope = composableScope,
+                userRol = deleteRolUser,
+                onFinished = {
+
+                }
+            )
             updateCourse(
                 composableScope = composableScope,
                 updateCourse = selectedCourse,
@@ -372,6 +556,24 @@ class ViewModelCourse {
                     )
                 }
             )
+        }
+
+        fun deleteUserInCurrentClasses(
+            composableScope: CoroutineScope,
+            onFinished: () -> Unit,
+            userRol: RolUser
+        ){
+            currentClasses.forEach{
+                it.users.remove(userRol)
+
+                updateClass(
+                    composableScope = composableScope,
+                    updateClass = it,
+                    onFinished = {
+                       onFinished()
+                    }
+                )
+            }
         }
 
         fun getCurrentMembers(

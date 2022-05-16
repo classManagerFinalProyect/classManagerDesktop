@@ -1,12 +1,12 @@
 package data.api
 
+import data.remote.Chat
 import data.remote.Course
 import data.remote.Practice
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface ApiServicePractice {
 
@@ -14,6 +14,16 @@ interface ApiServicePractice {
     suspend fun getPracticeById(
         @Path("id") id: String
     ): Response<Practice>
+
+    @POST("practice")
+    suspend fun postPractice(
+        @Body newPractice: Practice
+    ): Response<Practice>
+
+    @DELETE("practice/{id}")
+    suspend fun deletePracticeById(
+        @Path(value = "id") id: String
+    ): Response<Unit>
 
     companion object {
         private var apiService: ApiServicePractice? = null

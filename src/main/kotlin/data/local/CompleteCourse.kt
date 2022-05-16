@@ -7,5 +7,6 @@ data class CompleteCourse(
     val events: MutableList<String>,
     val name: String,
     val description: String,
-    var id: String
+    var id: String,
+    val img: String
 )

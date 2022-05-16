@@ -1,9 +1,12 @@
 package Screens.MainAppScreen
 
-import Screens.Course.Components.MainBody.ContentState
 import Screens.Course.ViewModelCourse
+import Screens.MainAppScreen.Components.ContentState
+import Screens.MainAppScreen.Components.MainBody.myClasses
+import Screens.MainAppScreen.Components.MainBody.myCourses
 import Screens.MainAppScreen.Components.topBar
 import Screens.MainAppScreen.Items.rectangleCard
+import Screens.theme.blue
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,6 +27,7 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,7 +42,6 @@ import data.remote.Class
 fun MainAppScreen(
     onClickCourse: (Course) -> Unit ,
     onClickClass: (Class) -> Unit ,
-    onBack: () -> Unit,
     onClickBeginning: () -> Unit,
     onCloseSession: () -> Unit,
     getDates: Boolean,
@@ -57,12 +60,19 @@ fun MainAppScreen(
 
     LaunchedEffect(getDates) {
         if (getDates) {
+            ViewModelMainAppScreen.updateContentState(ContentState.COURSE)
+
             ViewModelMainAppScreen.getCompleteCourses(
                 composableScope = composableScope,
                 allCourses = CurrentUser.myCourses,
                 onFinished = {
                     onChangeGetDates(false)
                 }
+            )
+            ViewModelMainAppScreen.getCompleteClasses(
+                composableScope = composableScope,
+                allClasses = CurrentUser.myClasses,
+                onFinished = {}
             )
         }
     }
@@ -89,88 +99,124 @@ fun MainAppScreen(
                         .fillMaxWidth(0.9f)
                         .fillMaxHeight(0.9f),
                     content = {
+
                         Row(
                             modifier = Modifier.padding(PaddingValues(start = 50.dp, end = 50.dp)),
                             content = {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .width(400.dp)
-                                        .padding(PaddingValues(30.dp))
-                                        .border(BorderStroke(1.dp,Color.LightGray)),
+                                Column (
                                     content = {
-                                        /*
-                                        Text(text = "${CurrentUser.currentUser.name.uppercase()}")
-                                        Text(text = CurrentUser.currentUser.email)
-                                        */
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(30.dp)
-                                                .clickable {
-                                                    clipboardManager.setText(
-                                                        AnnotatedString(text = "${CurrentUser.currentUser.id}")
-                                                    )
-                                                    //Toast
-                                                },
+                                        Column(
+                                            modifier = Modifier.fillMaxHeight(0.1f),
                                             content = {
-                                                Text(text = "#${CurrentUser.currentUser.id}")
-                                                Spacer(modifier = Modifier.padding(4.dp))
 
-                                                Icon(
-                                                    painter = painterResource(resourcePath = "content_copy_black.png"),
-                                                    contentDescription = "Copiar"
-                                                )
                                             }
                                         )
-                                        val icon = if (expanded)
-                                            Icons.Filled.KeyboardArrowUp
-                                        else
-                                            Icons.Filled.KeyboardArrowDown
-
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.Start,
-                                            modifier = Modifier.fillMaxWidth(),
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxHeight()
+                                                .fillMaxWidth(0.2f)
+                                                .padding(PaddingValues(start = 30.dp)),
+                                                //.border(BorderStroke(1.dp,Color.LightGray)),
                                             content = {
-                                                Text(text = "Cursos:")
-                                                IconButton(
+
+
+                                                TextButton(
                                                     onClick = {
-                                                        expanded = !expanded
+                                                        ViewModelMainAppScreen.updateContentState(ContentState.COURSE)
                                                     },
                                                     content = {
-                                                        Icon(
-                                                            imageVector =  icon,
-                                                            contentDescription = "arrowExpanded",
+                                                        Text(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            text =  "Ver mis cursos",
+                                                            textAlign = TextAlign.Start
                                                         )
                                                     }
                                                 )
-                                            }
-                                        )
 
-                                        if(expanded) {
-                                            CurrentUser.myCourses.forEach {
-                                                TextButton (
+                                                TextButton(
                                                     onClick = {
-                                                        //Navegar al seleccionado
+                                                          ViewModelMainAppScreen.updateContentState(ContentState.CLASS)
                                                     },
                                                     content = {
-                                                        Text(text = "Course --- ${it.name}")
+                                                        Text(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            text =  "Ver mis clases",
+                                                            textAlign = TextAlign.Start
+                                                        )
                                                     }
                                                 )
+
+                                                val icon = if (expanded)
+                                                    Icons.Filled.KeyboardArrowUp
+                                                else
+                                                    Icons.Filled.KeyboardArrowDown
+
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.Start,
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    content = {
+                                                        TextButton(
+                                                            onClick = {
+                                                                expanded = !expanded
+                                                            },
+                                                            content = {
+                                                                Row(
+                                                                    modifier = Modifier.fillMaxWidth(),
+                                                                    verticalAlignment = Alignment.CenterVertically,
+                                                                    horizontalArrangement = Arrangement.Start,
+                                                                    content = {
+                                                                        Text(
+                                                                            text = "Mostrar mi ID",
+                                                                            textAlign = TextAlign.Start
+                                                                        )
+                                                                        Spacer(modifier = Modifier.padding(5.dp))
+                                                                        Icon(
+                                                                            imageVector =  icon,
+                                                                            contentDescription = "arrowExpanded",
+                                                                            tint = blue
+                                                                        )
+                                                                    }
+                                                                )
+                                                            }
+                                                        )
+                                                    }
+                                                )
+
+                                                if(expanded) {
+                                                    Row(
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .height(35.dp)
+                                                            .clickable {
+                                                                clipboardManager.setText(
+                                                                    AnnotatedString(text = "${CurrentUser.currentUser.id}")
+                                                                )
+                                                            },
+                                                        content = {
+
+                                                            Text(
+                                                                text = "#${CurrentUser.currentUser.id}",
+                                                            )
+                                                            Spacer(modifier = Modifier.padding(4.dp))
+
+                                                            Icon(
+                                                                painter = painterResource(resourcePath = "content_copy_black.png"),
+                                                                contentDescription = "Copiar"
+                                                            )
+                                                        }
+                                                    )
+                                                }
                                             }
-                                        }
+                                        )
 
                                     }
                                 )
 
 
 
-
-
-
-
+                                val contentState by ViewModelMainAppScreen.contentState
 
                                 Column(
                                     modifier = Modifier
@@ -178,99 +224,14 @@ fun MainAppScreen(
                                         .fillMaxWidth()
                                         .padding(PaddingValues(30.dp)),
                                     content = {
-                                        Text(
-                                            text = "Cursos en los que participas",
-                                            fontSize = 25.sp,
-                                            color = Color.LightGray,
-                                            textAlign = TextAlign.Center,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(PaddingValues(top = 10.dp, bottom = 20.dp))
+                                        mainContent(
+                                            contentState = contentState,
+                                            getDates = getDates,
+                                            onClickCourse = { onClickCourse(it) },
+                                            onClickClass = { onClickClass(it) }
                                         )
-
-                                        if(!getDates) {
-                                            LazyColumn(
-                                                content = {
-                                                    itemsIndexed(ViewModelMainAppScreen.completeCourses) { index, item ->
-                                                        Card(
-                                                            elevation = 3.dp,
-                                                            shape = RoundedCornerShape(4.dp),
-                                                            modifier = Modifier
-                                                                .clickable {
-                                                                    var listOfClassesIds: MutableList<String> = arrayListOf()
-                                                                    item.classes.forEach { listOfClassesIds.add(it.id)}
-                                                                    var selectedCourse = Course(
-                                                                        users = item.users,
-                                                                        classes = listOfClassesIds,
-                                                                        events = item.events,
-                                                                        name = item.name,
-                                                                        description = item.description,
-                                                                         id = item.id
-                                                                    )
-                                                                    onClickCourse(selectedCourse)
-                                                               },
-                                                            content = {
-
-                                                                Column(
-                                                                    modifier = Modifier
-                                                                        .fillMaxWidth()
-                                                                        .padding(PaddingValues(all = 20.dp)),
-                                                                    horizontalAlignment = Alignment.Start,
-                                                                    content = {
-                                                                        Row(
-                                                                            modifier = Modifier
-                                                                                .fillMaxWidth()
-                                                                                .padding(bottom = 10.dp),
-                                                                            content = {
-                                                                                Column(
-                                                                                    horizontalAlignment = Alignment.Start,
-                                                                                    content = {
-                                                                                        Text(text = "Curso: ${item.name}")
-
-                                                                                    }
-                                                                                )
-                                                                                Column(
-                                                                                    horizontalAlignment = Alignment.End,
-                                                                                    content = {
-                                                                                        Text(text = "Número de clases: ${item.classes.size}")
-                                                                                    }
-                                                                                )
-                                                                            }
-                                                                        )
-
-                                                                        Box(
-                                                                            modifier = Modifier
-                                                                                .fillMaxWidth(),
-                                                                            content = {
-                                                                                LazyRow(
-                                                                                    content = {
-
-                                                                                        this.itemsIndexed(item.classes){ index, item ->
-                                                                                            rectangleCard(
-                                                                                                title = item.name,
-                                                                                                subtitle = "Subtitle",
-                                                                                                onClick = { onClickClass(item) }
-                                                                                            )
-                                                                                        }
-
-                                                                                    }
-                                                                                )
-                                                                            }
-                                                                        )
-                                                                    }
-                                                                )
-
-                                                            }
-                                                        )
-                                                        Spacer(modifier = Modifier.padding(20.dp))
-                                                    }
-                                                }
-                                            )
-                                        }
-
                                     }
                                 )
-
 
                             }
                         )
@@ -278,5 +239,26 @@ fun MainAppScreen(
                 )
             }
         )
+}
+
+@Composable
+private fun mainContent(
+    contentState: ContentState,
+    getDates: Boolean,
+    onClickCourse: (Course) -> Unit,
+    onClickClass: (Class) -> Unit
+){
+    when(contentState){
+        ContentState.CLASS -> myClasses(
+            getDates = getDates,
+            onClickClass = { onClickClass(it) }
+        )
+
+        ContentState.COURSE -> myCourses(
+            getDates = getDates,
+            onClickCourse = { onClickCourse(it) },
+            onClickClass = { onClickClass(it) }
+        )
+    }
 
 }

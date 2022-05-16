@@ -18,7 +18,6 @@ fun confirmAlertDialog(
 ) {
 
     Column(
-
         content = {
             AlertDialog(
                 modifier = Modifier

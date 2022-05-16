@@ -1,5 +1,6 @@
 package Screens.MainAppScreen.Items
 
+import akka.http.scaladsl.model.headers.LinkParams
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -59,7 +60,7 @@ fun rectangleCard(
                             )
                             Spacer(modifier = Modifier.padding(4.dp))
 
-                            Row (//Email
+                            Row (
                                 content = {
                                     Icon(
                                         painter = painterResource(resourcePath = "task_black.png"),

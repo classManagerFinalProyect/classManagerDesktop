@@ -1,2 +1,0 @@
-package Screens.Course.Components
-

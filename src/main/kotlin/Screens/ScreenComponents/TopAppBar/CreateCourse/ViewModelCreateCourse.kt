@@ -15,11 +15,11 @@ import kotlinx.coroutines.launch
 class ViewModelCreateCourse {
     companion object {
         private var errorMessage: String by mutableStateOf ("")
-        var newCourse = Course(arrayListOf(), arrayListOf(), arrayListOf(),"","","")
+        var newCourse = Course(arrayListOf(), arrayListOf(), arrayListOf(),"","","","")
 
         fun createNewCourse(
             composableScope: CoroutineScope,
-            onFinished: () -> Unit,
+            onFinished: (Course) -> Unit,
             uploadCourse: Course
         ) {
             //Tener en cuenta q no lo puedes asignar por defecto a un curso
@@ -38,7 +38,7 @@ class ViewModelCreateCourse {
                                 CurrentUser.updateDates(
                                     composableScope = composableScope,
                                     onFinished = {
-                                        onFinished()
+                                        onFinished(newCourse)
                                     }
                                 )
                             }

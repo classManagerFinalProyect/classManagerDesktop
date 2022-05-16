@@ -1,8 +1,7 @@
 package Screens.ScreenComponents.TopAppBar.CreateClass
 
 import ScreenItems.bigTextFieldWithErrorMessage
-import Utils.isAlphabetic
-import Utils.isAlphanumeric
+import Utils.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -20,13 +19,15 @@ import org.jetbrains.skia.impl.Log
 
 @Composable
 fun mainCreateClass(
-    onClickCancel: () -> Unit
+    onClickCancel: () -> Unit,
+    onCreateClass: (Class) -> Unit
 ){
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxHeight()
+            .width(470.dp),
         content = {
 
             //Help variables
@@ -54,34 +55,29 @@ fun mainCreateClass(
                 text = "Nombre de la clase",
                 value = textName,
                 onValueChange = onValueChangeNameText,
-                validateError = ::isAlphabetic,
-                errorMessage = messageNameClassError,
+                validateError = { isValidName(it) },
+                errorMessage = CommonErrors.notValidName,
                 changeError = nameErrorChange,
                 error = nameError,
                 mandatory = true,
-                KeyboardType = KeyboardType.Text
+                KeyboardType = KeyboardType.Text,
+                enabled = true
             )
+
             Spacer(modifier = Modifier.padding(5.dp))
 
             bigTextFieldWithErrorMessage(
                 text = "Descripción de la clase",
                 value = textDescription,
                 onValueChange = onValueChangeDescriptionText,
-                validateError = ::isAlphanumeric,
-                errorMessage = messageDescriptionError,
+                validateError = { isValidDescription(it) },
+                errorMessage = CommonErrors.notValidDescription,
                 changeError = nameDescriptionErrorChange,
                 error = nameDescriptionError,
                 mandatory = false,
-                KeyboardType = KeyboardType.Text
+                KeyboardType = KeyboardType.Text,
+                enabled = true
             )
-            /*
-            selectedDropDownMenuCurseItem(
-                textOfRow = "Curso",
-                suggestions = CurrentUser.myCourses,
-                onValueChangeTextSelectedItem = onValueChangeItemSelectedCurse
-            )
-            */
-
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -116,27 +112,32 @@ fun mainCreateClass(
                         modifier = Modifier
                             .padding(start = 10.dp, end = 20.dp),
                         onClick = {
-                          val newClass = Class(
-                               id = "",
-                             name = textName,
-                             description = textDescription,
-                             idPractices = arrayListOf(),
-                             users = arrayListOf(
-                                 RolUser(
-                                     id = CurrentUser.currentUser.id,
-                                     rol = "admin"
-                                 )
-                             ),
-                             idOfCourse = "Sin Asignar"
-                          )
+                            if(isValidDescription(textDescription) && isValidName(textName)) {
+                                val newClass = Class(
+                                    id = "",
+                                    name = textName,
+                                    description = textDescription,
+                                    idPractices = arrayListOf(),
+                                    users = arrayListOf(
+                                        RolUser(
+                                            id = CurrentUser.currentUser.id,
+                                            rol = "admin"
+                                        )
+                                    ),
+                                    idOfCourse = "Sin Asignar",
+                                    img = "gs://class-manager-58dbf.appspot.com/user/defaultUserImg.png"
+                                )
 
-                            ViewModelCreateClass.createNewClass(
-                                composableScope = composableScope,
-                                uploadClass = newClass,
-                                onFinished = {
-                                    Log.debug("Se ha creado una clase")
-                                }
-                            )
+                                ViewModelCreateClass.createNewClass(
+                                    composableScope = composableScope,
+                                    uploadClass = newClass,
+                                    onFinished = {
+                                        onCreateClass(it)
+                                        Log.debug("Se ha creado una clase")
+                                    }
+                                )
+                            }
+
                         },
                         content = {
                             Text(text = "Crear")

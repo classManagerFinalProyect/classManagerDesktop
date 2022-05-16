@@ -2,7 +2,6 @@ package Screens.Login.ForgotPassword
 
 import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.Login.ViewModelLogin
-import Screens.Register.isValidEmail
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -86,8 +85,10 @@ fun MainForgotPassword(
                                         changeError = emailErrorChange,
                                         error = emailError,
                                         mandatory = true,
-                                        KeyboardType = KeyboardType.Text
+                                        KeyboardType = KeyboardType.Text,
+                                        enabled = true
                                     )
+
                                     Button(
                                         content = {
                                             Text(text = "Enviar correo para cambiar su contraseña")
