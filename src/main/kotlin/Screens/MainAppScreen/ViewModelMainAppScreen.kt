@@ -1,15 +1,12 @@
 package Screens.MainAppScreen
 
-import Screens.Course.ViewModelCourse.Companion.currentClasses
 import Screens.MainAppScreen.Components.ContentState
 import androidx.compose.runtime.*
 import data.api.ApiServiceClass
 import data.api.ApiServicePractice
-import data.api.ApiServiceUser
 import data.local.CompleteClass
 import data.local.CompleteCourse
 import data.remote.Course
-import data.remote.AppUser
 import data.remote.Class
 import data.remote.Practice
 import kotlinx.coroutines.CoroutineScope
@@ -21,7 +18,6 @@ class ViewModelMainAppScreen {
     companion object {
         //Métodos get
         private var errorMessage: String by mutableStateOf ("")
-        var userListResponse: List <AppUser> by mutableStateOf ( listOf ())
         var completeCourses: MutableList<CompleteCourse> = arrayListOf()
         var completeClasses: MutableList<CompleteClass> = arrayListOf()
 
@@ -57,13 +53,13 @@ class ViewModelMainAppScreen {
             }
         }
 
-        fun getAllPractices(
+        private fun getAllPractices(
             classes: Class,
             composableScope: CoroutineScope,
             onFinished: (CompleteClass) -> Unit
         ){
             var count = 0
-            var currentPractices: MutableList<Practice> = arrayListOf()
+            val currentPractices: MutableList<Practice> = arrayListOf()
             classes.idPractices.forEach{ practices ->
                 composableScope.launch {
                     val apiService = ApiServicePractice.getInstance()
@@ -75,7 +71,7 @@ class ViewModelMainAppScreen {
                         }
                         count++
                         if(count == classes.idPractices.size) {
-                            var newCompleteClass = CompleteClass(
+                            val newCompleteClass = CompleteClass(
                                 users = classes.users,
                                 idOfCourse = classes.idOfCourse,
                                 practices = currentPractices,
@@ -125,13 +121,13 @@ class ViewModelMainAppScreen {
             }
         }
 
-        fun getAllClasses(
+       private fun getAllClasses(
             courses: Course,
             composableScope: CoroutineScope,
             onFinished: (CompleteCourse) -> Unit
         ) {
             var count = 0
-            var currentClasses: MutableList<Class> = arrayListOf()
+            val currentClasses: MutableList<Class> = arrayListOf()
 
             courses.classes.forEach{ classes ->
                 composableScope.launch {
@@ -144,7 +140,7 @@ class ViewModelMainAppScreen {
                         }
                         count++
                         if(count == courses.classes.size) {
-                            var newCompleteCourse = CompleteCourse(
+                            val newCompleteCourse = CompleteCourse(
                                 users = courses.users,
                                 classes = currentClasses,
                                 events = courses.events,
@@ -162,35 +158,6 @@ class ViewModelMainAppScreen {
             }
         }
 
-        fun getUserList(
-            composableScope: CoroutineScope,
-            onFinishFunction: () -> Unit
-        ) {
-            composableScope.launch {
-                val apiService = ApiServiceUser.getInstance()
-
-                try {
-                    val result = apiService.getUsers()
-                    if (result.isSuccessful) {
-                        userListResponse = result.body()!!
-                        onFinishFunction()
-                    }
-                } catch (e: Exception) {
-                    errorMessage = e.message.toString()
-                }
-            }
-        }
-
-        fun getNameOfCourses(
-            courses: MutableList<Course>
-        ): MutableList<String>{
-
-            val result: MutableList<String> = arrayListOf()
-            courses.forEach{ result.add(it.name) }
-
-            return result
-        }
-
         //Content State
         private val _contentState: MutableState<ContentState> = mutableStateOf(value = ContentState.COURSE)
         val contentState: State<ContentState> = _contentState
@@ -200,8 +167,5 @@ class ViewModelMainAppScreen {
             _contentState.value = newValue
         }
 
-        fun clearContentState() {
-            _contentState.value = ContentState.COURSE
-        }
     }
 }

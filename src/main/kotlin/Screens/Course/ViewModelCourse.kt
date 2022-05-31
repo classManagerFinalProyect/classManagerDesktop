@@ -1,10 +1,8 @@
 package Screens.Course
 
-import Screens.Class.ViewModelClass
 import Screens.Course.Components.MainBody.ContentState
 import Screens.Course.Components.MainBody.Members.RolState
 import androidx.compose.runtime.*
-import com.google.cloud.storage.Acl.User
 import data.api.ApiServiceClass
 import data.api.ApiServiceCourse
 import data.api.ApiServiceEvent
@@ -27,7 +25,7 @@ class ViewModelCourse {
         var currentEvents: MutableList<Event> = arrayListOf()
         var currentMembers: MutableList<UserWithRol> = arrayListOf()
         var selectedCourse : Course = Course(arrayListOf(), arrayListOf(), arrayListOf(),"","","","")
-        var newClass = Class("","","", arrayListOf(), arrayListOf(),"","")
+        private var newClass = Class("","","", arrayListOf(), arrayListOf(),"","")
 
         var currentUser: UserWithRol = UserWithRol( AppUser("","","", arrayListOf(), arrayListOf(),"","",""),"")
 
@@ -93,7 +91,7 @@ class ViewModelCourse {
             )
         }
 
-        fun deleteClass(
+        private fun deleteClass(
             composableScope: CoroutineScope,
             idOfClass: String,
             onFinished: () -> Unit
@@ -111,7 +109,7 @@ class ViewModelCourse {
             }
         }
 
-        fun deleteCourse(
+        private fun deleteCourse(
             composableScope: CoroutineScope,
             idOfCourse: String,
             onFinished: () -> Unit
@@ -226,7 +224,7 @@ class ViewModelCourse {
             }
         }
 
-        fun getCurrentUser() {
+        private fun getCurrentUser() {
             selectedCourse.users.forEach {
                 if (it.id == CurrentUser.currentUser.id) currentUser = UserWithRol(CurrentUser.currentUser,it.rol)
             }
@@ -265,7 +263,7 @@ class ViewModelCourse {
             }
         }
 
-        fun checkIfUserIsInscribedInCourse(
+        private fun checkIfUserIsInscribedInCourse(
             idOfUser: String
         ):Boolean {
             selectedCourse.users.forEach {
@@ -275,7 +273,7 @@ class ViewModelCourse {
             return false
         }
 
-       fun updateUser(
+        private fun updateUser(
            updateUser: AppUser,
            composableScope: CoroutineScope,
            onFinished: () -> Unit,
@@ -329,7 +327,7 @@ class ViewModelCourse {
             )
         }
 
-        fun changeRolInCurrentClasses(
+        private fun changeRolInCurrentClasses(
             composableScope: CoroutineScope,
             newRolUser: String,
             appUser: AppUser,
@@ -356,7 +354,7 @@ class ViewModelCourse {
         }
 
 
-        fun updateCourse(
+        private fun updateCourse(
            updateCourse: Course,
            composableScope: CoroutineScope,
            onFinished: () -> Unit,
@@ -438,7 +436,7 @@ class ViewModelCourse {
 
         }
 
-        fun addNewMemberInCLasses(
+        private fun addNewMemberInCLasses(
             composableScope: CoroutineScope,
             onFinished: () -> Unit,
             rolUser: RolUser
@@ -456,7 +454,7 @@ class ViewModelCourse {
             }
 
         }
-        fun updateClass(
+        private fun updateClass(
             composableScope: CoroutineScope,
             updateClass: Class,
             onFinished: () -> Unit,
@@ -535,7 +533,7 @@ class ViewModelCourse {
             currentMembers.remove(user)
 
 
-            var deleteRolUser: RolUser = RolUser("","")
+            var deleteRolUser = RolUser("","")
             selectedCourse.users.forEach { if (it.id == user.user.id) deleteRolUser = it }
             selectedCourse.users.remove(deleteRolUser)
 
@@ -562,7 +560,7 @@ class ViewModelCourse {
             )
         }
 
-        fun deleteUserInCurrentClasses(
+        private fun deleteUserInCurrentClasses(
             composableScope: CoroutineScope,
             onFinished: () -> Unit,
             userRol: RolUser
@@ -612,7 +610,6 @@ class ViewModelCourse {
 
         //Rol State
         private val _rolState: MutableState<RolState> = mutableStateOf(value = RolState.ALL)
-        val rolState: State<RolState> = _rolState
 
 
         fun updateRolState(newValue: RolState) {
@@ -628,9 +625,6 @@ class ViewModelCourse {
             _contentState.value = newValue
         }
 
-        fun clearContentState() {
-            _contentState.value = ContentState.CLASSES
-        }
     }
 
 }

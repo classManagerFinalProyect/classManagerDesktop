@@ -1,12 +1,9 @@
 package Screens.ScreenComponents.TopAppBar.CreateClass
 
-import Screens.Login.ViewModelLogin
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import data.api.ApiServiceClass
-import data.api.ApiServiceUser
-import data.local.CurrentUser
 import data.local.CurrentUser.Companion.currentUser
 import data.local.CurrentUser.Companion.updateCurrentUser
 import data.local.CurrentUser.Companion.updateDates

@@ -1,6 +1,5 @@
-package Screens.MainAppScreen.Items
+package Screens.ScreenItems.Cards
 
-import akka.http.scaladsl.model.headers.LinkParams
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,7 +26,6 @@ fun rectangleCard(
             .width(200.dp)
             .height(100.dp)
             .clickable {
-                //Navegación
                 onClick()
             },
         shape = RoundedCornerShape(8.dp),

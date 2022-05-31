@@ -1,6 +1,6 @@
 package Screens.ScreenComponents.TopAppBar.CreateClass
 
-import ScreenItems.bigTextFieldWithErrorMessage
+import Screens.ScreenItems.Inputs.bigTextFieldWithErrorMessage
 import Utils.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -34,13 +34,11 @@ fun mainCreateClass(
             val composableScope = rememberCoroutineScope()
 
             //Texts
-            var (textName,onValueChangeNameText) = remember{ mutableStateOf("Name class test") }
-            var (nameError,nameErrorChange) = remember { mutableStateOf(false) }
-            val messageNameClassError by remember { mutableStateOf("El nombre debe de contener únicamente caracteres alfabeticos") }
+            val (textName,onValueChangeNameText) = remember{ mutableStateOf("Name class test") }
+            val (nameError,nameErrorChange) = remember { mutableStateOf(false) }
 
-            var (textDescription,onValueChangeDescriptionText) = remember{ mutableStateOf("Name class test") }
-            var (nameDescriptionError,nameDescriptionErrorChange) = remember { mutableStateOf(false) }
-            val messageDescriptionError by remember { mutableStateOf("El nombre debe de contener únicamente caracteres alfanuméricos") }
+            val (textDescription,onValueChangeDescriptionText) = remember{ mutableStateOf("Name class test") }
+            val (nameDescriptionError,nameDescriptionErrorChange) = remember { mutableStateOf(false) }
 
 
             Text(

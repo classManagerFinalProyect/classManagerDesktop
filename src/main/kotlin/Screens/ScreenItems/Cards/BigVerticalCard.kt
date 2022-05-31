@@ -1,4 +1,4 @@
-package Screens.ScreenItems
+package Screens.ScreenItems.Cards
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape

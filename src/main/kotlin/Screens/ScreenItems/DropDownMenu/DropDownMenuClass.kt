@@ -1,4 +1,4 @@
-package Screens.MainAppScreen.Items
+package Screens.ScreenItems.DropDownMenu
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -17,7 +17,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import data.remote.Course
 import data.remote.Class
 
 @Composable
@@ -27,9 +26,8 @@ fun dropDownMenuClassTransparent(
     onClick: (Class) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedText by remember { mutableStateOf(nameOfMenu) }
-    var textfieldSize by remember { mutableStateOf(Size.Zero) }
-    var editItem = remember{ mutableStateOf(false) }
+    val selectedText by remember { mutableStateOf(nameOfMenu) }
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
     val icon = if (expanded)
         Icons.Filled.KeyboardArrowUp
@@ -51,7 +49,7 @@ fun dropDownMenuClassTransparent(
                 enabled = true,
                 modifier = Modifier
                     .onGloballyPositioned { coordinates ->
-                        textfieldSize = coordinates.size.toSize()
+                        textFieldSize = coordinates.size.toSize()
                     }
                     .width(200.dp),
                 trailingIcon = {
@@ -68,7 +66,7 @@ fun dropDownMenuClassTransparent(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 modifier = Modifier
-                    .width(with(LocalDensity.current) { textfieldSize.width.toDp() }),
+                    .width(with(LocalDensity.current) { textFieldSize.width.toDp() }),
                 content = {
                     suggestions.forEach { label ->
                         DropdownMenuItem(

@@ -1,6 +1,6 @@
 package Screens.Login.ForgotPassword
 
-import ScreenItems.bigTextFieldWithErrorMessage
+import Screens.ScreenItems.Inputs.bigTextFieldWithErrorMessage
 import Screens.Login.ViewModelLogin
 import Utils.isValidEmail
 import androidx.compose.foundation.BorderStroke
@@ -26,8 +26,8 @@ fun MainForgotPassword(
     onLoginClick: () -> Unit
 ) {
     //Texts
-    var (emailText,onValueChangeEmailText) = remember{ mutableStateOf("sainero2002dani.j@gmail.com") }
-    var (emailError,emailErrorChange) = remember { mutableStateOf(false) }
+    val (emailText,onValueChangeEmailText) = remember{ mutableStateOf("sainero2002dani.j@gmail.com") }
+    val (emailError,emailErrorChange) = remember { mutableStateOf(false) }
     val nameOfEmailError = remember { mutableStateOf("El email no es válido: ejemplo@ejemplo.eje") }
 
     //Help variables

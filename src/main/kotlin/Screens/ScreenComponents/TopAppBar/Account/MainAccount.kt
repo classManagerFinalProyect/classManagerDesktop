@@ -1,18 +1,12 @@
 package Screens.ScreenComponents.TopAppBar.Account
 
-import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.Register.PrivacyPolicies.MainPrivacyPolicies
-import Screens.ScreenComponents.TopAppBar.Profile.ViewModelProfile
 import Screens.ScreenItems.Dialogs.defaultDialog
-import Screens.ScreenItems.confirmAlertDialog
-import Screens.ScreenItems.longButton
-import Utils.AsyncImage
-import Utils.loadImageBitmap
-import androidx.compose.foundation.border
+import Screens.ScreenItems.Dialogs.confirmAlertDialog
+import Screens.ScreenItems.Buttons.longButton
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -21,12 +15,6 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.KeyboardType.Companion.Email
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
@@ -38,10 +26,6 @@ fun MainAccount(
     onCloseSession: () -> Unit,
     onCloseDialog: (Boolean) -> Unit
 ) {
-    //Texts
-    var (emailText,onValueChangeEmailText) = remember{ mutableStateOf(CurrentUser.currentUser.email) }
-    var (emailError,emailErrorChange) = remember { mutableStateOf(false) }
-    val emailOfUserError = "El correo debe de seguir un patrón: test@gmail.com"
 
     //Help variables
     var showPolicy by remember { mutableStateOf(false) }
@@ -50,8 +34,8 @@ fun MainAccount(
 
 
     if (deleteAccount) {
-        var title = "¿Seguro que desea eliminar su cuenta?"
-        var subtitle = "No podrás volver a recuperarla. "
+        val title = "¿Seguro que desea eliminar su cuenta?"
+        val subtitle = "No podrás volver a recuperarla. "
 
         confirmAlertDialog(
             title = title,

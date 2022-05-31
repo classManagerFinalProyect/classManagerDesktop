@@ -1,18 +1,14 @@
 package Screens.Course
 
-import Screens.Class.Components.editClass
 import Screens.Course.Components.MainBody.ContentState
-import Screens.Course.Components.MainBody.classes
-import Screens.Course.Components.MainBody.events
-import Screens.Course.Components.MainBody.members
+import Screens.Course.Components.MainBody.Classes.classes
+import Screens.Course.Components.MainBody.Events.events
+import Screens.Course.Components.MainBody.Members.members
 import Screens.Course.Components.editCourse
 import Screens.MainAppScreen.Components.topBar
 import Screens.ScreenComponents.Header.header
 import Screens.ScreenComponents.NavigationBar.navigationBar
 import Screens.ScreenItems.Dialogs.loadingDialog
-import Screens.ScreenItems.Others.floatToast
-import Screens.theme.blueDesaturated
-import Utils.LazyGridFor
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Alignment
@@ -30,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import data.remote.Class
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainCourse(
     selectedCourse: Course,
@@ -44,7 +39,7 @@ fun MainCourse(
     val composableScope = rememberCoroutineScope()
     var showMainContent by remember { mutableStateOf(false) }
     var editCourse by remember { mutableStateOf(false) }
-    var loading = remember { mutableStateOf(false) }
+    val loading = remember { mutableStateOf(false) }
 
 
     if(loading.value) {
@@ -186,7 +181,6 @@ fun MainCourse(
                                 MainContent(
                                     onClickClass = onClickClass,
                                     contentState = contentState,
-                                    selectedCourse = selectedCourse
                                 )
                             }
                         }
@@ -202,7 +196,6 @@ fun MainCourse(
 private fun MainContent(
     contentState: ContentState,
     onClickClass: (Class) -> Unit,
-    selectedCourse: Course
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -217,9 +210,7 @@ private fun MainContent(
                     )
                 }
                 ContentState.MEMBERS -> {
-                    members(
-                        selectedCourse = selectedCourse
-                    )
+                    members()
                 }
                 ContentState.EVENTS -> {
                     events()

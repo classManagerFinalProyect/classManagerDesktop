@@ -2,7 +2,7 @@ package Screens.Class.Components.MainBody.Members
 
 import Screens.Class.Components.MainBody.ContentState
 import Screens.Class.ViewModelClass
-import Screens.MainAppScreen.Items.bigSelectedDropDownMenu
+import Screens.ScreenItems.DropDownMenu.bigSelectedDropDownMenu
 import Screens.ScreenItems.Dialogs.infoDialog
 import Screens.theme.blueDesaturated
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -35,7 +35,7 @@ fun members() {
 
     var reload by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
-    var composableScope = rememberCoroutineScope()
+    val composableScope = rememberCoroutineScope()
     var deleteUser by remember { mutableStateOf(false) }
     var rolFilter by remember { mutableStateOf("ALL") }
     var selectedUserWithRol by remember { mutableStateOf(UserWithRol(AppUser("","","", arrayListOf(), arrayListOf(),"","",""),"")) }
@@ -43,7 +43,7 @@ fun members() {
     var sizeDropMenu by remember { mutableStateOf(IntSize.Zero) }
 
 
-    var showToast = remember { mutableStateOf(false) }
+    val showToast = remember { mutableStateOf(false) }
     var toastTitle by remember{ mutableStateOf("Title") }
     var toastText by remember{ mutableStateOf("Text") }
 
@@ -229,9 +229,9 @@ fun members() {
                                 .fillMaxWidth()
                                 .padding(end = 5.dp),
                             content = {
-                                var grouped = ViewModelClass.currentMembers.groupBy { it.user.name.uppercase().substring(0, 1) }.toSortedMap()
+                                val grouped = ViewModelClass.currentMembers.groupBy { it.user.name.uppercase().substring(0, 1) }.toSortedMap()
 
-                                grouped.forEach { header, items ->
+                                grouped.forEach { (header, items) ->
                                     var writeHeader: Boolean = checkIfListIsEmpty(items, rolFilter)
 
                                     items.forEach {
@@ -250,7 +250,7 @@ fun members() {
                                                     )
                                                 }
                                             )
-                                            itemsIndexed(items) { index: Int, item ->
+                                            itemsIndexed(items) { _: Int, item ->
                                                 if(item.rol == rolFilter || rolFilter == "ALL") {
                                                     Row(
                                                         horizontalArrangement = Arrangement.Start,
@@ -264,7 +264,7 @@ fun members() {
                                                                         modifier = Modifier.background(Color.Transparent),
                                                                         content = {
                                                                             Text(
-                                                                                text = "${item.user.email}",
+                                                                                text = item.user.email,
                                                                                 fontWeight = FontWeight.Bold
                                                                             )
 

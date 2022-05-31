@@ -12,14 +12,10 @@ import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.useResource
 import androidx.compose.ui.window.*
-import data.local.Item
-import kotlin.system.exitProcess
 
 
 @OptIn(ExperimentalComposeUiApi::class)
-fun main() = application(
-
-) {
+fun main() = application() {
 
     val icon = BitmapPainter(useResource("logo_sin_fondo.png", ::loadImageBitmap))
 

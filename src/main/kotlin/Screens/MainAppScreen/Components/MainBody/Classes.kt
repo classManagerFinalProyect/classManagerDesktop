@@ -1,10 +1,7 @@
 package Screens.MainAppScreen.Components.MainBody
 
-import Screens.Course.ViewModelCourse.Companion.selectedCourse
-import Screens.MainAppScreen.Items.rectangleCard
 import Screens.MainAppScreen.ViewModelMainAppScreen
 import Screens.ScreenComponents.TopAppBar.CreateClass.mainCreateClass
-import akka.http.scaladsl.model.headers.LinkParams
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,7 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import data.remote.Course
 import data.remote.Class
 
 @Composable
@@ -112,15 +108,15 @@ fun myClasses(
             content = {
                 itemsIndexed(
                     ViewModelMainAppScreen.completeClasses
-                ) { index, item ->
+                ) { _, item ->
                     Card(
                         elevation = 3.dp,
                         shape = RoundedCornerShape(4.dp),
                         modifier = Modifier
                             .clickable {
-                                var listOfPracticeIds: MutableList<String> = arrayListOf()
+                                val listOfPracticeIds: MutableList<String> = arrayListOf()
                                 item.practices.forEach { listOfPracticeIds.add(it.id)}
-                                var selectedClass = Class(
+                                val selectedClass = Class(
                                     users = item.users,
                                     idOfCourse = item.idOfCourse,
                                     idPractices = listOfPracticeIds,
@@ -151,7 +147,7 @@ fun myClasses(
                                                     Row(
                                                         content = {
                                                             Text(text = "Clase: ", fontWeight = FontWeight.Bold)
-                                                            Text(text = "${item.name}",color = MaterialTheme.colors.primary)
+                                                            Text(text = item.name,color = MaterialTheme.colors.primary)
 
                                                         }
                                                     )
@@ -178,7 +174,7 @@ fun myClasses(
                                             LazyRow(
                                                 content = {
 
-                                                    this.itemsIndexed(item.practices){ index, item ->
+                                                    this.itemsIndexed(item.practices){ _, item ->
                                                         Card(
                                                             modifier = Modifier
                                                                 .padding(8.dp, 4.dp)
@@ -222,7 +218,7 @@ fun myClasses(
                                                                                             modifier = Modifier.size(21.dp)
                                                                                         )
                                                                                         Text(
-                                                                                            text = "${item.deliveryDate}",
+                                                                                            text = item.deliveryDate,
                                                                                             style = MaterialTheme.typography.caption,
                                                                                             modifier = Modifier
                                                                                                 .padding(4.dp),

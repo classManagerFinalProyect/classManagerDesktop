@@ -1,6 +1,5 @@
 package Utils
 
-import Screens.Course.Components.MainBody.Events.modifierEvent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row

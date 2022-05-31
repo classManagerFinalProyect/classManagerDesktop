@@ -1,21 +1,17 @@
 package Screens.Class.Components.MainBody.Practices
 
-import ScreenItems.bigTextFieldWithErrorMessage
+import Screens.ScreenItems.Inputs.bigTextFieldWithErrorMessage
 import Screens.Class.ViewModelClass
-import Screens.Course.ViewModelCourse
 import Screens.ScreenItems.Others.floatToast
 import Utils.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
-import androidx.compose.material.FabPosition
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import data.remote.Event
 import data.remote.Practice
 import kotlinx.coroutines.delay
 
@@ -40,7 +36,7 @@ fun addNewPractice(
 
     //Help variables
     val composableScope = rememberCoroutineScope()
-    var showFloatToast = remember { mutableStateOf(false) }
+    val showFloatToast = remember { mutableStateOf(false) }
 
     LaunchedEffect(showFloatToast.value) {
         if(showFloatToast.value) {

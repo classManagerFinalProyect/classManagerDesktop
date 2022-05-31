@@ -9,7 +9,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
@@ -26,8 +25,7 @@ fun dropDownMenuClass(
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(nameOfMenu) }
-    var textfieldSize by remember { mutableStateOf(Size.Zero) }
-    var editItem = remember{ mutableStateOf(false) }
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
     val icon = if (expanded)
         Icons.Filled.KeyboardArrowUp
@@ -45,7 +43,7 @@ fun dropDownMenuClass(
                 enabled = false,
                 modifier = Modifier
                     .onGloballyPositioned { coordinates ->
-                        textfieldSize = coordinates.size.toSize()
+                        textFieldSize = coordinates.size.toSize()
                     }
                     .fillMaxWidth()
                     .padding(PaddingValues(start = 40.dp, end = 40.dp)),
@@ -62,7 +60,7 @@ fun dropDownMenuClass(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 modifier = Modifier
-                    .width(with(LocalDensity.current) { textfieldSize.width.toDp() }),
+                    .width(with(LocalDensity.current) { textFieldSize.width.toDp() }),
                 content = {
                     suggestions.forEach { label ->
                         DropdownMenuItem(

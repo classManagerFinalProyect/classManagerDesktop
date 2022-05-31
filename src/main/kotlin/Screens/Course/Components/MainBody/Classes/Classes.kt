@@ -1,13 +1,8 @@
-package Screens.Course.Components.MainBody
+package Screens.Course.Components.MainBody.Classes
 
-import Screens.Course.Components.MainBody.Classes.addNewClass
-import Screens.Course.Components.MainBody.Members.addMember
 import Screens.Course.ViewModelCourse
-import Screens.ScreenComponents.TopAppBar.CreateClass.mainCreateClass
 import Screens.ScreenItems.Dialogs.infoDialog
-import Screens.ScreenItems.Others.floatToast
-import Screens.ScreenItems.bigRectangleCard
-import Utils.LazyGridFor
+import Screens.ScreenItems.Cards.bigRectangleCard
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
@@ -22,10 +17,8 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.remote.Class
-import kotlinx.coroutines.delay
-import java.awt.SystemColor.text
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun classes(
     onClickClass: (Class) -> Unit
@@ -35,7 +28,7 @@ fun classes(
     var sizeDropMenu by remember { mutableStateOf(IntSize.Zero) }
     var expanded by remember { mutableStateOf(false) }
     var getMoreInformation by remember { mutableStateOf(false) }
-    var showToast = remember { mutableStateOf(false) }
+    val showToast = remember { mutableStateOf(false) }
     var toastTitle by remember{ mutableStateOf("Title") }
     var toastText by remember{ mutableStateOf("Text") }
 
@@ -155,7 +148,7 @@ fun classes(
                         LazyVerticalGrid(
                             cells = GridCells.Adaptive(200.dp),
                             content = {
-                                this.itemsIndexed(ViewModelCourse.currentClasses) { index: Int, item: Class ->
+                                this.itemsIndexed(ViewModelCourse.currentClasses) { _: Int, item: Class ->
                                     bigRectangleCard(
                                         title = item.name,
                                         subtitle = "${item.idPractices.size}",

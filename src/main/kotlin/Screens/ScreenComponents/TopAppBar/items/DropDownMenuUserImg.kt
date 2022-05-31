@@ -1,10 +1,8 @@
-package Screens.MainAppScreen.Items
+package Screens.ScreenComponents.TopAppBar.items
 
 import Screens.ScreenComponents.TopAppBar.Account.MainAccount
 import Screens.ScreenComponents.TopAppBar.Profile.mainProfile
 import Screens.ScreenItems.Dialogs.defaultDialog
-import Utils.AsyncImage
-import Utils.loadImageBitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
@@ -29,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
-import data.local.CurrentUser
 
 @Composable
 fun dropDownMenuUserImg(

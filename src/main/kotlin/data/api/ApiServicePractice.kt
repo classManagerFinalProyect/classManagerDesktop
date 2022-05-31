@@ -1,7 +1,5 @@
 package data.api
 
-import data.remote.Chat
-import data.remote.Course
 import data.remote.Practice
 import retrofit2.Response
 import retrofit2.Retrofit

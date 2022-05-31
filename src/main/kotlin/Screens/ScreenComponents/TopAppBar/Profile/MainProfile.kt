@@ -1,12 +1,12 @@
 package Screens.ScreenComponents.TopAppBar.Profile
 
-import ScreenItems.bigTextFieldWithErrorMessage
-import Screens.ScreenItems.longButton
-import Utils.AsyncImage
-import Utils.loadImageBitmap
+import Screens.ScreenItems.Inputs.bigTextFieldWithErrorMessage
+import Screens.ScreenItems.Buttons.longButton
+import Utils.CommonErrors
+import Utils.isValidDescription
+import Utils.isValidName
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -19,25 +19,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
 import data.local.CurrentUser
 
 @Composable
 fun mainProfile() {
     //Text
-    var (userText,onValueChangeUserText) = remember{ mutableStateOf(CurrentUser.currentUser.name) }
-    var (userError,userErrorChange) = remember { mutableStateOf(false) }
-    val nameOfUserError = "El nombre solo puede contener caracteres alfabeticos"
+    val (userText,onValueChangeUserText) = remember{ mutableStateOf(CurrentUser.currentUser.name) }
+    val (userError,userErrorChange) = remember { mutableStateOf(false) }
 
-    var (descriptionText,onValueChangeUserdescription) = remember{ mutableStateOf(CurrentUser.currentUser.description) }
-    var (descriptionError,descriptionErrorChange) = remember { mutableStateOf(false) }
-    val nameOfDescriptionError = "La descripción solo puede contener caracteres alfanuméricos"
+    val (descriptionText,onValueChangeDescription) = remember{ mutableStateOf(CurrentUser.currentUser.description) }
+    val (descriptionError,descriptionErrorChange) = remember { mutableStateOf(false) }
 
     //Help variables
     val composableScope = rememberCoroutineScope()
@@ -93,8 +88,8 @@ fun mainProfile() {
                                     text = "Nombre de usuario",
                                     value = userText,
                                     onValueChange = onValueChangeUserText,
-                                    validateError = ViewModelProfile::isValidName,
-                                    errorMessage = nameOfUserError,
+                                    validateError = ::isValidName,
+                                    errorMessage = CommonErrors.notValidName,
                                     changeError = userErrorChange,
                                     error = userError,
                                     mandatory = false,
@@ -107,9 +102,9 @@ fun mainProfile() {
                                 bigTextFieldWithErrorMessage(
                                     text = "Descripción",
                                     value = descriptionText,
-                                    onValueChange = onValueChangeUserdescription,
-                                    validateError = ViewModelProfile::isValidDescription,
-                                    errorMessage = nameOfDescriptionError,
+                                    onValueChange = onValueChangeDescription,
+                                    validateError = ::isValidDescription,
+                                    errorMessage = CommonErrors.notValidDescription,
                                     changeError = descriptionErrorChange,
                                     error = descriptionError,
                                     mandatory = false,

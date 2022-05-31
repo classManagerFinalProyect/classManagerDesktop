@@ -1,6 +1,5 @@
-package Screens.ScreenItems
+package Screens.ScreenItems.Buttons
 
-import Screens.ScreenComponents.TopAppBar.Profile.ViewModelProfile
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,7 +8,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import data.local.CurrentUser
 
 @Composable
 fun longButton(
@@ -24,7 +22,7 @@ fun longButton(
             onClick()
         },
         content = {
-            Text(text = "${text}")
+            Text(text = text)
         }
     )
 }

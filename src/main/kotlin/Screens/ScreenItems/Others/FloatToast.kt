@@ -1,6 +1,5 @@
 package Screens.ScreenItems.Others
 
-import Utils.CommonErrors
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.MaterialTheme
@@ -9,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import data.local.Message
 
 @Composable
 fun floatToast(
@@ -20,7 +18,7 @@ fun floatToast(
         backgroundColor = MaterialTheme.colors.primary.copy(0.7f),
         modifier = Modifier
             .fillMaxWidth(0.8f),
-        text = { Text("$message", textAlign = TextAlign.Center) },
+        text = { Text(text = message, textAlign = TextAlign.Center) },
         onClick = {
             showToast.value = false
         }

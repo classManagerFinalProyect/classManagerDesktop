@@ -1,12 +1,8 @@
 package Screens.ScreenComponents.NavigationBar
 
-import Screens.Class.Components.MainBody.ContentState
-import Screens.Class.ViewModelClass
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier

@@ -1,12 +1,9 @@
-package Screens.Course.Components.MainBody
+package Screens.Course.Components.MainBody.Members
 
-import Screens.Course.Components.MainBody.Members.RolState
-import Screens.Course.Components.MainBody.Members.addMember
 import Screens.Course.ViewModelCourse
-import Screens.MainAppScreen.Items.bigSelectedDropDownMenu
+import Screens.ScreenItems.DropDownMenu.bigSelectedDropDownMenu
 import Screens.ScreenItems.Dialogs.infoDialog
 import Screens.theme.blueDesaturated
-import akka.http.scaladsl.model.headers.LinkParams
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,17 +20,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import data.local.UserWithRol
-import data.remote.Course
 import data.remote.AppUser
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun members(
-    selectedCourse: Course
-) {
+fun members() {
     var expanded by remember { mutableStateOf(false) }
     var reload by remember { mutableStateOf(false) }
-    var composableScope = rememberCoroutineScope()
+    val composableScope = rememberCoroutineScope()
     var deleteUser by remember { mutableStateOf(false) }
     var rolFilter by remember { mutableStateOf("ALL") }
     var selectedUserWithRol by remember { mutableStateOf(UserWithRol(AppUser("","","", arrayListOf(), arrayListOf(),"","",""),"")) }
@@ -42,7 +36,7 @@ fun members(
     var sizeDropMenu by remember { mutableStateOf(IntSize.Zero) }
 
 
-    var showToast = remember { mutableStateOf(false) }
+    val showToast = remember { mutableStateOf(false) }
     var toastTitle by remember{ mutableStateOf("Title") }
     var toastText by remember{ mutableStateOf("Text") }
 
@@ -227,9 +221,9 @@ fun members(
                                 .fillMaxWidth()
                                 .padding(end = 5.dp),
                             content = {
-                                var grouped = ViewModelCourse.currentMembers.groupBy { it.user.name.uppercase().substring(0, 1) }.toSortedMap()
+                                val grouped = ViewModelCourse.currentMembers.groupBy { it.user.name.uppercase().substring(0, 1) }.toSortedMap()
 
-                                grouped.forEach { header, items ->
+                                grouped.forEach { (header, items) ->
                                     var writeHeader: Boolean = checkIfListIsEmpty(items, rolFilter)
 
                                     items.forEach {
@@ -248,7 +242,7 @@ fun members(
                                                     )
                                                 }
                                             )
-                                            itemsIndexed(items) { index: Int, item ->
+                                            itemsIndexed(items) { _: Int, item ->
                                                 if(item.rol == rolFilter || rolFilter == "ALL") {
                                                     Row(
                                                         horizontalArrangement = Arrangement.Start,
@@ -262,7 +256,7 @@ fun members(
                                                                         modifier = Modifier.background(Color.Transparent),
                                                                         content = {
                                                                             Text(
-                                                                                text = "${item.user.email}",
+                                                                                text = item.user.email,
                                                                                 fontWeight = FontWeight.Bold
                                                                             )
 

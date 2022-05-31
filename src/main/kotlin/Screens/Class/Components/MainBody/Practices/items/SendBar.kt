@@ -12,7 +12,6 @@ import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
@@ -27,7 +26,6 @@ import data.local.Message
 import kotlinx.coroutines.CoroutineScope
 import java.time.LocalDate
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun sendBar(
     textOfChat: MutableState<String>,

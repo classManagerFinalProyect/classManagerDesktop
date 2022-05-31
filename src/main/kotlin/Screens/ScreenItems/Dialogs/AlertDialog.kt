@@ -1,4 +1,4 @@
-package Screens.ScreenItems
+package Screens.ScreenItems.Dialogs
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height

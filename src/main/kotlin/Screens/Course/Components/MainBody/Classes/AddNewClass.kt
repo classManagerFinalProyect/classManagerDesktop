@@ -1,9 +1,7 @@
 package Screens.Course.Components.MainBody.Classes
 
-import ScreenItems.bigTextFieldWithErrorMessage
+import Screens.ScreenItems.Inputs.bigTextFieldWithErrorMessage
 import Screens.Course.ViewModelCourse
-import Screens.ScreenComponents.TopAppBar.CreateClass.ViewModelCreateClass
-import Screens.ScreenItems.Dialogs.infoDialog
 import Utils.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -39,11 +37,11 @@ fun addNewClass(
 
 
             //Texts
-            var (textName,onValueChangeNameText) = remember{ mutableStateOf("Name") }
-            var (nameError,nameErrorChange) = remember { mutableStateOf(false) }
+            val (textName,onValueChangeNameText) = remember{ mutableStateOf("Name") }
+            val (nameError,nameErrorChange) = remember { mutableStateOf(false) }
 
-            var (textDescription,onValueChangeDescriptionText) = remember{ mutableStateOf("Name class test") }
-            var (nameDescriptionError,nameDescriptionErrorChange) = remember { mutableStateOf(false) }
+            val (textDescription,onValueChangeDescriptionText) = remember{ mutableStateOf("Name class test") }
+            val (nameDescriptionError,nameDescriptionErrorChange) = remember { mutableStateOf(false) }
 
 
 

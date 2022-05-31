@@ -2,7 +2,6 @@ package Screens.Class
 
 import Screens.Class.Components.MainBody.ContentState
 import Screens.Class.Components.MainBody.Members.RolState
-import Screens.Course.ViewModelCourse
 import androidx.compose.runtime.*
 import data.api.*
 import data.local.CompletePractice
@@ -70,7 +69,7 @@ class ViewModelClass {
             }
         }
 
-        fun deleteClass(
+        private fun deleteClass(
             composableScope: CoroutineScope,
             idOfClass: String,
             onFinished: () -> Unit
@@ -135,7 +134,7 @@ class ViewModelClass {
             )
         }
 
-        fun checkIfUserIsInscribedInClass(
+        private fun checkIfUserIsInscribedInClass(
             idOfUser: String
         ):Boolean {
             selectedClass.users.forEach {
@@ -256,7 +255,7 @@ class ViewModelClass {
             currentMembers.remove(user)
 
 
-            var deleteRolUser: RolUser = RolUser("","")
+            var deleteRolUser = RolUser("","")
             selectedClass.users.forEach { if (it.id == user.user.id) deleteRolUser = it }
             selectedClass.users.remove(deleteRolUser)
 
@@ -278,21 +277,7 @@ class ViewModelClass {
             )
         }
 
-        fun deleteUserInCurrentCourse(
-            composableScope: CoroutineScope,
-            onFinished: () -> Unit,
-            updateCourse: Course
-        ){
-            updateCourse(
-                updateCourse = updateCourse,
-                composableScope =composableScope,
-                onFinished = {
-                    onFinished()
-                }
-            )
-        }
-
-        fun updateUser(
+        private  fun updateUser(
             updateUser: AppUser,
             composableScope: CoroutineScope,
             onFinished: () -> Unit,
@@ -314,7 +299,7 @@ class ViewModelClass {
             }
         }
 
-        fun updateCourse(
+        private fun updateCourse(
             updateCourse: Course,
             composableScope: CoroutineScope,
             onFinished: () -> Unit,
@@ -339,7 +324,7 @@ class ViewModelClass {
         fun updateChat(
             composableScope: CoroutineScope,
             chat: Chat,
-            onFinished: () -> Unit
+            onFinished: (Chat) -> Unit
         ){
             composableScope.launch {
                 val apiService = ApiServiceChat.getInstance()
@@ -347,8 +332,7 @@ class ViewModelClass {
                 try {
                     val result = apiService.putChat(chat)
                     if (result.isSuccessful) {
-                        val chat  = result.body()!!
-                        onFinished()
+                        onFinished(result.body()!!)
                     }
                     else {
                         Log.debug("Error trying update chat")
@@ -360,7 +344,7 @@ class ViewModelClass {
             }
         }
 
-        fun getChatById(
+        private fun getChatById(
             composableScope: CoroutineScope,
             idOfChat: String,
             onFinished: (Chat) -> Unit
@@ -419,7 +403,7 @@ class ViewModelClass {
             )
         }
 
-        fun deletePracticeById(
+        private fun deletePracticeById(
             composableScope: CoroutineScope,
             idOfPractice: String,
             onFinished: () -> Unit
@@ -442,7 +426,7 @@ class ViewModelClass {
             }
         }
 
-        fun deleteChatById(
+        private fun deleteChatById(
             composableScope: CoroutineScope,
             idOfChat: String,
             onFinished: () -> Unit
@@ -504,7 +488,7 @@ class ViewModelClass {
             )
         }
 
-        fun createPractice(
+        private fun createPractice(
             composableScope: CoroutineScope,
             onFinished: (Practice) -> Unit,
             practice: Practice
@@ -528,7 +512,7 @@ class ViewModelClass {
             }
         }
 
-        fun updateClass(
+        private fun updateClass(
             composableScope: CoroutineScope,
             onFinished: () -> Unit,
             updateClass: Class
@@ -551,7 +535,7 @@ class ViewModelClass {
             }
         }
 
-        fun createPracticeChat(
+        private fun createPracticeChat(
             composableScope: CoroutineScope,
             onFinished: (Chat) -> Unit
         ) {
@@ -619,10 +603,9 @@ class ViewModelClass {
 
         //Rol State
         private val _rolState: MutableState<RolState> = mutableStateOf(value = RolState.ALL)
-        val rolState: State<RolState> = _rolState
 
 
-        fun updateRolState(newValue: Screens.Class.Components.MainBody.Members.RolState) {
+        fun updateRolState(newValue: RolState) {
             _rolState.value = newValue
         }
 

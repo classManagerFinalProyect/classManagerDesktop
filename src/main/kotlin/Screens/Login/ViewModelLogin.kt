@@ -11,7 +11,6 @@ import data.local.NewUser
 import data.remote.AppUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.util.regex.Pattern
 
 class ViewModelLogin {
     companion object {

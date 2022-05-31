@@ -1,15 +1,12 @@
-package Screens.Course.Components.MainBody
+package Screens.Course.Components.MainBody.Events
 
-import Screens.Course.Components.MainBody.Classes.addNewClass
 import Screens.Course.Components.MainBody.Events.Components.seeEvent
-import Screens.Course.Components.MainBody.Events.createEvent
-import Screens.Course.Components.MainBody.Events.modifierEvent
+import Screens.Course.Components.MainBody.Events.Components.createEvent
+import Screens.Course.Components.MainBody.Events.Components.modifierEvent
 import Screens.Course.ViewModelCourse
 import Screens.ScreenItems.Dialogs.defaultDialog
 import Screens.ScreenItems.Dialogs.infoDialog
-import Screens.ScreenItems.bigRectangleCard
-import Screens.ScreenItems.bigVerticalCard
-import Utils.LazyGridFor
+import Screens.ScreenItems.Cards.bigVerticalCard
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,7 +27,6 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
-import data.remote.Class
 import data.remote.Event
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -41,7 +37,7 @@ fun events() {
     var modifierEvent by remember { mutableStateOf(false) }
     var sizeDropMenu by remember { mutableStateOf(IntSize.Zero) }
     var expanded by remember { mutableStateOf(false) }
-    var showToast = remember { mutableStateOf(false) }
+    val showToast = remember { mutableStateOf(false) }
     var toastTitle by remember{ mutableStateOf("Title") }
     var toastText by remember{ mutableStateOf("Text") }
     var selectedEvent by remember { mutableStateOf(Event("","","","","","","")) }
@@ -149,7 +145,7 @@ fun events() {
                         LazyVerticalGrid(
                             cells = GridCells.Adaptive(200.dp),
                             content = {
-                                this.itemsIndexed(ViewModelCourse.currentEvents) { index: Int, item: Event ->
+                                this.itemsIndexed(ViewModelCourse.currentEvents) { _: Int, item: Event ->
                                     bigVerticalCard(
                                         event = item,
                                         onClick = {

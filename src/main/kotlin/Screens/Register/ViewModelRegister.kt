@@ -1,7 +1,6 @@
 package Screens.Register
 
-import Screens.Login.ViewModelLogin
-import Screens.Login.ViewModelLogin.Companion.user
+
 import Utils.isValidEmail
 import Utils.isValidPassword
 import androidx.compose.runtime.getValue
@@ -19,7 +18,6 @@ class ViewModelRegister {
     companion object {
         private var errorMessage: String by mutableStateOf ("")
         var createUser = NewUser("","","")
-        var createAppUser = AppUser("","","", arrayListOf(), arrayListOf(),"","","")
         var user: AppUser by mutableStateOf(AppUser("","","", arrayListOf(), arrayListOf(),"","",""))
 
         fun createUserWithEmailAndPassword(
@@ -55,7 +53,7 @@ class ViewModelRegister {
             }
         }
 
-        fun getCurrentUser(
+        private fun getCurrentUser(
             composableScope: CoroutineScope,
             onFinished: (Boolean) -> Unit,
             idOfUser: String

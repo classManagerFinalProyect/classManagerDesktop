@@ -1,23 +1,18 @@
 package Screens.Class.Components.MainBody.Members
 
-import Screens.Class.Components.MainBody.ContentState
 import Screens.Class.ViewModelClass
-import Screens.MainAppScreen.Items.bigSelectedDropDownMenu
+import Screens.ScreenItems.DropDownMenu.bigSelectedDropDownMenu
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.input.key.*
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun addMember(
     onValueChangeExpanded: (Boolean) -> Unit,

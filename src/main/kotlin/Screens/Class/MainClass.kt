@@ -1,6 +1,5 @@
 package Screens.Class
 
-import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.Class.Components.MainBody.ContentState
 import Screens.Class.Components.MainBody.Members.members
 import Screens.Class.Components.MainBody.Practices.practices
@@ -9,7 +8,6 @@ import Screens.Course.ViewModelCourse
 import Screens.MainAppScreen.Components.topBar
 import Screens.ScreenComponents.Header.header
 import Screens.ScreenComponents.NavigationBar.navigationBar
-import Screens.ScreenItems.Dialogs.defaultDialog
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -20,15 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.WindowPosition
-import androidx.compose.ui.window.rememberDialogState
 import data.remote.Class
 import data.remote.Course
-import java.awt.SystemColor.text
 
 @Composable
 fun MainClass(

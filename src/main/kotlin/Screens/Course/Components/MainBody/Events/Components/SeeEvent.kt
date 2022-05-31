@@ -1,7 +1,6 @@
 package Screens.Course.Components.MainBody.Events.Components
 
-import ScreenItems.bigTextFieldWithErrorMessage
-import Screens.Course.ViewModelCourse
+import Screens.ScreenItems.Inputs.bigTextFieldWithErrorMessage
 import Utils.CommonErrors
 import Utils.isDate
 import Utils.isTime
@@ -9,16 +8,13 @@ import Utils.isValidName
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -34,17 +30,17 @@ fun seeEvent(
 ) {
 
     //Texts
-    var (textName,onValueChangeNameText) = remember{ mutableStateOf(event.name) }
-    var (nameError,nameErrorChange) = remember { mutableStateOf(false) }
+    val (textName,onValueChangeNameText) = remember{ mutableStateOf(event.name) }
+    val (nameError,nameErrorChange) = remember { mutableStateOf(false) }
 
-    var (textDate,onValueChangeDateText) = remember{ mutableStateOf(event.date) }
-    var (dateError,dateErrorChange) = remember { mutableStateOf(false) }
+    val (textDate,onValueChangeDateText) = remember{ mutableStateOf(event.date) }
+    val (dateError,dateErrorChange) = remember { mutableStateOf(false) }
 
-    var (textStartTime,onValueChangeStartTimeText) = remember{ mutableStateOf(event.initialTime) }
-    var (startTimeError,startTimeErrorChange) = remember { mutableStateOf(false) }
+    val (textStartTime,onValueChangeStartTimeText) = remember{ mutableStateOf(event.initialTime) }
+    val (startTimeError,startTimeErrorChange) = remember { mutableStateOf(false) }
 
-    var (textFinalTime,onValueChangeFinalTimeText) = remember{ mutableStateOf(event.finalTime) }
-    var (finalTimeError,finalTimeErrorChange) = remember { mutableStateOf(false) }
+    val (textFinalTime,onValueChangeFinalTimeText) = remember{ mutableStateOf(event.finalTime) }
+    val (finalTimeError,finalTimeErrorChange) = remember { mutableStateOf(false) }
 
 
     Card(
@@ -64,7 +60,7 @@ fun seeEvent(
                     Spacer(modifier = Modifier.padding(15.dp))
 
                     Text(
-                        text = "${event.nameOfClass}",
+                        text = event.nameOfClass,
                         fontSize = 20.sp,
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,

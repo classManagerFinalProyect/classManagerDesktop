@@ -1,7 +1,7 @@
 package Screens.Register
 
-import ScreenItems.bigPasswordInputWithErrorMessage
-import ScreenItems.bigTextFieldWithErrorMessage
+import Screens.ScreenItems.Inputs.bigPasswordInputWithErrorMessage
+import Screens.ScreenItems.Inputs.bigTextFieldWithErrorMessage
 import Screens.Register.PrivacyPolicies.MainPrivacyPolicies
 import Screens.Register.ViewModelRegister.Companion.checkAllValidations
 import Screens.ScreenItems.Dialogs.defaultDialog
@@ -11,7 +11,6 @@ import Utils.CommonErrors
 import Utils.createSha256
 import Utils.isValidEmail
 import Utils.isValidPassword
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -29,36 +28,33 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
-import com.example.classmanagerandroid.Views.Register.labelledCheckbox
+import Screens.Register.Items.labelledCheckbox
 import data.local.NewUser
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.util.regex.Pattern
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainRegister(
     onBack: () -> Unit,
     onLogin: () -> Unit
 ) {
     //Texts
-    var (emailText,onValueChangeEmailText) = remember{ mutableStateOf("test@gmail.com") }
-    var (emailError,emailErrorChange) = remember { mutableStateOf(false) }
+    val (emailText,onValueChangeEmailText) = remember{ mutableStateOf("test@gmail.com") }
+    val (emailError,emailErrorChange) = remember { mutableStateOf(false) }
 
-    var (passwordText,onValueChangePasswordText) = remember{ mutableStateOf("11111111") }
-    var (passwordError,passwordErrorChange) = remember { mutableStateOf(false) }
+    val (passwordText,onValueChangePasswordText) = remember{ mutableStateOf("11111111") }
+    val (passwordError,passwordErrorChange) = remember { mutableStateOf(false) }
 
-    var (repeatPasswordText,onValueChangeRepeatPasswordText) = remember{ mutableStateOf("11111111") }
-    var (repeatPasswordError,repeatPasswordErrorChange) = remember { mutableStateOf(false) }
+    val (repeatPasswordText,onValueChangeRepeatPasswordText) = remember{ mutableStateOf("11111111") }
+    val (repeatPasswordError,repeatPasswordErrorChange) = remember { mutableStateOf(false) }
 
     //Help variables
-    val (checkedStatePrivacyPolicies,onValueChangecheckedStatePrivacyPolicies) = remember { mutableStateOf(true) }
+    val (checkedStatePrivacyPolicies,onValueChangeCheckedStatePrivacyPolicies) = remember { mutableStateOf(true) }
     val composableScope = rememberCoroutineScope()
     var isOpen by remember { mutableStateOf(false) }
-    var toastMessage = remember { mutableStateOf("") }
-    var showToast = remember { mutableStateOf(false) }
-    var loading = remember { mutableStateOf(false) }
+    val toastMessage = remember { mutableStateOf("") }
+    val showToast = remember { mutableStateOf(false) }
+    val loading = remember { mutableStateOf(false) }
 
 
 
@@ -206,7 +202,7 @@ fun MainRegister(
                                                             labelledCheckbox(
                                                                 labelText = "Politicas de Privacidad",
                                                                 isCheckedValue = checkedStatePrivacyPolicies,
-                                                                onValueChangeCheked = onValueChangecheckedStatePrivacyPolicies,
+                                                                onValueChangeChecked = onValueChangeCheckedStatePrivacyPolicies,
                                                                 onClickText = {
                                                                     isOpen = true
                                                                 }
@@ -245,12 +241,6 @@ fun MainRegister(
                                                                                 toastMessage.value = "ERROR: La cuenta no ha podido ser creada,pruebe otro usuario"
                                                                                 showToast.value = true
                                                                             }
-
-
-                                                                            /*
-                                                                            snackbarCoroutineScope.launch {
-                                                                                scaffoldState.snackbarHostState.showSnackbar("La cuenta se ha creado correctamente")
-                                                                            }*/
                                                                         }
                                                                     )
                                                                 }

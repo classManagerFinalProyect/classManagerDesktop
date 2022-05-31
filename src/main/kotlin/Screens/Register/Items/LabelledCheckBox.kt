@@ -1,4 +1,4 @@
-package com.example.classmanagerandroid.Views.Register
+package Screens.Register.Items
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 fun labelledCheckbox(
     labelText: String,
     isCheckedValue: Boolean,
-    onValueChangeCheked: (Boolean) -> Unit,
+    onValueChangeChecked: (Boolean) -> Unit,
     onClickText: () -> Unit
 ) {
     Row(
@@ -27,13 +27,13 @@ fun labelledCheckbox(
     ) {
         Checkbox(
             checked = isCheckedValue,
-            onCheckedChange = { onValueChangeCheked(it) },
+            onCheckedChange = { onValueChangeChecked(it) },
             enabled = true,
             colors = CheckboxDefaults.colors(Color.Blue)
         )
         Spacer(modifier = Modifier.padding(2.dp))
         Text(
-            text = "${labelText}",
+            text = labelText,
             modifier = Modifier
                 .clickable{
                     onClickText()

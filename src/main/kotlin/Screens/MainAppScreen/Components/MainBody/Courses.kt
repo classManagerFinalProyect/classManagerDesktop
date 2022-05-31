@@ -1,11 +1,9 @@
 package Screens.MainAppScreen.Components.MainBody
 
-import Screens.MainAppScreen.Items.rectangleCard
+import Screens.ScreenItems.Cards.rectangleCard
 import Screens.MainAppScreen.ViewModelMainAppScreen
-import Screens.ScreenComponents.TopAppBar.CreateClass.mainCreateClass
 import Screens.ScreenComponents.TopAppBar.CreateCourse.mainCreateCourse
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -107,15 +105,15 @@ fun myCourses(
             content = {
                 itemsIndexed(
                     ViewModelMainAppScreen.completeCourses
-                ) { index, item ->
+                ) { _, item ->
                     Card(
                         elevation = 3.dp,
                         shape = RoundedCornerShape(4.dp),
                         modifier = Modifier
                             .clickable {
-                                var listOfClassesIds: MutableList<String> = arrayListOf()
+                                val listOfClassesIds: MutableList<String> = arrayListOf()
                                 item.classes.forEach { listOfClassesIds.add(it.id)}
-                                var selectedCourse = Course(
+                                val selectedCourse = Course(
                                     users = item.users,
                                     classes = listOfClassesIds,
                                     events = item.events,
@@ -146,7 +144,7 @@ fun myCourses(
                                                     Row(
                                                         content = {
                                                             Text(text = "Curso: ", fontWeight = FontWeight.Bold)
-                                                            Text(text = "${item.name}",color = MaterialTheme.colors.primary)
+                                                            Text(text = item.name,color = MaterialTheme.colors.primary)
                                                         }
                                                     )
                                                 }
@@ -172,7 +170,7 @@ fun myCourses(
                                             LazyRow(
                                                 content = {
 
-                                                    this.itemsIndexed(item.classes){ index, item ->
+                                                    this.itemsIndexed(item.classes){ _, item ->
                                                         rectangleCard(
                                                             title = item.name,
                                                             subtitle = "${item.idPractices.size}",

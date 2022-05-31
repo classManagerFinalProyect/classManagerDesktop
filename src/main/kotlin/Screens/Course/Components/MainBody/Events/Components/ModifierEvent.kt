@@ -1,30 +1,21 @@
-package Screens.Course.Components.MainBody.Events
+package Screens.Course.Components.MainBody.Events.Components
 
-import ScreenItems.bigTextFieldWithErrorMessage
+import Screens.ScreenItems.Inputs.bigTextFieldWithErrorMessage
 import Screens.Course.ViewModelCourse
-import Screens.ScreenComponents.TopAppBar.CreateClass.ViewModelCreateClass
-import Screens.ScreenItems.confirmAlertDialog
-import Screens.theme.blue
+import Screens.ScreenItems.Dialogs.confirmAlertDialog
 import Utils.*
-import akka.http.scaladsl.model.headers.LinkParams
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import data.local.CurrentUser
-import data.local.RolUser
-import data.remote.Class
 import data.remote.Event
 
 
@@ -36,17 +27,17 @@ fun modifierEvent(
 ) {
 
     //Texts
-    var (textName,onValueChangeNameText) = remember{ mutableStateOf(event.name) }
-    var (nameError,nameErrorChange) = remember { mutableStateOf(false) }
+    val (textName,onValueChangeNameText) = remember{ mutableStateOf(event.name) }
+    val (nameError,nameErrorChange) = remember { mutableStateOf(false) }
 
-    var (textDate,onValueChangeDateText) = remember{ mutableStateOf(event.date) }
-    var (dateError,dateErrorChange) = remember { mutableStateOf(false) }
+    val (textDate,onValueChangeDateText) = remember{ mutableStateOf(event.date) }
+    val (dateError,dateErrorChange) = remember { mutableStateOf(false) }
 
-    var (textStartTime,onValueChangeStartTimeText) = remember{ mutableStateOf(event.initialTime) }
-    var (startTimeError,startTimeErrorChange) = remember { mutableStateOf(false) }
+    val (textStartTime,onValueChangeStartTimeText) = remember{ mutableStateOf(event.initialTime) }
+    val (startTimeError,startTimeErrorChange) = remember { mutableStateOf(false) }
 
-    var (textFinalTime,onValueChangeFinalTimeText) = remember{ mutableStateOf(event.finalTime) }
-    var (finalTimeError,finalTimeErrorChange) = remember { mutableStateOf(false) }
+    val (textFinalTime,onValueChangeFinalTimeText) = remember{ mutableStateOf(event.finalTime) }
+    val (finalTimeError,finalTimeErrorChange) = remember { mutableStateOf(false) }
 
     //Help variables
     val composableScope = rememberCoroutineScope()
@@ -83,7 +74,7 @@ fun modifierEvent(
                     Spacer(modifier = Modifier.padding(15.dp))
 
                     Text(
-                        text = "${event.nameOfClass}",
+                        text = event.nameOfClass,
                         fontSize = 20.sp,
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,

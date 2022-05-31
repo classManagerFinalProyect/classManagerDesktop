@@ -1,4 +1,4 @@
-package Screens.MainAppScreen.Items
+package Screens.ScreenItems.DropDownMenu
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

@@ -1,35 +1,28 @@
 package Screens.Class.Components.MainBody.Practices
 
-import ScreenItems.bigTextFieldWithErrorMessage
+import Screens.ScreenItems.Inputs.bigTextFieldWithErrorMessage
 import Screens.Class.Components.MainBody.Practices.items.chatItem
 import Screens.Class.Components.MainBody.Practices.items.sendBar
 import Screens.Class.ViewModelClass
-import Screens.Course.Components.MainBody.Classes.addNewClass
 import Screens.ScreenItems.Dialogs.infoDialog
-import Screens.ScreenItems.confirmAlertDialog
+import Screens.ScreenItems.Dialogs.confirmAlertDialog
 import Screens.theme.blue
 import Utils.CommonErrors
 import Utils.isAlphabetic
 import Utils.isDate
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
@@ -57,13 +50,13 @@ fun practices() {
 
 
     var commentsIsSelected by remember { mutableStateOf(false) }
-    var textOfChat = remember { mutableStateOf("") }
+    val textOfChat = remember { mutableStateOf("") }
 
     //Help variables
     val composableScope = rememberCoroutineScope()
     var expanded by remember { mutableStateOf(false) }
     var reload by remember { mutableStateOf(false) }
-    var reloadChat = remember { mutableStateOf(false) }
+    val reloadChat = remember { mutableStateOf(false) }
     var deletePractice by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
 
@@ -73,7 +66,7 @@ fun practices() {
         }
     }
 
-    var showToast = remember { mutableStateOf(false) }
+    val showToast = remember { mutableStateOf(false) }
     var toastTitle by remember{ mutableStateOf("Title") }
     var toastText by remember{ mutableStateOf("Text") }
 
@@ -174,7 +167,7 @@ fun practices() {
                             }
 
                             if(!reload){
-                                itemsIndexed(ViewModelClass.currentPractices) { index: Int, item: CompletePractice ->
+                                itemsIndexed(ViewModelClass.currentPractices) { _: Int, item: CompletePractice ->
                                     Surface(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -341,7 +334,7 @@ fun practices() {
                                             }
 
                                             if(!reloadChat.value){
-                                                itemsIndexed(selectedPractices.chat.conversation) { index: Int, item: Message ->
+                                                itemsIndexed(selectedPractices.chat.conversation) { _: Int, item: Message ->
                                                     chatItem(item)
                                                     Spacer(modifier = Modifier.padding(2.dp))
                                                 }

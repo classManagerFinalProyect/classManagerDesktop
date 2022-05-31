@@ -1,10 +1,9 @@
 package Screens.MainAppScreen.Components
 
 import Screens.MainAppScreen.Items.dropDownMenuButton
-import Screens.Course.Components.MainBody.Events.Items.dropDownMenuClass
-import Screens.MainAppScreen.Items.dropDownMenuClassTransparent
-import Screens.MainAppScreen.Items.dropDownMenuUserImg
-import Screens.ScreenItems.dropDownMenuCourses
+import Screens.ScreenItems.DropDownMenu.dropDownMenuClassTransparent
+import Screens.ScreenComponents.TopAppBar.items.dropDownMenuUserImg
+import Screens.ScreenComponents.TopAppBar.items.dropDownMenuCourses
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*

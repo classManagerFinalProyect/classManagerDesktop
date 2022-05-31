@@ -1,44 +1,25 @@
 package Screens.Login
 
-import ScreenItems.bigPasswordInput
-import ScreenItems.bigPasswordInputWithErrorMessage
-import ScreenItems.bigTextFieldWithErrorMessage
+import Screens.ScreenItems.Inputs.bigPasswordInputWithErrorMessage
+import Screens.ScreenItems.Inputs.bigTextFieldWithErrorMessage
 import Screens.ScreenItems.Dialogs.infoDialog
 import Screens.ScreenItems.Dialogs.loadingDialog
 import Screens.ScreenItems.Others.floatToast
 import Utils.CommonErrors
-import Utils.LazyGridFor
 import Utils.isValidEmail
 import Utils.isValidPassword
-import akka.http.scaladsl.model.headers.LinkParams
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.google.firebase.database.utilities.Validation
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.awt.SystemColor.text
-import java.util.regex.Pattern
-
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun MainLogin(
     onRegisterClick: () -> Unit,
@@ -48,11 +29,11 @@ fun MainLogin(
 
     //Help variables
     val composableScope = rememberCoroutineScope()
-    var showToast = remember { mutableStateOf(false) }
-    var textToast = remember { mutableStateOf("") }
-    var loading = remember { mutableStateOf(false) }
-    var loadingError = remember { mutableStateOf(false) }
-    var showAlertToast = remember { mutableStateOf(false) }
+    val showToast = remember { mutableStateOf(false) }
+    val textToast = remember { mutableStateOf("") }
+    val loading = remember { mutableStateOf(false) }
+    val loadingError = remember { mutableStateOf(false) }
+    val showAlertToast = remember { mutableStateOf(false) }
     var getUser by remember{ mutableStateOf(true) }
 
     //Texts
@@ -61,7 +42,6 @@ fun MainLogin(
 
     var passwordText by remember{ mutableStateOf("11111111") }
     var passwordError by remember { mutableStateOf(false) }
-    var textValue by remember { mutableStateOf(TextFieldValue()) }
 
     if(getUser) {
         ViewModelLogin.getUsers(

@@ -1,4 +1,4 @@
-package Screens.ScreenItems
+package Screens.ScreenItems.Cards
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

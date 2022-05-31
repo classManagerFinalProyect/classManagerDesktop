@@ -1,22 +1,14 @@
 package Screens.MainAppScreen
 
-import Screens.Course.ViewModelCourse
 import Screens.MainAppScreen.Components.ContentState
 import Screens.MainAppScreen.Components.MainBody.myClasses
 import Screens.MainAppScreen.Components.MainBody.myCourses
 import Screens.MainAppScreen.Components.topBar
-import Screens.MainAppScreen.Items.rectangleCard
 import Screens.ScreenItems.Dialogs.infoDialog
 import Screens.ScreenItems.Dialogs.loadingDialog
 import Screens.theme.blue
-import akka.http.javadsl.model.Uri
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -24,18 +16,13 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import data.local.CurrentUser
-import data.local.Item
 import data.remote.Course
 import data.remote.Class
 
@@ -54,14 +41,9 @@ fun MainAppScreen(
     //Help variables
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
     var expanded by remember { mutableStateOf(false) }
-    val state = rememberLazyListState()
-    val density = LocalDensity.current
-    val stateHorizontal = rememberScrollState(0)
-    val stateVertical = rememberScrollState(0)
     val composableScope = rememberCoroutineScope()
-    var numOfCourses by remember { mutableStateOf(0) }
-    var loading = remember { mutableStateOf(false) }
-    var showToast = remember { mutableStateOf(false) }
+    val loading = remember { mutableStateOf(false) }
+    val showToast = remember { mutableStateOf(false) }
 
     if(loading.value) {
         loadingDialog(
@@ -213,7 +195,7 @@ fun MainAppScreen(
                                                             .clickable {
                                                                 showToast.value = true
                                                                 clipboardManager.setText(
-                                                                    AnnotatedString(text = "${CurrentUser.currentUser.id}")
+                                                                    AnnotatedString(text = CurrentUser.currentUser.id)
                                                                 )
                                                             },
                                                         content = {

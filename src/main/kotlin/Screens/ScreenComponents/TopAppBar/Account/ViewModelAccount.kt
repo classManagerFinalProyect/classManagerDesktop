@@ -1,14 +1,11 @@
 package Screens.ScreenComponents.TopAppBar.Account
 
-import Screens.Course.ViewModelCourse
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import data.api.ApiServiceAuthentication
-import data.api.ApiServiceEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.util.regex.Pattern
 
 class ViewModelAccount {
     companion object {
@@ -34,8 +31,6 @@ class ViewModelAccount {
             }
         }
 
-        //Validaciones
-        fun isValidEmail(text: String) = Pattern.compile("^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*\$", Pattern.CASE_INSENSITIVE).matcher(text).find()
 
     }
 }

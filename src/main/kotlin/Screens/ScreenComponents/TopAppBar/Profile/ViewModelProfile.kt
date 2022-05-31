@@ -7,12 +7,11 @@ import data.api.ApiServiceUser
 import data.remote.AppUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.util.regex.Pattern
 
 class ViewModelProfile {
     companion object{
         private var errorMessage: String by mutableStateOf ("")
-        var postUser = AppUser("","","", arrayListOf(), arrayListOf(),"","","")
+        private var postUser = AppUser("","","", arrayListOf(), arrayListOf(),"","","")
 
         fun saveChange(
             newUser: AppUser,
@@ -33,10 +32,6 @@ class ViewModelProfile {
                 }
             }
         }
-
-        //Validaciones
-        fun isValidName(text: String) = Pattern.compile("^[a-zA-Z ]+$", Pattern.CASE_INSENSITIVE).matcher(text).find()
-        fun isValidDescription(text: String) = Pattern.compile("^[a-zA-Z0-9 ]+$", Pattern.CASE_INSENSITIVE).matcher(text).find()
 
     }
 }

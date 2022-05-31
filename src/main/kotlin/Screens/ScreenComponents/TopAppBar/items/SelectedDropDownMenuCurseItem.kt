@@ -26,8 +26,7 @@ fun selectedDropDownMenuCurseItem(
     Spacer(modifier = Modifier.padding(4.dp))
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf("Sin asignar")}
-    var textfieldSize by remember { mutableStateOf(Size.Zero) }
-    var editItem = remember{ mutableStateOf(false) }
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
     val icon = if (expanded)
         Icons.Filled.KeyboardArrowUp
@@ -39,7 +38,7 @@ fun selectedDropDownMenuCurseItem(
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(text = "${textOfRow}:", Modifier.width(100.dp))
-        Column() {
+        Column {
 
             OutlinedTextField(
                 value = selectedText,
@@ -48,7 +47,7 @@ fun selectedDropDownMenuCurseItem(
                 modifier = Modifier
                     .padding(start = 20.dp, end = 20.dp)
                     .onGloballyPositioned { coordinates ->
-                        textfieldSize = coordinates.size.toSize()
+                        textFieldSize = coordinates.size.toSize()
                     },
                 trailingIcon = {
                     Icon(
@@ -62,7 +61,7 @@ fun selectedDropDownMenuCurseItem(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 modifier = Modifier
-                    .width(with(LocalDensity.current) { textfieldSize.width.toDp() })
+                    .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
             ) {
                 suggestions.forEach { label ->
                     DropdownMenuItem(

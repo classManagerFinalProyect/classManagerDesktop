@@ -1,13 +1,11 @@
 package Screens.Class.Components
 
-import ScreenItems.bigTextFieldWithErrorMessage
+import Screens.ScreenItems.Inputs.bigTextFieldWithErrorMessage
 import Screens.Class.ViewModelClass
-import Screens.Course.Components.editCourse
 import Screens.Course.ViewModelCourse
 import Screens.ScreenItems.Dialogs.defaultDialog
-import Screens.ScreenItems.confirmAlertDialog
+import Screens.ScreenItems.Dialogs.confirmAlertDialog
 import Utils.CommonErrors
-import Utils.isAlphanumeric
 import Utils.isValidDescription
 import Utils.isValidName
 import androidx.compose.foundation.Image
@@ -25,24 +23,21 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberDialogState
-import data.remote.Class
 
 @Composable
  fun editClass(
     editClass: (Boolean) -> Unit,
     onClickBeginning: () -> Unit
  ){
-    var composableScope = rememberCoroutineScope()
+    val composableScope = rememberCoroutineScope()
     var deleteClass by remember { mutableStateOf(false) }
 
     //Texts
     var textName by remember{ mutableStateOf(ViewModelClass.selectedClass.name) }
     var nameError by remember { mutableStateOf(false) }
-    val messageNameClassError by remember { mutableStateOf("Debes usar caracteres alfanumérico") }
 
     var textDescription by remember{ mutableStateOf(ViewModelClass.selectedClass.description) }
     var descriptionError by remember { mutableStateOf(false) }
-    val messageDescriptionClassError by remember { mutableStateOf("Debes usar caracteres caracter alfanumérico") }
 
 
 

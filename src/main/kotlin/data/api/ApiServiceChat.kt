@@ -1,8 +1,6 @@
 package data.api
 
 import data.remote.Chat
-import data.remote.Class
-import data.remote.Event
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

@@ -1,7 +1,6 @@
 package Screens.ScreenComponents.TopAppBar.CreateCourse
 
-import ScreenItems.bigTextFieldWithErrorMessage
-import Screens.ScreenComponents.TopAppBar.Profile.ViewModelProfile
+import Screens.ScreenItems.Inputs.bigTextFieldWithErrorMessage
 import Utils.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -27,13 +26,11 @@ fun mainCreateCourse(
 ) {
 
     //Texts
-    var (textNameCourse,onValueChangeNameCourseText) = remember{ mutableStateOf("Name course test") }
-    var (nameCourseError,nameCourseErrorChange) = remember { mutableStateOf(false) }
-    val messageNameCourseError by remember { mutableStateOf("El nombre debe de contener únicamente caracteres alfanuméricos") }
+    val (textNameCourse,onValueChangeNameCourseText) = remember{ mutableStateOf("Name course test") }
+    val (nameCourseError,nameCourseErrorChange) = remember { mutableStateOf(false) }
 
-    var (textDescriptionCourse,onValueChangeDescriptionCourseText) = remember{ mutableStateOf("Description courese test") }
-    var (nameDescriptionError,nameDescriptionErrorChange) = remember { mutableStateOf(false) }
-    val messageDescriptionCourseError by remember { mutableStateOf("El nombre debe de contener únicamente caracteres alfanuméricos") }
+    val (textDescriptionCourse,onValueChangeDescriptionCourseText) = remember{ mutableStateOf("Description courese test") }
+    val (nameDescriptionError,nameDescriptionErrorChange) = remember { mutableStateOf(false) }
 
     //Help variables
     val composableScope = rememberCoroutineScope()

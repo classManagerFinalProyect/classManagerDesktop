@@ -1,7 +1,5 @@
 package data.api
 
-import data.local.RolUser
-import data.remote.Class
 import data.remote.Course
 import retrofit2.Response
 import retrofit2.Retrofit

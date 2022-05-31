@@ -1,6 +1,6 @@
-package Screens.Course.Components.MainBody.Events
+package Screens.Course.Components.MainBody.Events.Components
 
-import ScreenItems.bigTextFieldWithErrorMessage
+import Screens.ScreenItems.Inputs.bigTextFieldWithErrorMessage
 import Screens.Course.ViewModelCourse
 import Screens.Course.Components.MainBody.Events.Items.dropDownMenuClass
 import Utils.*
@@ -20,24 +20,23 @@ fun createEvent(
 ) {
 
     //Texts
-    var (textName,onValueChangeNameText) = remember{ mutableStateOf("") }
-    var (nameError,nameErrorChange) = remember { mutableStateOf(false) }
+    val (textName,onValueChangeNameText) = remember{ mutableStateOf("") }
+    val (nameError,nameErrorChange) = remember { mutableStateOf(false) }
 
-    var (textDate,onValueChangeDateText) = remember{ mutableStateOf("") }
-    var (dateError,dateErrorChange) = remember { mutableStateOf(false) }
+    val (textDate,onValueChangeDateText) = remember{ mutableStateOf("") }
+    val (dateError,dateErrorChange) = remember { mutableStateOf(false) }
 
-    var (textStartTime,onValueChangeStartTimeText) = remember{ mutableStateOf("") }
-    var (startTimeError,startTimeErrorChange) = remember { mutableStateOf(false) }
+    val (textStartTime,onValueChangeStartTimeText) = remember{ mutableStateOf("") }
+    val (startTimeError,startTimeErrorChange) = remember { mutableStateOf(false) }
 
-    var (textFinalTime,onValueChangeFinalTimeText) = remember{ mutableStateOf("") }
-    var (finalTimeError,finalTimeErrorChange) = remember { mutableStateOf(false) }
+    val (textFinalTime,onValueChangeFinalTimeText) = remember{ mutableStateOf("") }
+    val (finalTimeError,finalTimeErrorChange) = remember { mutableStateOf(false) }
 
     var textClasses by remember{ mutableStateOf(Class("","","", arrayListOf(), arrayListOf(),"","")) }
 
 
     //Help variables
     val composableScope = rememberCoroutineScope()
-    var expanded by remember { mutableStateOf(false) }
 
 
 
