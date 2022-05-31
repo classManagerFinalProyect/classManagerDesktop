@@ -6,7 +6,10 @@ import Screens.MainAppScreen.Components.MainBody.myClasses
 import Screens.MainAppScreen.Components.MainBody.myCourses
 import Screens.MainAppScreen.Components.topBar
 import Screens.MainAppScreen.Items.rectangleCard
+import Screens.ScreenItems.Dialogs.infoDialog
+import Screens.ScreenItems.Dialogs.loadingDialog
 import Screens.theme.blue
+import akka.http.javadsl.model.Uri
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -57,16 +60,35 @@ fun MainAppScreen(
     val stateVertical = rememberScrollState(0)
     val composableScope = rememberCoroutineScope()
     var numOfCourses by remember { mutableStateOf(0) }
+    var loading = remember { mutableStateOf(false) }
+    var showToast = remember { mutableStateOf(false) }
+
+    if(loading.value) {
+        loadingDialog(
+            loading = loading,
+            informativeText = "Cargando datos"
+        )
+    }
+
+    if(showToast.value) {
+        infoDialog(
+            showToast = showToast,
+            title = "Campo copiado",
+            text = "Se ha copiado su identificador correctamente"
+        )
+    }
 
     LaunchedEffect(getDates) {
         if (getDates) {
             ViewModelMainAppScreen.updateContentState(ContentState.COURSE)
+            loading.value = true
 
             ViewModelMainAppScreen.getCompleteCourses(
                 composableScope = composableScope,
                 allCourses = CurrentUser.myCourses,
                 onFinished = {
                     onChangeGetDates(false)
+                    loading.value = false
                 }
             )
             ViewModelMainAppScreen.getCompleteClasses(
@@ -116,7 +138,6 @@ fun MainAppScreen(
                                                 .fillMaxHeight()
                                                 .fillMaxWidth(0.2f)
                                                 .padding(PaddingValues(start = 30.dp)),
-                                                //.border(BorderStroke(1.dp,Color.LightGray)),
                                             content = {
 
 
@@ -190,6 +211,7 @@ fun MainAppScreen(
                                                             .fillMaxWidth()
                                                             .height(35.dp)
                                                             .clickable {
+                                                                showToast.value = true
                                                                 clipboardManager.setText(
                                                                     AnnotatedString(text = "${CurrentUser.currentUser.id}")
                                                                 )
@@ -260,5 +282,4 @@ private fun mainContent(
             onClickClass = { onClickClass(it) }
         )
     }
-
 }

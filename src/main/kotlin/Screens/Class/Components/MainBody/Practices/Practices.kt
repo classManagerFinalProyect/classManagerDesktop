@@ -2,10 +2,13 @@ package Screens.Class.Components.MainBody.Practices
 
 import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.Class.Components.MainBody.Practices.items.chatItem
+import Screens.Class.Components.MainBody.Practices.items.sendBar
 import Screens.Class.ViewModelClass
 import Screens.Course.Components.MainBody.Classes.addNewClass
+import Screens.ScreenItems.Dialogs.infoDialog
 import Screens.ScreenItems.confirmAlertDialog
 import Screens.theme.blue
+import Utils.CommonErrors
 import Utils.isAlphabetic
 import Utils.isDate
 import androidx.compose.foundation.BorderStroke
@@ -28,30 +31,18 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.*
-import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import data.local.CompletePractice
-import data.local.CurrentUser
 import data.local.Message
 import data.remote.Chat
 import data.remote.Practice
-import java.awt.SystemColor.text
-import java.time.LocalDate
-import java.time.LocalDate.now
 
-@OptIn(ExperimentalComposeUiApi::class)
+
 @Composable
 fun practices() {
 
@@ -64,25 +55,35 @@ fun practices() {
         )
     }
 
-    val messageDateClassError by remember { mutableStateOf("La fecha debe seguir el siguiente formato: dd/mm/yyyy") }
 
     var commentsIsSelected by remember { mutableStateOf(false) }
-    var textOfChat by remember { mutableStateOf("") }
+    var textOfChat = remember { mutableStateOf("") }
 
     //Help variables
     val composableScope = rememberCoroutineScope()
     var expanded by remember { mutableStateOf(false) }
     var reload by remember { mutableStateOf(false) }
-    var reloadChat by remember { mutableStateOf(false) }
+    var reloadChat = remember { mutableStateOf(false) }
     var deletePractice by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(reloadChat){
-        if (reloadChat) {
-            reloadChat = false
+    LaunchedEffect(reloadChat.value){
+        if (reloadChat.value) {
+            reloadChat.value = false
         }
     }
 
+    var showToast = remember { mutableStateOf(false) }
+    var toastTitle by remember{ mutableStateOf("Title") }
+    var toastText by remember{ mutableStateOf("Text") }
+
+    if(showToast.value) {
+        infoDialog(
+            showToast = showToast,
+            title = toastTitle,
+            text = toastText
+        )
+    }
 
     LaunchedEffect(reload){
         if (reload) {
@@ -137,32 +138,37 @@ fun practices() {
                                             text = "Listado de prácticas",
                                             fontSize = 20.sp
                                         )
-                                        IconButton(
-                                            onClick = {
-                                                  expanded = !expanded
-                                            },
-                                            content = {
+                                        if(ViewModelClass.currentUser.rol == "admin" || ViewModelClass.currentUser.rol == "profesor") {
+                                            IconButton(
+                                                onClick = {
+                                                    expanded = !expanded
+                                                },
+                                                content = {
 
-                                                Icon(
-                                                    imageVector = Icons.Default.Add,
-                                                    contentDescription = "Añadir práctica",
-                                                    tint = blue
-                                                )
+                                                    Icon(
+                                                        imageVector = Icons.Default.Add,
+                                                        contentDescription = "Añadir práctica",
+                                                        tint = blue
+                                                    )
 
-                                                DropdownMenu(
-                                                    expanded = expanded,
-                                                    onDismissRequest = { expanded = false },
-                                                    content = {
-                                                        addNewPractice(
-                                                            reload = {
-                                                                reload = true
-                                                                expanded = false
-                                                            },
-                                                        )
-                                                    }
-                                                )
-                                            }
-                                        )
+                                                    DropdownMenu(
+                                                        expanded = expanded,
+                                                        onDismissRequest = { expanded = false },
+                                                        content = {
+                                                            addNewPractice(
+                                                                showToast = { title, text ->
+                                                                    reload = true
+                                                                    expanded = false
+                                                                    showToast.value = true
+                                                                    toastTitle = title
+                                                                    toastText = text
+                                                                },
+                                                            )
+                                                        }
+                                                    )
+                                                }
+                                            )
+                                        }
                                     }
                                 )
                             }
@@ -192,19 +198,21 @@ fun practices() {
                                                                     )
                                                                 }
                                                             )
-                                                            IconButton(
-                                                                onClick = {
-                                                                    selectedPractices = item
-                                                                    deletePractice = true
-                                                                },
-                                                                content = {
-                                                                    Icon(
-                                                                        imageVector = Icons.Default.Delete,
-                                                                        contentDescription = "Eliminar Práctica",
-                                                                        modifier = Modifier.size(ButtonDefaults.IconSize)
-                                                                    )
-                                                                }
-                                                            )
+                                                            if(ViewModelClass.currentUser.rol == "admin" || ViewModelClass.currentUser.rol == "profesor") {
+                                                                IconButton(
+                                                                    onClick = {
+                                                                        selectedPractices = item
+                                                                        deletePractice = true
+                                                                    },
+                                                                    content = {
+                                                                        Icon(
+                                                                            imageVector = Icons.Default.Delete,
+                                                                            contentDescription = "Eliminar Práctica",
+                                                                            modifier = Modifier.size(ButtonDefaults.IconSize)
+                                                                        )
+                                                                    }
+                                                                )
+                                                            }
                                                         }
 
                                                     )
@@ -268,7 +276,7 @@ fun practices() {
                                                         value = selectedPractices.practice.deliveryDate,
                                                         onValueChange = { },
                                                         validateError = ::isDate,
-                                                        errorMessage = messageDateClassError,
+                                                        errorMessage = CommonErrors.notValidDate,
                                                         changeError = {  },
                                                         error = false,
                                                         mandatory = false,
@@ -283,7 +291,7 @@ fun practices() {
                                                         value = selectedPractices.practice.description,
                                                         onValueChange = {  },
                                                         validateError = ::isAlphabetic,
-                                                        errorMessage = "",
+                                                        errorMessage = CommonErrors.notAlphanumericText,
                                                         changeError = {  },
                                                         error = false,
                                                         mandatory = false,
@@ -298,7 +306,7 @@ fun practices() {
                                                         value = selectedPractices.practice.teacherAnnotation,
                                                         onValueChange = {  },
                                                         validateError = ::isAlphabetic,
-                                                        errorMessage = "",
+                                                        errorMessage = CommonErrors.notAlphanumericText,
                                                         changeError = {  },
                                                         error = false,
                                                         mandatory = false,
@@ -332,7 +340,7 @@ fun practices() {
                                                 Spacer(modifier = Modifier.padding(8.dp))
                                             }
 
-                                            if(!reloadChat){
+                                            if(!reloadChat.value){
                                                 itemsIndexed(selectedPractices.chat.conversation) { index: Int, item: Message ->
                                                     chatItem(item)
                                                     Spacer(modifier = Modifier.padding(2.dp))
@@ -341,98 +349,12 @@ fun practices() {
                                         }
                                     )
 
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceEvenly,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .fillMaxHeight()
-                                            .background(Color.Transparent),
-                                        content = {
-
-                                            OutlinedTextField(
-                                                value = textOfChat,
-                                                shape = RoundedCornerShape(30.dp),
-                                                onValueChange = {
-                                                    textOfChat = it
-                                                },
-                                                placeholder = {
-                                                    Text(
-                                                        modifier = Modifier
-                                                            .alpha(ContentAlpha.medium),
-                                                        text = "Mensaje",
-                                                        color = Color.Black
-                                                    )
-                                                },
-                                                textStyle = TextStyle(
-                                                    fontSize = MaterialTheme.typography.subtitle1.fontSize,
-                                                    color = Color.Black
-                                                ),
-                                                singleLine = false,
-                                                keyboardOptions = KeyboardOptions(
-                                                    imeAction = ImeAction.Send
-                                                ),
-                                                keyboardActions = KeyboardActions(
-                                                    //Darle al botón de enviar del teclado
-                                                ),
-                                                colors = TextFieldDefaults.textFieldColors(
-                                                    backgroundColor = Color.White,
-                                                    cursorColor = Color.Black
-                                                ),
-                                                modifier = Modifier
-                                                    .focusRequester(focusRequester)
-                                                    .fillMaxWidth(0.85f)
-                                                    .onPreviewKeyEvent { keyEvent ->
-                                                        when {
-                                                            (keyEvent.key == Key.DirectionRight) -> {
-                                                                //  CursorSelectionBehaviour
-                                                                true
-                                                            }
-                                                            (keyEvent.key == Key.DirectionLeft) -> {
-                                                                TextRange(1, 0)
-                                                                true
-                                                            }
-                                                            (keyEvent.key == Key.Delete && keyEvent.type == KeyEventType.KeyDown) -> {
-                                                                if (textOfChat.isNotEmpty()) textOfChat = textOfChat.substring(0, textOfChat.length - 1)
-                                                                true
-                                                            }
-                                                            (keyEvent.key == Key.Backspace && keyEvent.type == KeyEventType.KeyDown) -> {
-                                                                if (textOfChat.isNotEmpty()) textOfChat = textOfChat.substring(0, textOfChat.length - 1)
-                                                                true
-                                                            }
-                                                            else -> false
-                                                        }
-                                                    }
-                                            )
-
-                                            FloatingActionButton(
-                                                backgroundColor = MaterialTheme.colors.primary,
-                                                modifier = Modifier
-                                                    .size(50.dp),
-                                                content = {
-                                                    Icon(
-                                                        imageVector = Icons.Default.Send,
-                                                        contentDescription = "Enviar mensaje",
-                                                        tint = Color.White
-                                                    )
-                                                },
-                                                onClick = {
-                                                    if (selectedPractices.practice.id != ("")){
-                                                        selectedPractices.chat.conversation.add(Message(textOfChat,CurrentUser.currentUser,now().toString()))
-                                                        ViewModelClass.updateChat(
-                                                            composableScope = composableScope,
-                                                            chat = selectedPractices.chat,
-                                                            onFinished = {
-                                                                textOfChat = ""
-                                                                reloadChat = true
-
-                                                            }
-                                                        )
-                                                    }
-                                                }
-                                            )
-                                        }
-                                    )
+                                    if(selectedPractices.practice.id != "") {
+                                        if(ViewModelClass.currentUser.rol != "padre")
+                                            sendBar(textOfChat, focusRequester, selectedPractices, composableScope, reloadChat)
+                                    }
+                                    else
+                                        Text(text = "Debes seleccionar una práctica", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth(), fontSize = 20.sp, color = MaterialTheme.colors.primary)
                                 }
                             )
                         }
@@ -442,3 +364,4 @@ fun practices() {
         }
     )
 }
+

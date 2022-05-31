@@ -3,6 +3,7 @@ package Screens.MainAppScreen.Components.MainBody
 import Screens.Course.ViewModelCourse.Companion.selectedCourse
 import Screens.MainAppScreen.Items.rectangleCard
 import Screens.MainAppScreen.ViewModelMainAppScreen
+import Screens.ScreenComponents.TopAppBar.CreateClass.mainCreateClass
 import akka.http.scaladsl.model.headers.LinkParams
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -11,11 +12,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +31,9 @@ fun myClasses(
     onClickClass: (Class) -> Unit
 ){
 
+    var createNewClass by remember { mutableStateOf(false) }
+
+
     Text(
         text = "Clases en las que participas",
         fontSize = 25.sp,
@@ -44,6 +45,69 @@ fun myClasses(
     )
 
     if(!getDates) {
+        if(ViewModelMainAppScreen.completeClasses.size == 0) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize(),
+                content = {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top,
+                        modifier = Modifier
+                            .width(400.dp)
+                            .height(350.dp),
+                        content = {
+                            LazyColumn(
+                                content = {
+
+                                    item {
+                                        Image(
+                                            painter = painterResource("logoDani.png"),
+                                            contentDescription = "Sample",
+                                            modifier = Modifier.fillMaxSize()
+                                        )
+
+                                    }
+                                    item {
+                                        Text(text = "No dispone de ninguna clase actualmente", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+                                    }
+
+                                    item {
+                                        TextButton(
+                                            onClick = {
+                                                createNewClass = true
+                                            },
+                                            content = {
+                                                DropdownMenu(
+                                                    expanded = createNewClass,
+                                                    onDismissRequest = { createNewClass = false},
+                                                    content = {
+                                                        mainCreateClass(
+                                                            onClickCancel = {
+                                                                createNewClass = false
+                                                            },
+                                                            onCreateClass = {
+                                                                onClickClass(it)
+                                                            }
+                                                        )
+                                                    }
+                                                )
+                                                Text(
+                                                    text = "Crear clase",
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    textAlign = TextAlign.Center
+                                                )
+                                            }
+                                        )
+                                    }
+                                }
+                            )
+                        }
+                    )
+                }
+            )
+        }
         LazyColumn(
             content = {
                 itemsIndexed(
@@ -84,14 +148,24 @@ fun myClasses(
                                             Column(
                                                 horizontalAlignment = Alignment.Start,
                                                 content = {
-                                                    Text(text = "CLass: ${item.name}")
+                                                    Row(
+                                                        content = {
+                                                            Text(text = "Clase: ", fontWeight = FontWeight.Bold)
+                                                            Text(text = "${item.name}",color = MaterialTheme.colors.primary)
 
+                                                        }
+                                                    )
                                                 }
                                             )
                                             Column(
                                                 horizontalAlignment = Alignment.End,
                                                 content = {
-                                                    Text(text = "Número de Prácticas: ${item.practices.size}")
+                                                    Row(
+                                                        content = {
+                                                            Text(text = "Número de Prácticas: ", fontWeight = FontWeight.Bold)
+                                                            Text(text = "${item.practices.size}",color = MaterialTheme.colors.primary)
+                                                        }
+                                                    )
                                                 }
                                             )
                                         }

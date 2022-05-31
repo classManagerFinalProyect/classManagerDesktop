@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 fun navigationBar(
     content: @Composable () -> Unit
 ) {
+
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,

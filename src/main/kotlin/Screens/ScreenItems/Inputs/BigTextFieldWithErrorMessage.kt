@@ -3,16 +3,12 @@ package ScreenItems
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.*
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import java.awt.Cursor
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -35,6 +31,7 @@ fun bigTextFieldWithErrorMessage(
             .padding(PaddingValues(start = 40.dp, end = 40.dp)),
         content = {
             OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
                 enabled = enabled,
                 value = value,
                 onValueChange = {
@@ -50,28 +47,6 @@ fun bigTextFieldWithErrorMessage(
                     focusedBorderColor = Color.Gray,
                     unfocusedBorderColor = Color.LightGray
                 ),
-                modifier = Modifier.fillMaxWidth()
-                    .onPreviewKeyEvent { keyEvent ->
-                        when {
-                            (keyEvent.key == Key.DirectionRight) -> {
-                              //  CursorSelectionBehaviour
-                                true
-                            }
-                            (keyEvent.key == Key.DirectionLeft) -> {
-                                TextRange(1, 0)
-                                true
-                            }
-                            (keyEvent.key  == Key.Delete && keyEvent.type == KeyEventType.KeyDown) -> {
-                                if(value.isNotEmpty()) onValueChange(value.substring(0, value.length-1))
-                                true
-                            }
-                            (keyEvent.key == Key.Backspace && keyEvent.type == KeyEventType.KeyDown) -> {
-                                if(value.isNotEmpty()) onValueChange(value.substring(0, value.length-1))
-                                true
-                            }
-                            else -> false
-                        }
-                    },
             )
             val assistiveElementText = if (error) errorMessage else if (mandatory) "*Obligatorio" else ""
             val assistiveElementColor = if (error) {

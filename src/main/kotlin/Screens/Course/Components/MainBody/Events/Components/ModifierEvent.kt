@@ -3,8 +3,11 @@ package Screens.Course.Components.MainBody.Events
 import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.Course.ViewModelCourse
 import Screens.ScreenComponents.TopAppBar.CreateClass.ViewModelCreateClass
+import Screens.ScreenItems.confirmAlertDialog
 import Screens.theme.blue
 import Utils.*
+import akka.http.scaladsl.model.headers.LinkParams
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -28,7 +31,8 @@ import data.remote.Event
 @Composable
 fun modifierEvent(
     event: Event,
-    onCloseRequest: () -> Unit
+    onDeleteEvent: () -> Unit,
+    onModifierEvent: () -> Unit
 ) {
 
     //Texts
@@ -46,6 +50,20 @@ fun modifierEvent(
 
     //Help variables
     val composableScope = rememberCoroutineScope()
+    var deleteEvent by remember { mutableStateOf(false) }
+
+
+    if(deleteEvent) {
+        confirmAlertDialog(
+            title = "Desea eliminar el evento",
+            subtitle = "No podrás volver a recuperarlo",
+            onValueChangeGoBack = { deleteEvent = false },
+            onClickAccept = {
+                deleteEvent = false
+                onDeleteEvent()
+            }
+        )
+    }
 
 
     Card(
@@ -59,6 +77,8 @@ fun modifierEvent(
 
             Column(
                 verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxSize(),
                 content = {
                     Spacer(modifier = Modifier.padding(15.dp))
 
@@ -93,7 +113,7 @@ fun modifierEvent(
                         errorMessage = CommonErrors.notValidDate,
                         changeError = dateErrorChange,
                         error = dateError,
-                        mandatory = true,
+                        mandatory = false,
                         KeyboardType = KeyboardType.Text,
                         enabled = true
                     )
@@ -103,10 +123,10 @@ fun modifierEvent(
                         value = textStartTime,
                         onValueChange = onValueChangeStartTimeText,
                         validateError = ::isTime,
-                        errorMessage = CommonErrors.notValidDate,
+                        errorMessage = CommonErrors.notValidTime,
                         changeError = startTimeErrorChange,
                         error = startTimeError,
-                        mandatory = true,
+                        mandatory = false,
                         KeyboardType = KeyboardType.Text,
                         enabled = true
                     )
@@ -116,10 +136,10 @@ fun modifierEvent(
                         value = textFinalTime,
                         onValueChange = onValueChangeFinalTimeText,
                         validateError = ::isTime,
-                        errorMessage = CommonErrors.notValidDate,
+                        errorMessage = CommonErrors.notValidTime,
                         changeError = finalTimeErrorChange,
                         error = finalTimeError,
-                        mandatory = true,
+                        mandatory = false,
                         KeyboardType = KeyboardType.Text,
                         enabled = true
                     )
@@ -150,7 +170,7 @@ fun modifierEvent(
                                           composableScope = composableScope,
                                           deleteEvent = event,
                                           onFinished = {
-                                              onCloseRequest()
+                                              deleteEvent = true
                                           }
                                       )
 
@@ -186,7 +206,7 @@ fun modifierEvent(
                                             event = updateEvent,
                                             onFinished = {
                                                 ViewModelCourse.currentEvents.remove(event)
-                                                onCloseRequest()
+                                                onModifierEvent()
                                             }
                                         )
                                     }

@@ -119,52 +119,79 @@ fun editCourse(
                             .padding(start = 40.dp, end = 40.dp),
                         content = {
 
-                            Button(
-                                modifier = Modifier.width(200.dp),
-                                contentPadding = PaddingValues(
-                                    start = 10.dp,
-                                    top = 6.dp,
-                                    end = 10.dp,
-                                    bottom = 6.dp
-                                ),
-                                colors = ButtonDefaults.textButtonColors(
-                                    contentColor = Color.White,
-                                    backgroundColor = Color.Red
-                                ),
-                                onClick = {
+                            if(ViewModelCourse.currentUser.rol == "admin") {
+                                Button(
+                                    modifier = Modifier.width(200.dp),
+                                    contentPadding = PaddingValues(
+                                        start = 10.dp,
+                                        top = 6.dp,
+                                        end = 10.dp,
+                                        bottom = 6.dp
+                                    ),
+                                    colors = ButtonDefaults.textButtonColors(
+                                        contentColor = Color.White,
+                                        backgroundColor = Color.Red
+                                    ),
+                                    onClick = {
 
-                                    deleteCourse = true
+                                        deleteCourse = true
 
-                                },
-                                content = {
-                                    Text(text = "Eliminar Curso")
-                                }
-                            )
-
-                            Button(
-                                modifier = Modifier.width(200.dp),
-                                contentPadding = PaddingValues(
-                                    start = 10.dp,
-                                    top = 6.dp,
-                                    end = 10.dp,
-                                    bottom = 6.dp
-                                ),
-                                onClick = {
-                                    if(isValidDescription(textDescription) && isValidName(textName)) {
-                                        ViewModelCourse.updateCurrentCourse(
-                                            newName = textName,
-                                            composableScope = composableScope,
-                                            newDescription = textDescription,
-                                            onFinished = {
-                                                editCourse(false)
-                                            }
-                                        )
+                                    },
+                                    content = {
+                                        Text(text = "Eliminar Curso")
                                     }
-                                },
-                                content = {
-                                    Text(text = "Guardar cambios")
-                                }
-                            )
+                                )
+                                Button(
+                                    modifier = Modifier.width(200.dp),
+                                    contentPadding = PaddingValues(
+                                        start = 10.dp,
+                                        top = 6.dp,
+                                        end = 10.dp,
+                                        bottom = 6.dp
+                                    ),
+                                    onClick = {
+                                        if(isValidDescription(textDescription) && isValidName(textName)) {
+                                            ViewModelCourse.updateCurrentCourse(
+                                                newName = textName,
+                                                composableScope = composableScope,
+                                                newDescription = textDescription,
+                                                onFinished = {
+                                                    editCourse(false)
+                                                }
+                                            )
+                                        }
+                                    },
+                                    content = {
+                                        Text(text = "Guardar cambios")
+                                    }
+                                )
+                            }
+                            else {
+                                Button(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentPadding = PaddingValues(
+                                        start = 10.dp,
+                                        top = 6.dp,
+                                        end = 10.dp,
+                                        bottom = 6.dp
+                                    ),
+                                    onClick = {
+                                        if(isValidDescription(textDescription) && isValidName(textName)) {
+                                            ViewModelCourse.updateCurrentCourse(
+                                                newName = textName,
+                                                composableScope = composableScope,
+                                                newDescription = textDescription,
+                                                onFinished = {
+                                                    editCourse(false)
+                                                }
+                                            )
+                                        }
+                                    },
+                                    content = {
+                                        Text(text = "Guardar cambios")
+                                    }
+                                )
+                            }
                         }
                     )
                 }

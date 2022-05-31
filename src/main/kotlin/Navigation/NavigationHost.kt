@@ -33,6 +33,10 @@ fun NavigationHost() {
         is Screen.Register ->
             MainRegister(
                 onBack = { screenState = Screen.Login},
+                onLogin = {
+                    screenState = Screen.MainAppScreen
+                    getDates = true
+                }
             )
 
         is Screen.MainAppScreen ->

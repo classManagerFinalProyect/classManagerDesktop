@@ -9,6 +9,8 @@ import Screens.Course.Components.editCourse
 import Screens.MainAppScreen.Components.topBar
 import Screens.ScreenComponents.Header.header
 import Screens.ScreenComponents.NavigationBar.navigationBar
+import Screens.ScreenItems.Dialogs.loadingDialog
+import Screens.ScreenItems.Others.floatToast
 import Screens.theme.blueDesaturated
 import Utils.LazyGridFor
 import androidx.compose.foundation.*
@@ -42,6 +44,16 @@ fun MainCourse(
     val composableScope = rememberCoroutineScope()
     var showMainContent by remember { mutableStateOf(false) }
     var editCourse by remember { mutableStateOf(false) }
+    var loading = remember { mutableStateOf(false) }
+
+
+    if(loading.value) {
+        loadingDialog(
+            loading = loading,
+            informativeText = "Cargando datos"
+        )
+    }
+
 
     if(editCourse) {
         editCourse(
@@ -54,6 +66,7 @@ fun MainCourse(
         ViewModelCourse.updateContentState(newValue = ContentState.CLASSES)
 
         if (getDates) {
+            loading.value = true
             showMainContent = false
             ViewModelCourse.selectedCourse = selectedCourse
             ViewModelCourse.getCurrentClasses(
@@ -61,6 +74,7 @@ fun MainCourse(
                 composableScope = composableScope,
                 onFinished = {
                     showMainContent = true
+                    loading.value = false
                 }
             )
 
@@ -95,6 +109,9 @@ fun MainCourse(
                 onChangeGetDates = { onChangeGetDates(it) }
              )
         },
+        floatingActionButton = {
+
+        },
         content = {
             Column(
                 modifier = Modifier
@@ -115,18 +132,20 @@ fun MainCourse(
                                 color = Color.White
                             )
 
-                            IconButton(
-                                onClick = {
-                                    editCourse = true
-                                },
-                                content = {
-                                    Icon(
-                                        tint = Color.White,
-                                        imageVector = Icons.Default.Edit,
-                                        contentDescription = "Editar Clase"
-                                    )
-                                }
-                            )
+                            if(ViewModelCourse.currentUser.rol == "admin" || ViewModelCourse.currentUser.rol == "profesor") {
+                                IconButton(
+                                    onClick = {
+                                        editCourse = true
+                                    },
+                                    content = {
+                                        Icon(
+                                            tint = Color.White,
+                                            imageVector = Icons.Default.Edit,
+                                            contentDescription = "Editar Clase"
+                                        )
+                                    }
+                                )
+                            }
                         }
                     )
 

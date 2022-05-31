@@ -20,7 +20,8 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun addMember(
-    onValueChangeExpanded: (Boolean) -> Unit
+    onValueChangeExpanded: (Boolean) -> Unit,
+    showToast: (String, String) -> Unit
 ) {
 
 
@@ -29,6 +30,7 @@ fun addMember(
     val suggestion: MutableList<String> = mutableListOf("admin","profesor","padre","alumno")
     var textSelectedRol by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
+
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -42,27 +44,6 @@ fun addMember(
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(focusRequester)
-                    .onPreviewKeyEvent { keyEvent ->
-                        when {
-                            (keyEvent.key == Key.DirectionRight) -> {
-                                //  CursorSelectionBehaviour
-                                true
-                            }
-                            (keyEvent.key == Key.DirectionLeft) -> {
-                                TextRange(1, 0)
-                                true
-                            }
-                            (keyEvent.key == Key.Delete && keyEvent.type == KeyEventType.KeyDown) -> {
-                                if (idOfUser.isNotEmpty()) idOfUser = idOfUser.substring(0, idOfUser.length - 1)
-                                true
-                            }
-                            (keyEvent.key == Key.Backspace && keyEvent.type == KeyEventType.KeyDown) -> {
-                                if (idOfUser.isNotEmpty()) idOfUser = idOfUser.substring(0, idOfUser.length - 1)
-                                true
-                            }
-                            else -> false
-                        }
-                    }
                     .padding(
                         PaddingValues(
                             start = 20.dp,
@@ -109,14 +90,19 @@ fun addMember(
                     )
                     TextButton(
                         onClick = {
-                            ViewModelClass.addNewMember(
-                                rol = textSelectedRol,
-                                composableScope = composableScope,
-                                idOfUser = idOfUser,
-                                onFinished = {
-                                    ViewModelClass.updateContentState(newValue = ContentState.MEMBERS)
-                                }
-                            )
+                            if(textSelectedRol != "") {
+                                ViewModelClass.addNewMember(
+                                    rol = textSelectedRol,
+                                    composableScope = composableScope,
+                                    idOfUser = idOfUser,
+                                    onFinished = {
+                                        showToast(
+                                            "Usuario agregado",
+                                            "El usuario se ha agregado correctamente"
+                                        )
+                                    }
+                                )
+                            }
                         },
                         content = {
                             Text(text = "Save")

@@ -20,7 +20,7 @@ class ViewModelClass {
         var currentMembers: MutableList<UserWithRol> = arrayListOf()
         var selectedClass : Class = Class("","","", arrayListOf(), arrayListOf(),"","")
         var currentPractices : MutableList<CompletePractice> = arrayListOf()
-        var currentUser: UserWithRol = UserWithRol( AppUser("","","", arrayListOf(), arrayListOf(),"",""),"")
+        var currentUser: UserWithRol = UserWithRol( AppUser("","","", arrayListOf(), arrayListOf(),"","",""),"")
         var currentCourse: Course = Course(arrayListOf(), arrayListOf(), arrayListOf(),"","","","")
 
 
@@ -31,20 +31,33 @@ class ViewModelClass {
         ){
             currentCourse.classes.remove(selectedClass.id)
 
-            updateCourse(
-                composableScope = composableScope,
-                updateCourse = currentCourse,
-                onFinished = {
-                    deleteClass(
-                        composableScope = composableScope,
-                        idOfClass = selectedClass.id,
-                        onFinished = {
-                            CurrentUser.myClasses.remove(selectedClass)
-                            onFinished()
-                        }
-                    )
-                }
-            )
+            if(currentCourse.id == ""){
+                deleteClass(
+                    composableScope = composableScope,
+                    idOfClass = selectedClass.id,
+                    onFinished = {
+                        CurrentUser.myClasses.remove(selectedClass)
+                        onFinished()
+                    }
+                )
+            }
+            else {
+                updateCourse(
+                    composableScope = composableScope,
+                    updateCourse = currentCourse,
+                    onFinished = {
+                        deleteClass(
+                            composableScope = composableScope,
+                            idOfClass = selectedClass.id,
+                            onFinished = {
+                                CurrentUser.myClasses.remove(selectedClass)
+                                onFinished()
+                            }
+                        )
+                    }
+                )
+            }
+
             currentMembers.forEach {
                 it.user.classes.remove(selectedClass.id)
                 updateUser(
@@ -55,9 +68,6 @@ class ViewModelClass {
                     }
                 )
             }
-
-
-
         }
 
         fun deleteClass(
@@ -223,7 +233,6 @@ class ViewModelClass {
                         }
                         countTmp++
                         if(countTmp == selectedClass.users.size) {
-                            getCurrentUser()
                             onFinished()
                         }
                     } catch (e: Exception) {
@@ -234,8 +243,8 @@ class ViewModelClass {
         }
 
         private fun getCurrentUser() {
-            currentMembers.forEach {
-                if (it.user.id == CurrentUser.currentUser.id) currentUser = it
+            selectedClass.users.forEach {
+                if (it.id == CurrentUser.currentUser.id) currentUser = UserWithRol(CurrentUser.currentUser, it.rol)
             }
         }
 
@@ -570,6 +579,7 @@ class ViewModelClass {
             composableScope: CoroutineScope,
             onFinished: () -> Unit
         ) {
+            getCurrentUser()
             currentPractices.clear()
             var countTmp = 0
 

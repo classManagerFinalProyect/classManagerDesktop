@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.KeyboardType.Companion.Email
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
@@ -33,7 +35,8 @@ import data.local.CurrentUser
 
 @Composable
 fun MainAccount(
-    onCloseSession: () -> Unit
+    onCloseSession: () -> Unit,
+    onCloseDialog: (Boolean) -> Unit
 ) {
     //Texts
     var (emailText,onValueChangeEmailText) = remember{ mutableStateOf(CurrentUser.currentUser.email) }
@@ -91,6 +94,7 @@ fun MainAccount(
             )
         },
         content = {
+            Spacer(modifier = Modifier.padding(20.dp))
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -99,17 +103,33 @@ fun MainAccount(
                         modifier = Modifier.fillMaxSize(0.9f),
                         content = {
                             item {
-                                bigTextFieldWithErrorMessage(
-                                    text = "Email del usuario",
-                                    value = emailText,
-                                    onValueChange = onValueChangeEmailText,
-                                    validateError = ViewModelAccount::isValidEmail,
-                                    errorMessage = emailOfUserError,
-                                    changeError = emailErrorChange,
-                                    error = emailError,
-                                    mandatory = false,
-                                    KeyboardType = KeyboardType.Text,
-                                    enabled = true
+                                Row(
+                                    modifier = Modifier
+                                        .padding(PaddingValues(start = 40.dp, end = 40.dp)),
+                                    content = {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Start ,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(50.dp),
+                                            content = {
+                                                Spacer(modifier = Modifier.padding(5.dp))
+                                                Icon(
+                                                    imageVector = Icons.Default.Email,
+                                                    contentDescription = "Email"
+                                                )
+                                                Spacer(modifier = Modifier.padding(3.dp))
+                                                Column(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth(0.9f),
+                                                    content = {
+                                                        Text(text = "Email: ${CurrentUser.currentUser.email}")
+                                                    }
+                                                )
+                                            }
+                                        )
+                                    }
                                 )
                             }
                             item {
@@ -181,9 +201,9 @@ fun MainAccount(
 
                             item {
                                 longButton(
-                                    text = "Guardar cambios",
+                                    text = "Aceptar",
                                     onClick = {
-
+                                        onCloseDialog(false)
                                     }
                                 )
                             }

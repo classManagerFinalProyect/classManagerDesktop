@@ -19,7 +19,7 @@ class CurrentUser {
 
         var myCourses: MutableList<Course> = mutableListOf()
         val myClasses: MutableList<Class> = mutableListOf()
-        var currentUser: AppUser = AppUser("","","", mutableListOf<String>(), arrayListOf<String>(),"","")
+        var currentUser: AppUser = AppUser("","","", mutableListOf<String>(), arrayListOf<String>(),"","","")
 
         fun updateCurrentUser(
             composableScope: CoroutineScope,

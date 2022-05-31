@@ -3,41 +3,51 @@ package Screens.Class.Components.MainBody.Practices
 import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.Class.ViewModelClass
 import Screens.Course.ViewModelCourse
+import Screens.ScreenItems.Others.floatToast
 import Utils.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.FabPosition
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import data.remote.Event
 import data.remote.Practice
+import kotlinx.coroutines.delay
 
 @Composable
 fun addNewPractice(
-    reload: () -> Unit,
+    showToast: (String, String) -> Unit
 ) {
 
     //Texts
     var textName by remember { mutableStateOf("") }
     var nameError by remember { mutableStateOf(false) }
-    val messageNameClassError by remember { mutableStateOf("El nombre debe de contener únicamente caracteres alfanuméricos") }
 
     var textDeliveryDate by remember{ mutableStateOf("") }
     var deliveryDateError by remember { mutableStateOf(false) }
-    val messageDeliveryDateError by remember { mutableStateOf("La fecha debe seguir el siguiente formato: dd/mm/yyyy") }
 
     var textDescription by remember{ mutableStateOf("") }
     var descriptionError by remember { mutableStateOf(false) }
-    val messageDescriptionDateError by remember { mutableStateOf("Debes usar caracteres alfanuméricos y nunca más de 30 carácteres.") }
 
     var textAnnotation by remember{ mutableStateOf("") }
     var annotationError by remember { mutableStateOf(false) }
-    val annotationDateError by remember { mutableStateOf("La fecha debe seguir el siguiente formato: dd/mm/yyyy") }
+
 
     //Help variables
     val composableScope = rememberCoroutineScope()
+    var showFloatToast = remember { mutableStateOf(false) }
+
+    LaunchedEffect(showFloatToast.value) {
+        if(showFloatToast.value) {
+            delay(1500L)
+            showFloatToast.value = false
+        }
+    }
 
 
     Column(
@@ -124,17 +134,37 @@ fun addNewPractice(
                             practice = newPractice,
                             composableScope = composableScope,
                             onFinished = {
-                                reload()
+                                showToast(
+                                    "Práctica creada",
+                                    "Se ha creado la práctica con exito"
+                                )
                             }
                         )
+                    }
+                    else {
+                        showFloatToast.value = true
                     }
                 },
                 content = {
                     Text(text = "Crear práctica")
                 }
             )
-            Spacer(modifier = Modifier.padding(10.dp))
 
+            Spacer(modifier = Modifier.padding(10.dp))
+            if(showFloatToast.value){
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    content = {
+                        floatToast(
+                            message = "ERROR: Debes de rellenar todos los campos correctamente",
+                            showToast = showFloatToast
+                        )
+                    }
+                )
+
+            }
         }
     )
 }

@@ -101,7 +101,9 @@ class ViewModelMainAppScreen {
             completeCourses.clear()
 
             var countCourses = 0
-            allCourses.forEach{ courses ->
+
+            if(allCourses.size == 0) onFinished()
+            allCourses.forEach { courses ->
                 if(courses.classes.size == 0) {
                     countCourses++
                     completeCourses.add(CompleteCourse(courses.users, arrayListOf(),courses.events,courses.name,courses.description,courses.id,courses.img))

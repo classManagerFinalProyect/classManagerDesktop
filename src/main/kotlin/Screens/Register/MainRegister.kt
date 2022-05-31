@@ -8,6 +8,7 @@ import Screens.ScreenItems.Dialogs.defaultDialog
 import Screens.ScreenItems.Dialogs.loadingDialog
 import Screens.ScreenItems.Others.floatToast
 import Utils.CommonErrors
+import Utils.createSha256
 import Utils.isValidEmail
 import Utils.isValidPassword
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -38,7 +39,8 @@ import java.util.regex.Pattern
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainRegister(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onLogin: () -> Unit
 ) {
     //Texts
     var (emailText,onValueChangeEmailText) = remember{ mutableStateOf("test@gmail.com") }
@@ -112,6 +114,7 @@ fun MainRegister(
                                 )
                             }
                         },
+                        floatingActionButtonPosition = FabPosition.Center,
                         topBar = {
                             TopAppBar(
                                 title = {
@@ -225,20 +228,21 @@ fun MainRegister(
                                                                     checkedStatePrivacyPolicies = checkedStatePrivacyPolicies
                                                                 )
                                                             ) {
-                                                                if (repeatPasswordText.equals(passwordText)) {
+                                                                if (repeatPasswordText == passwordText) {
                                                                     loading.value = true
                                                                     ViewModelRegister.createUserWithEmailAndPassword (
                                                                         composableScope = composableScope,
-                                                                        newUser = NewUser("", emailText, passwordText),
+                                                                        newUser = NewUser("", emailText, createSha256(base = passwordText)!!),
                                                                         onFinish = {
                                                                             if(it) {
                                                                                 loading.value = false
                                                                                 toastMessage.value = "La cuenta se ha creado correctamente"
                                                                                 showToast.value = true
-                                                                                onBack()
+                                                                                onLogin()
                                                                             }
                                                                             else {
-                                                                                toastMessage.value = "La cuenta no se ha podido crear correctamente"
+                                                                                loading.value = false
+                                                                                toastMessage.value = "ERROR: La cuenta no ha podido ser creada,pruebe otro usuario"
                                                                                 showToast.value = true
                                                                             }
 
@@ -251,12 +255,12 @@ fun MainRegister(
                                                                     )
                                                                 }
                                                                 else {
-                                                                    toastMessage.value = "Las claves deben ser iguales"
+                                                                    toastMessage.value = "ERROR: Las claves deben ser iguales"
                                                                     showToast.value = true
                                                                 }
                                                             }
                                                             else {
-                                                                toastMessage.value = CommonErrors.incompleteFields
+                                                                toastMessage.value = "ERROR: ${CommonErrors.incompleteFields}"
                                                                 showToast.value = true
                                                             }
                                                         },

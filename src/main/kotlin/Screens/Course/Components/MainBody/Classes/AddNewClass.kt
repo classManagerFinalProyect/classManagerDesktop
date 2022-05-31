@@ -3,6 +3,7 @@ package Screens.Course.Components.MainBody.Classes
 import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.Course.ViewModelCourse
 import Screens.ScreenComponents.TopAppBar.CreateClass.ViewModelCreateClass
+import Screens.ScreenItems.Dialogs.infoDialog
 import Utils.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -23,7 +24,7 @@ import org.jetbrains.skia.impl.Log
 @Composable
 fun addNewClass(
     onClickCancel: () -> Unit,
-    reload: () -> Unit
+    createClass: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.Top,
@@ -36,14 +37,14 @@ fun addNewClass(
             //Help variables
             val composableScope = rememberCoroutineScope()
 
+
             //Texts
-            var (textName,onValueChangeNameText) = remember{ mutableStateOf("Name class test") }
+            var (textName,onValueChangeNameText) = remember{ mutableStateOf("Name") }
             var (nameError,nameErrorChange) = remember { mutableStateOf(false) }
-            val messageNameClassError by remember { mutableStateOf("El nombre debe de contener únicamente caracteres alfabeticos") }
 
             var (textDescription,onValueChangeDescriptionText) = remember{ mutableStateOf("Name class test") }
             var (nameDescriptionError,nameDescriptionErrorChange) = remember { mutableStateOf(false) }
-            val messageDescriptionError by remember { mutableStateOf("El nombre debe de contener únicamente caracteres alfanuméricos") }
+
 
 
             Text(
@@ -127,14 +128,15 @@ fun addNewClass(
                                         )
                                     ),
                                     idOfCourse = ViewModelCourse.selectedCourse.id,
-                                    img = "gs://class-manager-58dbf.appspot.com/user/defaultUserImg.png"
+                                    img = ViewModelCourse.selectedCourse.img
                                 )
 
                                 ViewModelCourse.addNewClass(
                                     composableScope = composableScope,
                                     uploadClass = newClass,
                                     onFinished = {
-                                        reload()
+                                        createClass()
+
                                         Log.debug("Se ha creado la clase")
                                     }
                                 )

@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -50,19 +51,16 @@ fun chatItem(
                             .padding(4.dp)
                             .fillMaxSize(),
                         content = {
-
-                            AsyncImage(
-                                load = { loadImageBitmap(message.sentBy.imgPath) },
-                                painterFor = { remember { BitmapPainter(it) } },
-                                contentDescription = "avatar",
+                            Image(
+                                painter = painterResource("defaultUserImg.png"),
                                 modifier = Modifier
                                     .size(40.dp)
                                     .clip(CircleShape)
                                     .border(1.dp, Color.Gray, CircleShape)
                                     .align(Alignment.CenterVertically),
                                 contentScale = ContentScale.Crop,
+                                contentDescription = "avatar",
                             )
-
                             Spacer(modifier = Modifier.padding(5.dp))
                             Column(
                                 modifier = Modifier

@@ -1,6 +1,7 @@
 package data.api
 
 import data.local.NewUser
+import data.remote.AppUser
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -16,6 +17,12 @@ interface ApiServiceAuthentication {
     suspend fun register(
         @Body newUser: NewUser
     ): Response<NewUser>
+
+
+    @POST("login")
+    suspend fun login(
+        @Body newUser: NewUser
+    ):Response<AppUser>
 
     @POST("deleteAccount/{uid}")
     suspend fun deleteAccount(

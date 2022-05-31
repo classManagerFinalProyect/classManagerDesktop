@@ -3,6 +3,7 @@ package Screens.Class.Components.MainBody.Members
 import Screens.Class.Components.MainBody.ContentState
 import Screens.Class.ViewModelClass
 import Screens.MainAppScreen.Items.bigSelectedDropDownMenu
+import Screens.ScreenItems.Dialogs.infoDialog
 import Screens.theme.blueDesaturated
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.TooltipArea
@@ -31,13 +32,35 @@ import data.remote.AppUser
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun members() {
+
+    var reload by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
     var composableScope = rememberCoroutineScope()
     var deleteUser by remember { mutableStateOf(false) }
     var rolFilter by remember { mutableStateOf("ALL") }
-    var selectedUserWithRol by remember { mutableStateOf(UserWithRol(AppUser("","","", arrayListOf(), arrayListOf(),"",""),"")) }
+    var selectedUserWithRol by remember { mutableStateOf(UserWithRol(AppUser("","","", arrayListOf(), arrayListOf(),"","",""),"")) }
     val suggestions: MutableList<String> = mutableListOf("admin","profesor","padre","alumno")
     var sizeDropMenu by remember { mutableStateOf(IntSize.Zero) }
+
+
+    var showToast = remember { mutableStateOf(false) }
+    var toastTitle by remember{ mutableStateOf("Title") }
+    var toastText by remember{ mutableStateOf("Text") }
+
+    if(showToast.value) {
+        infoDialog(
+            showToast = showToast,
+            title = toastTitle,
+            text = toastText
+        )
+    }
+
+    LaunchedEffect(reload){
+        if (reload) {
+            reload = false
+        }
+    }
+
 
     if (deleteUser) {
         AlertDialog(
@@ -177,6 +200,13 @@ fun members() {
                                                 addMember(
                                                     onValueChangeExpanded = {
                                                         expanded = false
+                                                    },
+                                                    showToast = { title, text ->
+                                                        reload = true
+                                                        expanded = false
+                                                        showToast.value = true
+                                                        toastTitle = title
+                                                        toastText = text
                                                     }
                                                 )
                                             }
@@ -193,169 +223,171 @@ fun members() {
 
                     Spacer(modifier = Modifier.padding(10.dp))
 
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 5.dp),
-                        content = {
-                            var grouped = ViewModelClass.currentMembers.groupBy { it.user.name.uppercase().substring(0, 1) }.toSortedMap()
+                    if(!reload) {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = 5.dp),
+                            content = {
+                                var grouped = ViewModelClass.currentMembers.groupBy { it.user.name.uppercase().substring(0, 1) }.toSortedMap()
 
-                            grouped.forEach { header, items ->
-                                var writeHeader: Boolean = checkIfListIsEmpty(items, rolFilter)
+                                grouped.forEach { header, items ->
+                                    var writeHeader: Boolean = checkIfListIsEmpty(items, rolFilter)
 
-                                items.forEach {
+                                    items.forEach {
 
-                                    if(writeHeader) {
-                                        stickyHeader(
-                                            content = {
-                                                Text(
-                                                    text = header,
-                                                    color = Color.White,
-                                                    style = MaterialTheme.typography.caption,
-                                                    modifier = Modifier
-                                                        .background(blueDesaturated)
-                                                        .padding(16.dp)
-                                                        .fillMaxWidth()
-                                                )
-                                            }
-                                        )
-                                        itemsIndexed(items) { index: Int, item ->
-                                            if(item.rol == rolFilter || rolFilter == "ALL") {
-                                                Row(
-                                                    horizontalArrangement = Arrangement.Start,
-                                                    verticalAlignment = Alignment.CenterVertically,
-                                                    modifier = Modifier
-                                                        .fillMaxWidth(),
-                                                    content = {
-                                                        TooltipArea(
-                                                            tooltip = {
-                                                                Column(
-                                                                    modifier = Modifier.background(Color.Transparent),
-                                                                    content = {
-                                                                        Text(
-                                                                            text = "${item.user.email}",
-                                                                            fontWeight = FontWeight.Bold
-                                                                        )
-
-                                                                    }
-                                                                )
-                                                            },
-                                                            delayMillis = 400,
-                                                            tooltipPlacement = TooltipPlacement.CursorPoint(
-                                                                offset = DpOffset(0.dp, 16.dp)
-                                                            ),
-                                                            content = {
-                                                                Text(
-                                                                    text = item.user.name,
-                                                                    modifier = Modifier
-                                                                        .weight(1.5f)
-                                                                        .padding(16.dp)
-                                                                        .wrapContentWidth(Alignment.Start),
-                                                                    style = MaterialTheme.typography.subtitle1
-                                                                )
-                                                            }
-                                                        )
-                                                        var userRolExpanded by remember {  mutableStateOf(false) }
-                                                        if (ViewModelClass.currentUser.rol == "admin") {
-                                                            var textSelectedRol by remember { mutableStateOf(item.rol) }
-
-
-                                                            Row (
-                                                                verticalAlignment = Alignment.CenterVertically,
-                                                                horizontalArrangement = Arrangement.End,
-                                                                modifier = Modifier.fillMaxWidth(),
-                                                                content = {
-                                                                    TextButton(
-                                                                        onClick = {
-                                                                            userRolExpanded = true
-                                                                        },
+                                        if(writeHeader) {
+                                            stickyHeader(
+                                                content = {
+                                                    Text(
+                                                        text = header,
+                                                        color = Color.White,
+                                                        style = MaterialTheme.typography.caption,
+                                                        modifier = Modifier
+                                                            .background(blueDesaturated)
+                                                            .padding(16.dp)
+                                                            .fillMaxWidth()
+                                                    )
+                                                }
+                                            )
+                                            itemsIndexed(items) { index: Int, item ->
+                                                if(item.rol == rolFilter || rolFilter == "ALL") {
+                                                    Row(
+                                                        horizontalArrangement = Arrangement.Start,
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        modifier = Modifier
+                                                            .fillMaxWidth(),
+                                                        content = {
+                                                            TooltipArea(
+                                                                tooltip = {
+                                                                    Column(
+                                                                        modifier = Modifier.background(Color.Transparent),
                                                                         content = {
                                                                             Text(
-                                                                                text = textSelectedRol,
-                                                                                fontSize = 12.sp,
-                                                                                modifier = Modifier
-                                                                                    .padding(end = 0.dp, start = 16.dp, top = 16.dp, bottom = 16.dp)
-                                                                                    .wrapContentWidth(Alignment.End),
-                                                                                style = MaterialTheme.typography.subtitle1
+                                                                                text = "${item.user.email}",
+                                                                                fontWeight = FontWeight.Bold
                                                                             )
-                                                                            DropdownMenu(
-                                                                                expanded = userRolExpanded,
-                                                                                onDismissRequest = {
-                                                                                    userRolExpanded = false
-                                                                                    textSelectedRol = item.rol
-                                                                                },
-                                                                                content = {
-                                                                                    Column(
-                                                                                        content = {
-                                                                                            bigSelectedDropDownMenu(
-                                                                                                suggestions = suggestions,
-                                                                                                onValueChangeTextSelectedItem = { textSelectedRol = it }
-                                                                                            )
 
-                                                                                            TextButton(
-                                                                                                onClick = {
-                                                                                                    userRolExpanded = false
-
-                                                                                                    ViewModelClass.changeRol(
-                                                                                                        composableScope = composableScope,
-                                                                                                        appUser = item.user,
-                                                                                                        newRol = textSelectedRol,
-                                                                                                        onFinished = {
-                                                                                                            item.rol = textSelectedRol
-                                                                                                        }
-                                                                                                    )
-                                                                                                },
-                                                                                                content = {
-                                                                                                    Text(text = "Guardar", textAlign = TextAlign.End)
-                                                                                                }
-                                                                                            )
-                                                                                        }
-                                                                                    )
-                                                                                }
-                                                                            )
                                                                         }
                                                                     )
-
-                                                                    IconButton(
-                                                                        onClick = {
-                                                                            selectedUserWithRol = item
-                                                                            deleteUser = true
-                                                                        },
-                                                                        content = {
-                                                                            Icon(
-                                                                                imageVector = Icons.Default.Delete,
-                                                                                contentDescription = "Eliminar empleado",
-                                                                                modifier = Modifier.size(ButtonDefaults.IconSize)
-                                                                            )
-                                                                        }
+                                                                },
+                                                                delayMillis = 400,
+                                                                tooltipPlacement = TooltipPlacement.CursorPoint(
+                                                                    offset = DpOffset(0.dp, 16.dp)
+                                                                ),
+                                                                content = {
+                                                                    Text(
+                                                                        text = item.user.name,
+                                                                        modifier = Modifier
+                                                                            .weight(1.5f)
+                                                                            .padding(16.dp)
+                                                                            .wrapContentWidth(Alignment.Start),
+                                                                        style = MaterialTheme.typography.subtitle1
                                                                     )
                                                                 }
                                                             )
+                                                            var userRolExpanded by remember {  mutableStateOf(false) }
+                                                            if (ViewModelClass.currentUser.rol == "admin") {
+                                                                var textSelectedRol by remember { mutableStateOf(item.rol) }
+
+
+                                                                Row (
+                                                                    verticalAlignment = Alignment.CenterVertically,
+                                                                    horizontalArrangement = Arrangement.End,
+                                                                    modifier = Modifier.fillMaxWidth(),
+                                                                    content = {
+                                                                        TextButton(
+                                                                            onClick = {
+                                                                                userRolExpanded = true
+                                                                            },
+                                                                            content = {
+                                                                                Text(
+                                                                                    text = textSelectedRol,
+                                                                                    fontSize = 12.sp,
+                                                                                    modifier = Modifier
+                                                                                        .padding(end = 0.dp, start = 16.dp, top = 16.dp, bottom = 16.dp)
+                                                                                        .wrapContentWidth(Alignment.End),
+                                                                                    style = MaterialTheme.typography.subtitle1
+                                                                                )
+                                                                                DropdownMenu(
+                                                                                    expanded = userRolExpanded,
+                                                                                    onDismissRequest = {
+                                                                                        userRolExpanded = false
+                                                                                        textSelectedRol = item.rol
+                                                                                    },
+                                                                                    content = {
+                                                                                        Column(
+                                                                                            content = {
+                                                                                                bigSelectedDropDownMenu(
+                                                                                                    suggestions = suggestions,
+                                                                                                    onValueChangeTextSelectedItem = { textSelectedRol = it }
+                                                                                                )
+
+                                                                                                TextButton(
+                                                                                                    onClick = {
+                                                                                                        userRolExpanded = false
+
+                                                                                                        ViewModelClass.changeRol(
+                                                                                                            composableScope = composableScope,
+                                                                                                            appUser = item.user,
+                                                                                                            newRol = textSelectedRol,
+                                                                                                            onFinished = {
+                                                                                                                item.rol = textSelectedRol
+                                                                                                            }
+                                                                                                        )
+                                                                                                    },
+                                                                                                    content = {
+                                                                                                        Text(text = "Guardar", textAlign = TextAlign.End)
+                                                                                                    }
+                                                                                                )
+                                                                                            }
+                                                                                        )
+                                                                                    }
+                                                                                )
+                                                                            }
+                                                                        )
+
+                                                                        IconButton(
+                                                                            onClick = {
+                                                                                selectedUserWithRol = item
+                                                                                deleteUser = true
+                                                                            },
+                                                                            content = {
+                                                                                Icon(
+                                                                                    imageVector = Icons.Default.Delete,
+                                                                                    contentDescription = "Eliminar empleado",
+                                                                                    modifier = Modifier.size(ButtonDefaults.IconSize)
+                                                                                )
+                                                                            }
+                                                                        )
+                                                                    }
+                                                                )
+
+                                                            }
+                                                            else {
+                                                                Text(
+                                                                    text = item.rol,
+                                                                    fontSize = 12.sp,
+                                                                    modifier = Modifier
+                                                                        .weight(0.5f)
+                                                                        .padding(16.dp)
+                                                                        .wrapContentWidth(Alignment.End),
+                                                                    style = MaterialTheme.typography.subtitle1
+                                                                )
+                                                            }
+
 
                                                         }
-                                                        else {
-                                                            Text(
-                                                                text = item.rol,
-                                                                fontSize = 12.sp,
-                                                                modifier = Modifier
-                                                                    .weight(0.5f)
-                                                                    .padding(16.dp)
-                                                                    .wrapContentWidth(Alignment.End),
-                                                                style = MaterialTheme.typography.subtitle1
-                                                            )
-                                                        }
-
-
-                                                    }
-                                                )
+                                                    )
+                                                }
                                             }
                                         }
+                                        writeHeader = false
                                     }
-                                    writeHeader = false
                                 }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             )
         }

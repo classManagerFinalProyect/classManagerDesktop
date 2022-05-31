@@ -1,11 +1,15 @@
 package Screens.Register
 
+import Screens.Login.ViewModelLogin
+import Screens.Login.ViewModelLogin.Companion.user
 import Utils.isValidEmail
 import Utils.isValidPassword
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import data.api.ApiServiceAuthentication
+import data.api.ApiServiceUser
+import data.local.CurrentUser
 import data.local.NewUser
 import data.remote.AppUser
 import kotlinx.coroutines.CoroutineScope
@@ -15,7 +19,8 @@ class ViewModelRegister {
     companion object {
         private var errorMessage: String by mutableStateOf ("")
         var createUser = NewUser("","","")
-        var createAppUser = AppUser("","","", arrayListOf(), arrayListOf(),"","")
+        var createAppUser = AppUser("","","", arrayListOf(), arrayListOf(),"","","")
+        var user: AppUser by mutableStateOf(AppUser("","","", arrayListOf(), arrayListOf(),"","",""))
 
         fun createUserWithEmailAndPassword(
             composableScope: CoroutineScope,
@@ -29,10 +34,49 @@ class ViewModelRegister {
                     val result = apiService.register(newUser)
                     if (result.isSuccessful) {
                         createUser = result.body()!!
-                        onFinish(true)
+                        getCurrentUser(
+                            composableScope = composableScope,
+                            idOfUser = createUser.id,
+                            onFinished = {
+                                if(it)
+                                    onFinish(true)
+                                else
+                                    onFinish(false)
+                            },
+                        )
                     }
                     else {
                         onFinish(false)
+                    }
+                } catch (e: Exception) {
+                    onFinish(false)
+                    errorMessage = e.message.toString()
+                }
+            }
+        }
+
+        fun getCurrentUser(
+            composableScope: CoroutineScope,
+            onFinished: (Boolean) -> Unit,
+            idOfUser: String
+        ) {
+
+            composableScope.launch {
+                val apiService = ApiServiceUser.getInstance()
+                try {
+                    val result = apiService.getUserById(idOfUser)
+                    if (result.isSuccessful) {
+                        user = result.body()!!
+                        CurrentUser.currentUser = user
+                        CurrentUser.updateDates(
+                            composableScope = composableScope,
+                            onFinished = {
+                                onFinished(true)
+                            }
+                        )
+                    }
+                    else {
+                        onFinished(false)
                     }
                 } catch (e: Exception) {
                     errorMessage = e.message.toString()

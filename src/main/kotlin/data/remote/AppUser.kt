@@ -7,5 +7,6 @@ data class AppUser (
     val courses: MutableList<String>,
     val classes: MutableList<String>,
     val id: String,
-    var description: String
+    var description: String,
+    val password: String
 )

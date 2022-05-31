@@ -4,7 +4,9 @@ import Screens.Course.Components.MainBody.Members.RolState
 import Screens.Course.Components.MainBody.Members.addMember
 import Screens.Course.ViewModelCourse
 import Screens.MainAppScreen.Items.bigSelectedDropDownMenu
+import Screens.ScreenItems.Dialogs.infoDialog
 import Screens.theme.blueDesaturated
+import akka.http.scaladsl.model.headers.LinkParams
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,15 +32,33 @@ fun members(
     selectedCourse: Course
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var reload by remember { mutableStateOf(false) }
     var composableScope = rememberCoroutineScope()
     var deleteUser by remember { mutableStateOf(false) }
     var rolFilter by remember { mutableStateOf("ALL") }
-    var selectedUserWithRol by remember { mutableStateOf(UserWithRol(AppUser("","","", arrayListOf(), arrayListOf(),"",""),"")) }
+    var selectedUserWithRol by remember { mutableStateOf(UserWithRol(AppUser("","","", arrayListOf(), arrayListOf(),"","",""),"")) }
     val suggestions: MutableList<String> = mutableListOf("admin","profesor","padre","alumno")
 
     var sizeDropMenu by remember { mutableStateOf(IntSize.Zero) }
 
-    val rolState by ViewModelCourse.rolState
+
+    var showToast = remember { mutableStateOf(false) }
+    var toastTitle by remember{ mutableStateOf("Title") }
+    var toastText by remember{ mutableStateOf("Text") }
+
+    if(showToast.value) {
+        infoDialog(
+            showToast = showToast,
+            title = toastTitle,
+            text = toastText
+        )
+    }
+
+    LaunchedEffect(reload) {
+        if(reload) {
+            reload = false
+        }
+    }
 
 
     if (deleteUser) {
@@ -73,7 +93,7 @@ fun members(
                                     user = selectedUserWithRol,
                                     onFinished = {
                                         deleteUser = false
-                                        ViewModelCourse.updateContentState(ContentState.CLASSES)
+                                        reload = true
                                     }
                                 )
                             },
@@ -179,6 +199,13 @@ fun members(
                                                 addMember(
                                                     onValueChangeExpanded = {
                                                         expanded = false
+                                                    },
+                                                    showToast = { title, text ->
+                                                        reload = true
+                                                        expanded = false
+                                                        showToast.value = true
+                                                        toastTitle = title
+                                                        toastText = text
                                                     }
                                                 )
                                             }
@@ -194,7 +221,7 @@ fun members(
 
 
                     Spacer(modifier = Modifier.padding(10.dp))
-
+                    if (!reload) {
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -285,7 +312,7 @@ fun members(
                                                                                     onDismissRequest = {
                                                                                         userRolExpanded = false
                                                                                         textSelectedRol = item.rol
-                                                                                   },
+                                                                                    },
                                                                                     content = {
                                                                                         Column(
                                                                                             content = {
@@ -357,6 +384,7 @@ fun members(
 
                             }
                         )
+                    }
                 }
             )
         }

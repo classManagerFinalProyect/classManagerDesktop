@@ -16,7 +16,7 @@ import data.remote.Event
 
 @Composable
 fun createEvent(
-    onCloseRequest: () -> Unit
+    onCreateEvent: () -> Unit
 ) {
 
     //Texts
@@ -78,7 +78,7 @@ fun createEvent(
                 errorMessage = CommonErrors.notValidDate,
                 changeError = dateErrorChange,
                 error = dateError,
-                mandatory = true,
+                mandatory = false,
                 KeyboardType = KeyboardType.Text,
                 enabled = true
             )
@@ -91,7 +91,7 @@ fun createEvent(
                 errorMessage = CommonErrors.notValidTime,
                 changeError = startTimeErrorChange,
                 error = startTimeError,
-                mandatory = true,
+                mandatory = false,
                 KeyboardType = KeyboardType.Text,
                 enabled = true
             )
@@ -104,7 +104,7 @@ fun createEvent(
                 errorMessage = CommonErrors.notValidTime,
                 changeError = finalTimeErrorChange,
                 error = finalTimeError,
-                mandatory = true,
+                mandatory = false,
                 KeyboardType = KeyboardType.Text,
                 enabled = true
             )
@@ -137,7 +137,7 @@ fun createEvent(
                             composableScope = composableScope,
                             newEvent = newEvent,
                             onFinished = {
-                                onCloseRequest()
+                                onCreateEvent()
                             }
                         )
                     }

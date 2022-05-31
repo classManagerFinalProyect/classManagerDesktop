@@ -1,8 +1,10 @@
 package Screens.Course
 
+import Screens.Class.ViewModelClass
 import Screens.Course.Components.MainBody.ContentState
 import Screens.Course.Components.MainBody.Members.RolState
 import androidx.compose.runtime.*
+import com.google.cloud.storage.Acl.User
 import data.api.ApiServiceClass
 import data.api.ApiServiceCourse
 import data.api.ApiServiceEvent
@@ -27,7 +29,7 @@ class ViewModelCourse {
         var selectedCourse : Course = Course(arrayListOf(), arrayListOf(), arrayListOf(),"","","","")
         var newClass = Class("","","", arrayListOf(), arrayListOf(),"","")
 
-        var currentUser: UserWithRol = UserWithRol( AppUser("","","", arrayListOf(), arrayListOf(),"",""),"")
+        var currentUser: UserWithRol = UserWithRol( AppUser("","","", arrayListOf(), arrayListOf(),"","",""),"")
 
         fun updateCurrentCourse(
             composableScope: CoroutineScope,
@@ -225,8 +227,8 @@ class ViewModelCourse {
         }
 
         fun getCurrentUser() {
-            currentMembers.forEach {
-                if (it.user.id == CurrentUser.currentUser.id) currentUser = it
+            selectedCourse.users.forEach {
+                if (it.id == CurrentUser.currentUser.id) currentUser = UserWithRol(CurrentUser.currentUser,it.rol)
             }
         }
 
@@ -235,6 +237,8 @@ class ViewModelCourse {
             selectedCourse: Course,
             onFinished: () -> Unit
         ) {
+           getCurrentUser()
+
             currentClasses.clear()
             var countTmp = 0
 
@@ -597,7 +601,6 @@ class ViewModelCourse {
                         }
                         countTmp++
                         if(countTmp == selectedCourse.users.size) {
-                            getCurrentUser()
                             onFinished()
                         }
                     } catch (e: Exception) {

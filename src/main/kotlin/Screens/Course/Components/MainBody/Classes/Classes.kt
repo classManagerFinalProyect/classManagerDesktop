@@ -4,13 +4,16 @@ import Screens.Course.Components.MainBody.Classes.addNewClass
 import Screens.Course.Components.MainBody.Members.addMember
 import Screens.Course.ViewModelCourse
 import Screens.ScreenComponents.TopAppBar.CreateClass.mainCreateClass
+import Screens.ScreenItems.Dialogs.infoDialog
+import Screens.ScreenItems.Others.floatToast
 import Screens.ScreenItems.bigRectangleCard
 import Utils.LazyGridFor
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -22,6 +25,7 @@ import data.remote.Class
 import kotlinx.coroutines.delay
 import java.awt.SystemColor.text
 
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun classes(
     onClickClass: (Class) -> Unit
@@ -31,12 +35,25 @@ fun classes(
     var sizeDropMenu by remember { mutableStateOf(IntSize.Zero) }
     var expanded by remember { mutableStateOf(false) }
     var getMoreInformation by remember { mutableStateOf(false) }
+    var showToast = remember { mutableStateOf(false) }
+    var toastTitle by remember{ mutableStateOf("Title") }
+    var toastText by remember{ mutableStateOf("Text") }
 
     LaunchedEffect(reload) {
         if (reload) {
             reload = false
         }
     }
+
+
+    if(showToast.value) {
+        infoDialog(
+            showToast = showToast,
+            title = toastTitle,
+            text = toastText
+        )
+    }
+
 
     Row (
         content = {
@@ -95,49 +112,56 @@ fun classes(
                         }
                     )
 
-                    TextButton(
-                        modifier = Modifier
-                            .onGloballyPositioned { coordinates ->
-                                sizeDropMenu = coordinates.size
+                    if (ViewModelCourse.currentUser.rol == "admin") {
+                        TextButton(
+                            modifier = Modifier
+                                .onGloballyPositioned { coordinates ->
+                                    sizeDropMenu = coordinates.size
+                                },
+                            onClick = {
+                                expanded = !expanded
                             },
-                        onClick = {
-                            expanded = !expanded
-                        },
-                        content = {
-                            Text( text = "Añadir una nueva clase")
+                            content = {
+                                Text( text = "Añadir una nueva clase")
 
-                            DropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false },
-                                content = {
-                                    addNewClass(
-                                        reload = {
-                                            reload = true
-                                            expanded = false
-                                        },
-                                        onClickCancel = {
-                                            expanded = false
-                                        }
-                                    )
-                                }
-                            )
-                        }
-                    )
+                                DropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = { expanded = false },
+                                    content = {
+                                        addNewClass(
+                                            onClickCancel = {
+                                                expanded = false
+                                            },
+                                            createClass = {
+                                                reload = true
+                                                expanded = false
+                                                showToast.value = true
+                                                toastTitle = "Clase creada"
+                                                toastText = "Se ha creado la clase correctamente"
+                                            }
+                                        )
+                                    }
+                                )
+                            }
+                        )
+                    }
                 }
             )
 
             Column(
                 content = {
                     if (!reload) {
-                        LazyGridFor(
-                            items = ViewModelCourse.currentClasses,
-                            rowSize = 5,
-                            itemContent = {
-                                bigRectangleCard(
-                                    title = it.name,
-                                    subtitle = "${it.idPractices.size}",
-                                    onClick = { onClickClass(it) }
-                                )
+
+                        LazyVerticalGrid(
+                            cells = GridCells.Adaptive(200.dp),
+                            content = {
+                                this.itemsIndexed(ViewModelCourse.currentClasses) { index: Int, item: Class ->
+                                    bigRectangleCard(
+                                        title = item.name,
+                                        subtitle = "${item.idPractices.size}",
+                                        onClick = { onClickClass(item) }
+                                    )
+                                }
                             }
                         )
                     }

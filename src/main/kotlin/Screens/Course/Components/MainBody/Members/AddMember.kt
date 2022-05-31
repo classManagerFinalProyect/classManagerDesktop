@@ -3,6 +3,7 @@ package Screens.Course.Components.MainBody.Members
 import Screens.Course.Components.MainBody.ContentState
 import Screens.Course.ViewModelCourse
 import Screens.MainAppScreen.Items.bigSelectedDropDownMenu
+import Screens.ScreenItems.Dialogs.infoDialog
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -21,7 +22,8 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun addMember(
-    onValueChangeExpanded: (Boolean) -> Unit
+    onValueChangeExpanded: (Boolean) -> Unit,
+    showToast: (String, String) -> Unit
 ) {
 
 
@@ -30,6 +32,8 @@ fun addMember(
     val suggestion: MutableList<String> = mutableListOf("admin","profesor","padre","alumno")
     var textSelectedRol by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
+
+
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -43,27 +47,6 @@ fun addMember(
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(focusRequester)
-                    .onPreviewKeyEvent { keyEvent ->
-                        when {
-                            (keyEvent.key == Key.DirectionRight) -> {
-                                //  CursorSelectionBehaviour
-                                true
-                            }
-                            (keyEvent.key == Key.DirectionLeft) -> {
-                                TextRange(1, 0)
-                                true
-                            }
-                            (keyEvent.key == Key.Delete && keyEvent.type == KeyEventType.KeyDown) -> {
-                                if (idOfUser.isNotEmpty()) idOfUser = idOfUser.substring(0, idOfUser.length - 1)
-                                true
-                            }
-                            (keyEvent.key == Key.Backspace && keyEvent.type == KeyEventType.KeyDown) -> {
-                                if (idOfUser.isNotEmpty()) idOfUser = idOfUser.substring(0, idOfUser.length - 1)
-                                true
-                            }
-                            else -> false
-                        }
-                    }
                     .padding(
                         PaddingValues(
                             start = 20.dp,
@@ -110,14 +93,22 @@ fun addMember(
                     )
                     TextButton(
                         onClick = {
-                            ViewModelCourse.addNewMember(
-                                rol = textSelectedRol,
-                                composableScope = composableScope,
-                                idOfUser = idOfUser,
-                                onFinished = {
-                                    ViewModelCourse.updateContentState(newValue = ContentState.CLASSES)
-                                }
-                            )
+                            if(textSelectedRol != "") {
+                                ViewModelCourse.addNewMember(
+                                    rol = textSelectedRol,
+                                    composableScope = composableScope,
+                                    idOfUser = idOfUser,
+                                    onFinished = {
+                                        showToast(
+                                            "Usuario agregado.",
+                                            "El usuario se ha agregado correctamente"
+                                        )
+                                    }
+                                )
+                            }
+                            else {
+                                showToast("Debes de asignarle un rol al usuario","Debes de usar el elemento desplegable para seleccionar un rol")
+                            }
                         },
                         content = {
                             Text(text = "Save")

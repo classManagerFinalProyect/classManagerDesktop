@@ -5,6 +5,7 @@ import Screens.ScreenComponents.TopAppBar.Profile.mainProfile
 import Screens.ScreenItems.Dialogs.defaultDialog
 import Utils.AsyncImage
 import Utils.loadImageBitmap
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -55,15 +56,16 @@ fun dropDownMenuUserImg(
         defaultDialog(
             content = {
                 MainAccount(
-                    onCloseSession = { onCloseSession() }
+                    onCloseSession = { onCloseSession() },
+                    onCloseDialog = { accountIsOpen = it}
                 )
             },
             title = "Mi Account",
             onClose = { accountIsOpen = it},
-            resizable = true,
+            resizable = false,
             state = rememberDialogState(
                 position = WindowPosition(Alignment.Center),
-                size = DpSize(900.dp, 700.dp)
+                size = DpSize(700.dp, 600.dp)
             )
         )
     }
@@ -74,8 +76,29 @@ fun dropDownMenuUserImg(
         content = {
             Box(
                 content = {
+
+                    Image(
+                        painter = painterResource(resourcePath = "defaultUserImg.png"),
+                        contentDescription = "userImg",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .border(
+                                width = 2.dp,
+                                color = Color.Gray,
+                                shape = CircleShape
+                            )
+                            .onGloballyPositioned { coordinates ->
+                                size = coordinates.size.toSize()
+                            }
+                            .clickable {
+                                expanded = !expanded
+                            },
+                        contentScale = ContentScale.Crop,
+                    )
+/*
                     AsyncImage(
-                        load = { loadImageBitmap(CurrentUser.currentUser.imgPath) },
+                        load = { loadImageBitmap("https://firebasestorage.googleapis.com/v0/b/class-manager-58dbf.appspot.com/o/user%2FdefaultUserImg.png?alt=media&token=6bc2760b-bd3c-4ef9-a6c1-613f9db9d4c3") },
                         painterFor = { remember { BitmapPainter(it) } },
                         contentDescription = "User Image",
                         modifier = Modifier
@@ -94,7 +117,7 @@ fun dropDownMenuUserImg(
                             },
 
                         contentScale = ContentScale.Crop,
-                    )
+                    )*/
                 }
             )
 
@@ -123,15 +146,11 @@ fun dropDownMenuUserImg(
                     DropdownMenuItem(
                         onClick = {
                             expanded = false
+                            onCloseSession()
                         },
                         content = {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .clickable {
-                                        onCloseSession()
-
-                                    },
                                 content = {
                                     Icon(
                                         painter = painterResource(resourcePath = "logout_white.png"),

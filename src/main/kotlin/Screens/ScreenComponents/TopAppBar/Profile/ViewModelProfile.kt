@@ -12,7 +12,7 @@ import java.util.regex.Pattern
 class ViewModelProfile {
     companion object{
         private var errorMessage: String by mutableStateOf ("")
-        var postUser = AppUser("","","", arrayListOf(), arrayListOf(),"","")
+        var postUser = AppUser("","","", arrayListOf(), arrayListOf(),"","","")
 
         fun saveChange(
             newUser: AppUser,

@@ -2,18 +2,23 @@ package Screens.MainAppScreen.Components.MainBody
 
 import Screens.MainAppScreen.Items.rectangleCard
 import Screens.MainAppScreen.ViewModelMainAppScreen
+import Screens.ScreenComponents.TopAppBar.CreateClass.mainCreateClass
+import Screens.ScreenComponents.TopAppBar.CreateCourse.mainCreateCourse
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,6 +31,7 @@ fun myCourses(
     onClickCourse: (Course) -> Unit,
     onClickClass: (Class) -> Unit
 ){
+    var createNewCourse by remember { mutableStateOf(false) }
 
     Text(
         text = "Cursos en los que participas",
@@ -38,6 +44,65 @@ fun myCourses(
     )
 
     if(!getDates) {
+        if(ViewModelMainAppScreen.completeCourses.size == 0) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize(),
+                content = {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top,
+                        modifier = Modifier
+                            .width(400.dp)
+                            .height(350.dp),
+                        content = {
+                            LazyColumn(
+                                content = {
+
+                                    item {
+                                        Image(
+                                            painter = painterResource("logoDani.png"),
+                                            contentDescription = "Sample",
+                                            modifier = Modifier.fillMaxSize()
+                                        )
+                                    }
+                                    item {
+                                        Text(text = "No dispone de ningún curso actualmente", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+                                    }
+
+                                    item {
+                                        TextButton(
+                                            onClick = {
+                                                createNewCourse = true
+                                            },
+                                            content = {
+                                                DropdownMenu(
+                                                    expanded = createNewCourse,
+                                                    onDismissRequest = { createNewCourse = false},
+                                                    content = {
+                                                        mainCreateCourse(
+                                                            onClickCancel = {
+                                                                createNewCourse = false
+                                                            },
+                                                            onCreateCourse = {
+                                                                onClickCourse(it)
+                                                            },
+                                                            onChangeGetDates = {}
+                                                        )
+                                                    }
+                                                )
+                                                Text(text = "Crear curso", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+                                            }
+                                        )
+                                    }
+                                }
+                            )
+                        }
+                    )
+                }
+            )
+        }
         LazyColumn(
             content = {
                 itemsIndexed(
@@ -78,14 +143,23 @@ fun myCourses(
                                             Column(
                                                 horizontalAlignment = Alignment.Start,
                                                 content = {
-                                                    Text(text = "Curso: ${item.name}")
-
+                                                    Row(
+                                                        content = {
+                                                            Text(text = "Curso: ", fontWeight = FontWeight.Bold)
+                                                            Text(text = "${item.name}",color = MaterialTheme.colors.primary)
+                                                        }
+                                                    )
                                                 }
                                             )
                                             Column(
                                                 horizontalAlignment = Alignment.End,
                                                 content = {
-                                                    Text(text = "Número de clases: ${item.classes.size}")
+                                                    Row(
+                                                        content = {
+                                                            Text(text = "Número de clases: ", fontWeight = FontWeight.Bold)
+                                                            Text(text = "${item.classes.size}",color = MaterialTheme.colors.primary)
+                                                        }
+                                                    )
                                                 }
                                             )
                                         }

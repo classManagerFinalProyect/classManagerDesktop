@@ -5,6 +5,7 @@ import Screens.Class.Components.MainBody.ContentState
 import Screens.Class.Components.MainBody.Members.members
 import Screens.Class.Components.MainBody.Practices.practices
 import Screens.Class.Components.editClass
+import Screens.Course.ViewModelCourse
 import Screens.MainAppScreen.Components.topBar
 import Screens.ScreenComponents.Header.header
 import Screens.ScreenComponents.NavigationBar.navigationBar
@@ -97,7 +98,7 @@ fun MainClass(
                     header(
                         content = {
                             Image(
-                                painter = painterResource(resourcePath = "books.jpg"),
+                                painter = painterResource(resourcePath = "books.png"),
                                 contentDescription = "logo",
                                 modifier = Modifier.size(100.dp)
                             )
@@ -107,18 +108,20 @@ fun MainClass(
                                 fontSize = 20.sp,
                                 color = Color.White
                             )
-                            IconButton(
-                                onClick = {
-                                    editClass = true
-                                },
-                                content = {
-                                    Icon(
-                                        tint = Color.White,
-                                        imageVector = Icons.Default.Edit,
-                                        contentDescription = "Editar Clase"
-                                    )
-                                }
-                            )
+                            if(ViewModelCourse.currentUser.rol == "admin" || ViewModelCourse.currentUser.rol == "profesor") {
+                                IconButton(
+                                    onClick = {
+                                        editClass = true
+                                    },
+                                    content = {
+                                        Icon(
+                                            tint = Color.White,
+                                            imageVector = Icons.Default.Edit,
+                                            contentDescription = "Editar Clase"
+                                        )
+                                    }
+                                )
+                            }
                         }
                     )
 

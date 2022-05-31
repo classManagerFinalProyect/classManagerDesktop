@@ -71,27 +71,6 @@ fun bigPasswordInput(
             .fillMaxWidth()
             .padding(PaddingValues(start = 40.dp, end = 40.dp))
             .focusRequester(focusRequester)
-            .onPreviewKeyEvent { keyEvent ->
-                when {
-                    (keyEvent.key == Key.DirectionRight) -> {
-                        //  CursorSelectionBehaviour
-                        true
-                    }
-                    (keyEvent.key == Key.DirectionLeft) -> {
-                        TextRange(1, 0)
-                        true
-                    }
-                    (keyEvent.key == Key.Delete && keyEvent.type == KeyEventType.KeyDown) -> {
-                        if (value.isNotEmpty()) onValueChangeValue(value.substring(0, value.length - 1))
-                        true
-                    }
-                    (keyEvent.key == Key.Backspace && keyEvent.type == KeyEventType.KeyDown) -> {
-                        if (value.isNotEmpty()) onValueChangeValue(value.substring(0, value.length - 1))
-                        true
-                    }
-                    else -> false
-                }
-            }
     )
 
 }

@@ -76,7 +76,7 @@ fun bigPasswordInputWithErrorMessage(
               modifier = Modifier
                   .fillMaxWidth()
                   .focusRequester(focusRequester)
-                  .onPreviewKeyEvent { keyEvent ->
+                 /* .onPreviewKeyEvent { keyEvent ->
                       when {
                           (keyEvent.key == Key.DirectionRight) -> {
                               //  CursorSelectionBehaviour
@@ -96,7 +96,7 @@ fun bigPasswordInputWithErrorMessage(
                           }
                           else -> false
                       }
-                  }
+                  }*/
           )
           val assistiveElementText = if (valueError) errorMessage else if (mandatory) "*Obligatorio" else ""
           val assistiveElementColor = if (valueError) {

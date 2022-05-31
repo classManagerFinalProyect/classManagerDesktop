@@ -2,6 +2,8 @@ package Screens.Class.Components
 
 import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.Class.ViewModelClass
+import Screens.Course.Components.editCourse
+import Screens.Course.ViewModelCourse
 import Screens.ScreenItems.Dialogs.defaultDialog
 import Screens.ScreenItems.confirmAlertDialog
 import Utils.CommonErrors
@@ -118,54 +120,81 @@ import data.remote.Class
                             .fillMaxWidth()
                             .padding(start = 40.dp, end = 40.dp),
                         content = {
+                            if(ViewModelCourse.currentUser.rol == "admin") {
+                                Button(
+                                    modifier = Modifier.width(200.dp),
+                                    contentPadding = PaddingValues(
+                                        start = 10.dp,
+                                        top = 6.dp,
+                                        end = 10.dp,
+                                        bottom = 6.dp
+                                    ),
+                                    colors = ButtonDefaults.textButtonColors(
+                                        contentColor = Color.White,
+                                        backgroundColor = Color.Red
+                                    ),
+                                    onClick = {
 
-                            Button(
-                                modifier = Modifier.width(200.dp),
-                                contentPadding = PaddingValues(
-                                    start = 10.dp,
-                                    top = 6.dp,
-                                    end = 10.dp,
-                                    bottom = 6.dp
-                                ),
-                                colors = ButtonDefaults.textButtonColors(
-                                    contentColor = Color.White,
-                                    backgroundColor = Color.Red
-                                ),
-                                onClick = {
+                                        deleteClass = true
 
-                                    deleteClass = true
-
-                                },
-                                content = {
-                                    Text(text = "Eliminar Clase")
-                                }
-                            )
-
-                            Button(
-                                modifier = Modifier.width(200.dp),
-                                contentPadding = PaddingValues(
-                                    start = 10.dp,
-                                    top = 6.dp,
-                                    end = 10.dp,
-                                    bottom = 6.dp
-                                ),
-                                onClick = {
-
-                                    if(isValidName(textName) && isValidDescription(textDescription)) {
-                                        ViewModelClass.updateCurrentClass(
-                                            newName = textName,
-                                            composableScope = composableScope,
-                                            newDescription = textDescription,
-                                            onFinished = {
-                                                editClass(false)
-                                            }
-                                        )
+                                    },
+                                    content = {
+                                        Text(text = "Eliminar Clase")
                                     }
-                                },
-                                content = {
-                                    Text(text = "Guardar cambios")
-                                }
-                            )
+                                )
+
+                                Button(
+                                    modifier = Modifier.width(200.dp),
+                                    contentPadding = PaddingValues(
+                                        start = 10.dp,
+                                        top = 6.dp,
+                                        end = 10.dp,
+                                        bottom = 6.dp
+                                    ),
+                                    onClick = {
+
+                                        if(isValidName(textName) && isValidDescription(textDescription)) {
+                                            ViewModelClass.updateCurrentClass(
+                                                newName = textName,
+                                                composableScope = composableScope,
+                                                newDescription = textDescription,
+                                                onFinished = {
+                                                    editClass(false)
+                                                }
+                                            )
+                                        }
+                                    },
+                                    content = {
+                                        Text(text = "Guardar cambios")
+                                    }
+                                )
+                            }
+                            else {
+                                Button(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentPadding = PaddingValues(
+                                        start = 10.dp,
+                                        top = 6.dp,
+                                        end = 10.dp,
+                                        bottom = 6.dp
+                                    ),
+                                    onClick = {
+                                        if(isValidDescription(textDescription) && isValidName(textName)) {
+                                            ViewModelCourse.updateCurrentCourse(
+                                                newName = textName,
+                                                composableScope = composableScope,
+                                                newDescription = textDescription,
+                                                onFinished = {
+                                                    editClass(false)
+                                                }
+                                            )
+                                        }
+                                    },
+                                    content = {
+                                        Text(text = "Guardar cambios")
+                                    }
+                                )
+                            }
                         }
                     )
                 }

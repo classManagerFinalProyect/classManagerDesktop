@@ -28,7 +28,7 @@ fun loadingDialog(
         AlertDialog(
             backgroundColor = Color.Transparent,
             modifier = Modifier
-                .fillMaxSize(0.4f),
+                .fillMaxSize(0.3f),
             onDismissRequest = { },
             title = { },
             text = {

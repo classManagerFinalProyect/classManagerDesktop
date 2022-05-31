@@ -2,6 +2,7 @@ package Screens.Login.ForgotPassword
 
 import ScreenItems.bigTextFieldWithErrorMessage
 import Screens.Login.ViewModelLogin
+import Utils.isValidEmail
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -80,7 +81,7 @@ fun MainForgotPassword(
                                         text = "Email",
                                         value = emailText,
                                         onValueChange = onValueChangeEmailText,
-                                        validateError = ViewModelLogin::isValidEmail,
+                                        validateError = ::isValidEmail,
                                         errorMessage = nameOfEmailError.value,
                                         changeError = emailErrorChange,
                                         error = emailError,

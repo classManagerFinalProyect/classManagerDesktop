@@ -63,7 +63,7 @@ fun main() = application(
             }
         )
 
-        ClassManagerTheme{
+        ClassManagerTheme {
             NavigationHost()
         }
     }
