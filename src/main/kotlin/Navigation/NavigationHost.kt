@@ -27,7 +27,7 @@ fun NavigationHost() {
             MainLogin(
                 onRegisterClick = { screenState = Screen.Register },
                 onLoginClick = { screenState = Screen.MainAppScreen },
-                onForgotPasswordClick = { screenState = Screen.ForgotPasswordScreen }
+                onForgotPasswordClick = { screenState = Screen.ForgotPasswordScreen },
              )
 
         is Screen.Register ->

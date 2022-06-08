@@ -1,19 +1,15 @@
 package Screens.Course
 
+import Screens.Class.ViewModelClass
+import Screens.Class.ViewModelClass.Companion.selectedClass
 import Screens.Course.Components.MainBody.ContentState
 import Screens.Course.Components.MainBody.Members.RolState
 import androidx.compose.runtime.*
-import data.api.ApiServiceClass
-import data.api.ApiServiceCourse
-import data.api.ApiServiceEvent
-import data.api.ApiServiceUser
+import data.api.*
 import data.local.CurrentUser
 import data.local.RolUser
 import data.local.UserWithRol
-import data.remote.Class
-import data.remote.Course
-import data.remote.Event
-import data.remote.AppUser
+import data.remote.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.skia.impl.Log
@@ -59,6 +55,23 @@ class ViewModelCourse {
                 it.user.courses.remove(selectedCourse.id)
                 currentClasses.forEach{ currentClass ->
                     it.user.classes.remove(currentClass.id)
+                    CurrentUser.currentUser.classes.remove(currentClass.id)
+                    currentClass.idPractices.forEach{ idPractice ->
+
+                        getPracticeById(
+                            composableScope = composableScope,
+                            idOfPractice = idPractice,
+                            onFinished = { practice ->
+
+                                deletePractice(
+                                    composableScope = composableScope,
+                                    practice = practice,
+                                )
+                            }
+                        )
+
+                    }
+
                     deleteClass(
                         composableScope = composableScope,
                         idOfClass = currentClass.id,
@@ -77,10 +90,12 @@ class ViewModelCourse {
                 )
             }
 
+
             deleteCourse(
                 composableScope = composableScope,
                 idOfCourse = selectedCourse.id,
                 onFinished = {
+                   CurrentUser.currentUser.courses.remove(selectedCourse.id)
                     CurrentUser.updateDates(
                         composableScope = composableScope,
                         onFinished = {
@@ -89,6 +104,90 @@ class ViewModelCourse {
                     )
                 }
             )
+        }
+
+        private fun getPracticeById(
+            composableScope: CoroutineScope,
+            idOfPractice: String,
+            onFinished: (Practice) -> Unit
+        ) {
+            composableScope.launch {
+                val apiService = ApiServicePractice.getInstance()
+                try {
+                    val result = apiService.getPracticeById(idOfPractice)
+                    if (result.isSuccessful) {
+                        onFinished(result.body()!!)
+                    }
+                } catch (e: Exception) {
+                    errorMessage = e.message.toString()
+                }
+            }
+        }
+
+        fun deletePractice(
+            composableScope: CoroutineScope,
+            practice: Practice,
+        ) {
+
+
+            deleteChatById(
+                composableScope = composableScope,
+                idOfChat = practice.idOfChat,
+                onFinished = {}
+            )
+
+            deletePracticeById(
+                composableScope = composableScope,
+                idOfPractice = practice.id,
+                onFinished = {
+                }
+            )
+        }
+
+        private fun deleteChatById(
+            composableScope: CoroutineScope,
+            idOfChat: String,
+            onFinished: () -> Unit
+        ) {
+            composableScope.launch {
+                val apiService = ApiServiceChat.getInstance()
+
+                try {
+                    val result = apiService.deleteChatById(idOfChat)
+                    if (result.isSuccessful) {
+                        onFinished()
+                    }
+                    else {
+                        Log.debug("Error trying delete chat")
+                    }
+
+                } catch (e: Exception) {
+                    errorMessage = e.message.toString()
+                }
+            }
+        }
+
+        private fun deletePracticeById(
+            composableScope: CoroutineScope,
+            idOfPractice: String,
+            onFinished: () -> Unit
+        ) {
+            composableScope.launch {
+                val apiService = ApiServicePractice.getInstance()
+
+                try {
+                    val result = apiService.deletePracticeById(idOfPractice)
+                    if (result.isSuccessful) {
+                        onFinished()
+                    }
+                    else {
+                        Log.debug("Error trying delete chat")
+                    }
+
+                } catch (e: Exception) {
+                    errorMessage = e.message.toString()
+                }
+            }
         }
 
         private fun deleteClass(

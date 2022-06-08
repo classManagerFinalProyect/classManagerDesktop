@@ -35,8 +35,10 @@ class ViewModelClass {
                     composableScope = composableScope,
                     idOfClass = selectedClass.id,
                     onFinished = {
+                        CurrentUser.currentUser.classes.remove(selectedClass.id)
                         CurrentUser.myClasses.remove(selectedClass)
                         onFinished()
+
                     }
                 )
             }
@@ -49,10 +51,29 @@ class ViewModelClass {
                             composableScope = composableScope,
                             idOfClass = selectedClass.id,
                             onFinished = {
+                                CurrentUser.currentUser.classes.remove(selectedClass.id)
                                 CurrentUser.myClasses.remove(selectedClass)
                                 onFinished()
                             }
                         )
+                    }
+                )
+            }
+
+            currentPractices.forEach{
+                deletePracticeById(
+                    composableScope = composableScope,
+                    idOfPractice = it.practice.id,
+                    onFinished = {
+
+                    }
+                )
+
+                deleteChatById(
+                    composableScope = composableScope,
+                    idOfChat = it.chat.id,
+                    onFinished = {
+
                     }
                 )
             }

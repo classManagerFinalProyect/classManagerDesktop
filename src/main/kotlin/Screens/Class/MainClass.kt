@@ -101,7 +101,7 @@ fun MainClass(
                                 fontSize = 20.sp,
                                 color = Color.White
                             )
-                            if(ViewModelCourse.currentUser.rol == "admin" || ViewModelCourse.currentUser.rol == "profesor") {
+                            if(ViewModelClass.currentUser.rol == "admin" || ViewModelClass.currentUser.rol == "profesor") {
                                 IconButton(
                                     onClick = {
                                         editClass = true

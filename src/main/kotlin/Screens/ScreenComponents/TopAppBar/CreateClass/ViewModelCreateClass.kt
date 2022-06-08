@@ -21,7 +21,6 @@ class ViewModelCreateClass {
             onFinished: (Class) -> Unit,
             uploadClass: Class
         ) {
-            //Tener en cuenta q no lo puedes asignar por defecto a un curso
 
             composableScope.launch {
                 val apiService = ApiServiceClass.getInstance()

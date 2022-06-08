@@ -115,7 +115,7 @@ import androidx.compose.ui.window.rememberDialogState
                             .fillMaxWidth()
                             .padding(start = 40.dp, end = 40.dp),
                         content = {
-                            if(ViewModelCourse.currentUser.rol == "admin") {
+                            if(ViewModelClass.currentUser.rol == "admin") {
                                 Button(
                                     modifier = Modifier.width(200.dp),
                                     contentPadding = PaddingValues(

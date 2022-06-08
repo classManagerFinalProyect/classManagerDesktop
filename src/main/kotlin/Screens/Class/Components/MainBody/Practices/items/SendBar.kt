@@ -90,7 +90,7 @@ fun sendBar(
                     )
                 },
                 onClick = {
-                    if (selectedPractices.practice.id != ("")) {
+                    if (selectedPractices.practice.id != ("") && textOfChat.value != "") {
                         selectedPractices.chat.conversation.add(
                             Message(
                                 textOfChat.value,

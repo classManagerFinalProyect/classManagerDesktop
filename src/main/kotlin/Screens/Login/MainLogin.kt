@@ -1,5 +1,6 @@
 package Screens.Login
 
+import Navigation.Screen
 import Screens.ScreenItems.Inputs.bigPasswordInputWithErrorMessage
 import Screens.ScreenItems.Inputs.bigTextFieldWithErrorMessage
 import Screens.ScreenItems.Dialogs.infoDialog
@@ -24,7 +25,7 @@ import kotlinx.coroutines.delay
 fun MainLogin(
     onRegisterClick: () -> Unit,
     onLoginClick: () -> Unit,
-    onForgotPasswordClick: () -> Unit
+    onForgotPasswordClick: () -> Unit,
 ) {
 
     //Help variables

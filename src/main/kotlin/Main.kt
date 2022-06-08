@@ -14,7 +14,6 @@ import androidx.compose.ui.res.useResource
 import androidx.compose.ui.window.*
 
 
-@OptIn(ExperimentalComposeUiApi::class)
 fun main() = application() {
 
     val icon = BitmapPainter(useResource("logo_sin_fondo.png", ::loadImageBitmap))
@@ -49,11 +48,11 @@ fun main() = application() {
         MenuBar(
             content = {
                 Menu(
-                    text = "Menu",
-                    mnemonic = 'F',
+                    text = "Options",
+                    mnemonic = 'O',
                     content = {
-                        Item("Copy", onClick = { action = "Last action: Copy" }, shortcut = KeyShortcut(Key.C, ctrl = true))
-                        Item("Paste", onClick = { action = "Last action: Paste" }, shortcut = KeyShortcut(Key.V, ctrl = true))
+                        Item("Send notification", onClick = { trayState.sendNotification(notification) })
+                        Item("Exit", onClick = ::exitApplication )
                     }
                 )
             }
