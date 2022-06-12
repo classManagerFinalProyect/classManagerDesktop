@@ -37,10 +37,10 @@ fun MainLogin(
     var getUser by remember{ mutableStateOf(true) }
 
     //Texts
-    var emailText by remember{ mutableStateOf("test@gmail.com") }
+    var emailText by remember{ mutableStateOf("") }
     var emailError by remember { mutableStateOf(false) }
 
-    var passwordText by remember{ mutableStateOf("11111111") }
+    var passwordText by remember{ mutableStateOf("") }
     var passwordError by remember { mutableStateOf(false) }
 
     if(getUser) {

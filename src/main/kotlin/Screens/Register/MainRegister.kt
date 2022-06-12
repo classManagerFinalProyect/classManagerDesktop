@@ -39,13 +39,13 @@ fun MainRegister(
     onLogin: () -> Unit
 ) {
     //Texts
-    val (emailText,onValueChangeEmailText) = remember{ mutableStateOf("test@gmail.com") }
+    val (emailText,onValueChangeEmailText) = remember{ mutableStateOf("") }
     val (emailError,emailErrorChange) = remember { mutableStateOf(false) }
 
-    val (passwordText,onValueChangePasswordText) = remember{ mutableStateOf("11111111") }
+    val (passwordText,onValueChangePasswordText) = remember{ mutableStateOf("") }
     val (passwordError,passwordErrorChange) = remember { mutableStateOf(false) }
 
-    val (repeatPasswordText,onValueChangeRepeatPasswordText) = remember{ mutableStateOf("11111111") }
+    val (repeatPasswordText,onValueChangeRepeatPasswordText) = remember{ mutableStateOf("") }
     val (repeatPasswordError,repeatPasswordErrorChange) = remember { mutableStateOf(false) }
 
     //Help variables

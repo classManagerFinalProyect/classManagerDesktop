@@ -37,10 +37,10 @@ fun addNewClass(
 
 
             //Texts
-            val (textName,onValueChangeNameText) = remember{ mutableStateOf("Name") }
+            val (textName,onValueChangeNameText) = remember{ mutableStateOf("") }
             val (nameError,nameErrorChange) = remember { mutableStateOf(false) }
 
-            val (textDescription,onValueChangeDescriptionText) = remember{ mutableStateOf("Name class test") }
+            val (textDescription,onValueChangeDescriptionText) = remember{ mutableStateOf("") }
             val (nameDescriptionError,nameDescriptionErrorChange) = remember { mutableStateOf(false) }
 
 

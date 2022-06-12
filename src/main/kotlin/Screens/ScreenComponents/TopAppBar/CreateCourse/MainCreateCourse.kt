@@ -26,10 +26,10 @@ fun mainCreateCourse(
 ) {
 
     //Texts
-    val (textNameCourse,onValueChangeNameCourseText) = remember{ mutableStateOf("Name course test") }
+    val (textNameCourse,onValueChangeNameCourseText) = remember{ mutableStateOf("") }
     val (nameCourseError,nameCourseErrorChange) = remember { mutableStateOf(false) }
 
-    val (textDescriptionCourse,onValueChangeDescriptionCourseText) = remember{ mutableStateOf("Description courese test") }
+    val (textDescriptionCourse,onValueChangeDescriptionCourseText) = remember{ mutableStateOf("") }
     val (nameDescriptionError,nameDescriptionErrorChange) = remember { mutableStateOf(false) }
 
     //Help variables
