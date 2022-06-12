@@ -23,6 +23,30 @@ class ViewModelClass {
         var currentCourse: Course = Course(arrayListOf(), arrayListOf(), arrayListOf(),"","","","")
 
 
+        fun leaveClass(
+            composableScope: CoroutineScope,
+            onFinished: () -> Unit
+        ) {
+
+            selectedClass.users.remove(RolUser(currentUser.user.id, currentUser.rol))
+            updateClass(
+                composableScope = composableScope,
+                updateClass = selectedClass,
+                onFinished = {
+
+                }
+            )
+            CurrentUser.currentUser.classes.remove(selectedClass.id)
+            CurrentUser.myClasses.remove(selectedClass)
+            updateUser(
+                updateUser = CurrentUser.currentUser,
+                composableScope = composableScope,
+                onFinished = {
+
+                }
+            )
+            onFinished()
+        }
 
         fun deleteCurrentClass(
             composableScope: CoroutineScope,
@@ -623,20 +647,20 @@ class ViewModelClass {
         }
 
         //Rol State
-        private val _rolState: MutableState<RolState> = mutableStateOf(value = RolState.ALL)
+        private val rolState_: MutableState<RolState> = mutableStateOf(value = RolState.ALL)
 
 
         fun updateRolState(newValue: RolState) {
-            _rolState.value = newValue
+            rolState_.value = newValue
         }
 
         //Content State
-        private val _contentState: MutableState<ContentState> = mutableStateOf(value = ContentState.PRACTICES)
-        val contentState: State<ContentState> = _contentState
+        private val contentState_: MutableState<ContentState> = mutableStateOf(value = ContentState.PRACTICES)
+        val contentState: State<ContentState> = contentState_
 
 
         fun updateContentState(newValue: ContentState) {
-            _contentState.value = newValue
+            contentState_.value = newValue
         }
 
     }

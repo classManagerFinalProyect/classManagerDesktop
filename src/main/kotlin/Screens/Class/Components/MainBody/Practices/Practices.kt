@@ -37,7 +37,9 @@ import data.remote.Practice
 
 
 @Composable
-fun practices() {
+fun practices(
+    onClickBeginning: () -> Unit
+) {
 
     var selectedPractices by remember {
         mutableStateOf(
@@ -58,6 +60,7 @@ fun practices() {
     var reload by remember { mutableStateOf(false) }
     val reloadChat = remember { mutableStateOf(false) }
     var deletePractice by remember { mutableStateOf(false) }
+    var leaveClass by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(reloadChat.value){
@@ -105,6 +108,23 @@ fun practices() {
         )
     }
 
+    if (leaveClass) {
+        confirmAlertDialog(
+            title = "¿Desea abandonar la clase?",
+            subtitle = "No podrás volver a acceder a esta clase.",
+            onValueChangeGoBack = { leaveClass = false },
+            onClickAccept = {
+                ViewModelClass.leaveClass(
+                    composableScope = composableScope,
+                    onFinished = {
+                        onClickBeginning()
+                    }
+                )
+
+            }
+        )
+    }
+
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
@@ -118,6 +138,19 @@ fun practices() {
                     LazyColumn(
                         modifier = Modifier.fillMaxHeight(0.9f),
                         content = {
+
+                            item {
+                                if(ViewModelClass.selectedClass.idOfCourse == "Sin Asignar") {
+                                    TextButton(
+                                        onClick = {
+                                            leaveClass = true
+                                        },
+                                        content = {
+                                            Text( text = "Abandonar clase")
+                                        }
+                                    )
+                                }
+                            }
 
                             item {
                                 Row(

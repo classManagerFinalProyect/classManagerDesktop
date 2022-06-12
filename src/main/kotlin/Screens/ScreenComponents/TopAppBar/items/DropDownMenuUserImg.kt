@@ -41,10 +41,10 @@ fun dropDownMenuUserImg(
             content = { mainProfile() },
             title = "Mi Profile",
             onClose = { profileIsOpen = it},
-            resizable = true,
+            resizable = false,
             state = rememberDialogState(
                 position = WindowPosition(Alignment.Center),
-                size = DpSize(900.dp, 700.dp)
+                size = DpSize(750.dp, 650.dp)
             )
         )
     }
@@ -61,7 +61,7 @@ fun dropDownMenuUserImg(
             resizable = false,
             state = rememberDialogState(
                 position = WindowPosition(Alignment.Center),
-                size = DpSize(700.dp, 600.dp)
+                size = DpSize(600.dp, 500.dp)
             )
         )
     }

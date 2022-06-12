@@ -4,8 +4,7 @@ import Screens.Class.Components.MainBody.ContentState
 import Screens.Class.Components.MainBody.Members.members
 import Screens.Class.Components.MainBody.Practices.practices
 import Screens.Class.Components.editClass
-import Screens.Course.ViewModelCourse
-import Screens.MainAppScreen.Components.topBar
+import Screens.ScreenComponents.TopAppBar.topBar
 import Screens.ScreenComponents.Header.header
 import Screens.ScreenComponents.NavigationBar.navigationBar
 import androidx.compose.foundation.*
@@ -91,7 +90,7 @@ fun MainClass(
                     header(
                         content = {
                             Image(
-                                painter = painterResource(resourcePath = "books.png"),
+                                painter = painterResource(resourcePath = "libros_sin_fondo.png"),
                                 contentDescription = "logo",
                                 modifier = Modifier.size(100.dp)
                             )
@@ -146,6 +145,7 @@ fun MainClass(
                             if(showMainContent) {
                                 MainContent(
                                     contentState = contentState,
+                                    onClickBeginning = onClickBeginning
                                 )
                             }
                         }
@@ -159,6 +159,7 @@ fun MainClass(
 @Composable
 private fun MainContent(
     contentState: ContentState,
+    onClickBeginning: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -169,6 +170,7 @@ private fun MainContent(
             when (contentState) {
                 ContentState.PRACTICES ->  {
                     practices(
+                        onClickBeginning = onClickBeginning
                     )
                 }
                 ContentState.MEMBERS -> {

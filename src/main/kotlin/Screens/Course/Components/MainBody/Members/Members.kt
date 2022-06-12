@@ -32,7 +32,7 @@ fun members() {
     var rolFilter by remember { mutableStateOf("ALL") }
     var selectedUserWithRol by remember { mutableStateOf(UserWithRol(AppUser("","","", arrayListOf(), arrayListOf(),"","",""),"")) }
     val suggestions: MutableList<String> = mutableListOf("admin","profesor","padre","alumno")
-
+    val updateRol = remember { mutableStateOf(false) }
     var sizeDropMenu by remember { mutableStateOf(IntSize.Zero) }
 
 
@@ -113,6 +113,8 @@ fun members() {
                     TextButton(
                         onClick = {
                             ViewModelCourse.updateRolState(newValue = RolState.ALL)
+                            updateRol.value = false
+                            updateRol.value = true
                             rolFilter = "ALL"
                         },
                         content = {
@@ -122,6 +124,8 @@ fun members() {
                     TextButton(
                         onClick = {
                             ViewModelCourse.updateRolState(newValue = RolState.ADMIN)
+                            updateRol.value = false
+                            updateRol.value = true
                             rolFilter = "admin"
                         },
                         content = {
@@ -131,6 +135,8 @@ fun members() {
                     TextButton(
                         onClick = {
                             ViewModelCourse.updateRolState(newValue = RolState.TEACHER)
+                            updateRol.value = false
+                            updateRol.value = true
                             rolFilter = "profesor"
                         },
                         content = {
@@ -140,6 +146,8 @@ fun members() {
                     TextButton(
                         onClick = {
                             ViewModelCourse.updateRolState(newValue = RolState.PARENTS)
+                            updateRol.value = false
+                            updateRol.value = true
                             rolFilter = "padre"
                         },
                         content = {
@@ -149,6 +157,8 @@ fun members() {
                     TextButton(
                         onClick = {
                             ViewModelCourse.updateRolState(newValue = RolState.STUDENT)
+                            updateRol.value = false
+                            updateRol.value = true
                             rolFilter = "alumno"
                         },
                         content = {
@@ -279,8 +289,10 @@ fun members() {
                                                                 }
                                                             )
                                                             var userRolExpanded by remember {  mutableStateOf(false) }
-                                                            if (ViewModelCourse.currentUser.rol == "admin") {
+                                                            if (ViewModelCourse.currentUser.rol == "admin" && ViewModelCourse.currentUser.user.email !=  item.user.email) {
                                                                 var textSelectedRol by remember { mutableStateOf(item.rol) }
+
+                                                                if(updateRol.value) textSelectedRol = item.rol
 
 
                                                                 Row (
@@ -325,6 +337,10 @@ fun members() {
                                                                                                             newRol = textSelectedRol,
                                                                                                             onFinished = {
                                                                                                                 item.rol = textSelectedRol
+
+                                                                                                                toastTitle = "Se ha cambiado el rol correctamente"
+                                                                                                                toastText = "Se ha cambiado el rol del usuario ${item.user.name} a ${item.rol}"
+                                                                                                                showToast.value = true
                                                                                                             }
                                                                                                         )
                                                                                                     },

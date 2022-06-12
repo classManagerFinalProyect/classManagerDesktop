@@ -33,12 +33,15 @@ fun mainCreateClass(
             //Help variables
             val composableScope = rememberCoroutineScope()
 
+
             //Texts
-            val (textName,onValueChangeNameText) = remember{ mutableStateOf("Name class test") }
+            val (textName,onValueChangeNameText) = remember{ mutableStateOf("") }
             val (nameError,nameErrorChange) = remember { mutableStateOf(false) }
 
-            val (textDescription,onValueChangeDescriptionText) = remember{ mutableStateOf("Name class test") }
+            val (textDescription,onValueChangeDescriptionText) = remember{ mutableStateOf("") }
             val (nameDescriptionError,nameDescriptionErrorChange) = remember { mutableStateOf(false) }
+
+
 
 
             Text(
@@ -131,6 +134,7 @@ fun mainCreateClass(
                                     uploadClass = newClass,
                                     onFinished = {
                                         onCreateClass(it)
+
                                         Log.debug("Se ha creado una clase")
                                     }
                                 )

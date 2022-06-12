@@ -1,7 +1,5 @@
 package Screens.Course
 
-import Screens.Class.ViewModelClass
-import Screens.Class.ViewModelClass.Companion.selectedClass
 import Screens.Course.Components.MainBody.ContentState
 import Screens.Course.Components.MainBody.Members.RolState
 import androidx.compose.runtime.*
@@ -25,6 +23,49 @@ class ViewModelCourse {
 
         var currentUser: UserWithRol = UserWithRol( AppUser("","","", arrayListOf(), arrayListOf(),"","",""),"")
 
+        fun leaveCourse(
+            composableScope: CoroutineScope,
+            onFinished: () -> Unit
+        ) {
+            currentClasses.forEach {
+
+                it.users.remove(RolUser(currentUser.user.id, currentUser.rol))
+                updateClass(
+                    composableScope = composableScope,
+                    updateClass = it,
+                    onFinished = {
+
+                    }
+                )
+            }
+
+            selectedCourse.users.remove(RolUser(currentUser.user.id, currentUser.rol))
+            updateCourse(
+                composableScope = composableScope,
+                updateCourse = selectedCourse,
+                onFinished = {
+
+                }
+            )
+            CurrentUser.currentUser.courses.remove(selectedCourse.id)
+            currentClasses.forEach{
+                CurrentUser.currentUser.classes.remove(it.id)
+            }
+
+            CurrentUser.updateCurrentUser(
+                composableScope = composableScope,
+                updateUser = CurrentUser.currentUser,
+                onFinished = {
+                    CurrentUser.updateDates(
+                        onFinished = {
+                            onFinished()
+                        },
+                        composableScope = composableScope
+                    )
+                }
+            )
+
+        }
         fun updateCurrentCourse(
             composableScope: CoroutineScope,
             newName: String,
@@ -124,7 +165,7 @@ class ViewModelCourse {
             }
         }
 
-        fun deletePractice(
+        private fun deletePractice(
             composableScope: CoroutineScope,
             practice: Practice,
         ) {
@@ -541,6 +582,7 @@ class ViewModelCourse {
             rolUser: RolUser
         ){
             currentClasses.forEach{
+                it.users.remove(rolUser)
                 it.users.add(rolUser)
 
                 updateClass(
@@ -708,22 +750,19 @@ class ViewModelCourse {
         }
 
         //Rol State
-        private val _rolState: MutableState<RolState> = mutableStateOf(value = RolState.ALL)
-
+        private val rolState_: MutableState<RolState> = mutableStateOf(value = RolState.ALL)
 
         fun updateRolState(newValue: RolState) {
-            _rolState.value = newValue
+            rolState_.value = newValue
         }
 
         //Content State
-        private val _contentState: MutableState<ContentState> = mutableStateOf(value = ContentState.CLASSES)
-        val contentState: State<ContentState> = _contentState
-
+        private val contentState_: MutableState<ContentState> = mutableStateOf(value = ContentState.CLASSES)
+        val contentState: State<ContentState> = contentState_
 
         fun updateContentState(newValue: ContentState) {
-            _contentState.value = newValue
+            contentState_.value = newValue
         }
 
     }
-
 }

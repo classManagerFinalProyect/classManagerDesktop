@@ -42,7 +42,7 @@ fun members() {
     val suggestions: MutableList<String> = mutableListOf("admin","profesor","padre","alumno")
     var sizeDropMenu by remember { mutableStateOf(IntSize.Zero) }
 
-
+    val updateRol = remember { mutableStateOf(false) }
     val showToast = remember { mutableStateOf(false) }
     var toastTitle by remember{ mutableStateOf("Title") }
     var toastText by remember{ mutableStateOf("Text") }
@@ -120,6 +120,8 @@ fun members() {
                     TextButton(
                         onClick = {
                             ViewModelClass.updateRolState(newValue = RolState.ALL)
+                            updateRol.value = false
+                            updateRol.value = true
                             rolFilter = "ALL"
                         },
                         content = {
@@ -129,6 +131,8 @@ fun members() {
                     TextButton(
                         onClick = {
                             ViewModelClass.updateRolState(newValue = RolState.ADMIN)
+                            updateRol.value = false
+                            updateRol.value = true
                             rolFilter = "admin"
                         },
                         content = {
@@ -138,6 +142,8 @@ fun members() {
                     TextButton(
                         onClick = {
                             ViewModelClass.updateRolState(newValue = RolState.TEACHER)
+                            updateRol.value = false
+                            updateRol.value = true
                             rolFilter = "profesor"
                         },
                         content = {
@@ -147,6 +153,8 @@ fun members() {
                     TextButton(
                         onClick = {
                             ViewModelClass.updateRolState(newValue = RolState.PARENTS)
+                            updateRol.value = false
+                            updateRol.value = true
                             rolFilter = "padre"
                         },
                         content = {
@@ -156,6 +164,8 @@ fun members() {
                     TextButton(
                         onClick = {
                             ViewModelClass.updateRolState(newValue = RolState.STUDENT)
+                            updateRol.value = false
+                            updateRol.value = true
                             rolFilter = "alumno"
                         },
                         content = {
@@ -287,8 +297,10 @@ fun members() {
                                                                 }
                                                             )
                                                             var userRolExpanded by remember {  mutableStateOf(false) }
-                                                            if (ViewModelClass.currentUser.rol == "admin") {
+                                                            if (ViewModelClass.currentUser.rol == "admin" && ViewModelClass.currentUser.user.email !=  item.user.email) {
                                                                 var textSelectedRol by remember { mutableStateOf(item.rol) }
+
+                                                                if(updateRol.value) textSelectedRol = item.rol
 
 
                                                                 Row (
@@ -333,6 +345,9 @@ fun members() {
                                                                                                             newRol = textSelectedRol,
                                                                                                             onFinished = {
                                                                                                                 item.rol = textSelectedRol
+                                                                                                                toastTitle = "Se ha cambiado el rol correctamente"
+                                                                                                                toastText = "Se ha cambiado el rol del usuario ${item.user.name} a ${item.rol}"
+                                                                                                                showToast.value  = true
                                                                                                             }
                                                                                                         )
                                                                                                     },
@@ -347,19 +362,22 @@ fun members() {
                                                                             }
                                                                         )
 
-                                                                        IconButton(
-                                                                            onClick = {
-                                                                                selectedUserWithRol = item
-                                                                                deleteUser = true
-                                                                            },
-                                                                            content = {
-                                                                                Icon(
-                                                                                    imageVector = Icons.Default.Delete,
-                                                                                    contentDescription = "Eliminar empleado",
-                                                                                    modifier = Modifier.size(ButtonDefaults.IconSize)
-                                                                                )
-                                                                            }
-                                                                        )
+                                                                        if(ViewModelClass.selectedClass.idOfCourse == "Sin Asignar" || ViewModelClass.selectedClass.idOfCourse == "") {
+                                                                            IconButton(
+                                                                                onClick = {
+                                                                                    selectedUserWithRol = item
+                                                                                    deleteUser = true
+                                                                                },
+                                                                                content = {
+                                                                                    Icon(
+                                                                                        imageVector = Icons.Default.Delete,
+                                                                                        contentDescription = "Eliminar empleado",
+                                                                                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                                                                                    )
+                                                                                }
+                                                                            )
+                                                                        }
+
                                                                     }
                                                                 )
 

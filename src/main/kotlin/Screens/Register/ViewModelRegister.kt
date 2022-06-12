@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 class ViewModelRegister {
     companion object {
         private var errorMessage: String by mutableStateOf ("")
-        var createUser = NewUser("","","")
+        var createUser = NewUser("","","","")
         var user: AppUser by mutableStateOf(AppUser("","","", arrayListOf(), arrayListOf(),"","",""))
 
         fun createUserWithEmailAndPassword(

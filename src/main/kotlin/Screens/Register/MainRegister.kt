@@ -181,6 +181,7 @@ fun MainRegister(
                                                         validateError = { isValidPassword(it) },
                                                         mandatory = true,
                                                         keyboardType = KeyboardType.Text,
+                                                        keyActionEnter = {}
                                                     )
                                                 }
                                                 item {
@@ -192,7 +193,46 @@ fun MainRegister(
                                                         errorMessage = CommonErrors.notValidPassword,
                                                         validateError = { isValidPassword(it) },
                                                         mandatory = true,
-                                                        keyboardType = KeyboardType.Text
+                                                        keyboardType = KeyboardType.Text,
+                                                        keyActionEnter = {
+
+                                                            if (
+                                                                checkAllValidations(
+                                                                    textEmail = emailText,
+                                                                    textPassword = passwordText,
+                                                                    checkedStatePrivacyPolicies = checkedStatePrivacyPolicies
+                                                                )
+                                                            ) {
+                                                                if (repeatPasswordText == passwordText) {
+                                                                    loading.value = true
+                                                                    ViewModelRegister.createUserWithEmailAndPassword (
+                                                                        composableScope = composableScope,
+                                                                        newUser = NewUser("", emailText, passwordText , createSha256(base = passwordText)!!),
+                                                                        onFinish = {
+                                                                            if(it) {
+                                                                                loading.value = false
+                                                                                toastMessage.value = "La cuenta se ha creado correctamente"
+                                                                                showToast.value = true
+                                                                                onLogin()
+                                                                            }
+                                                                            else {
+                                                                                loading.value = false
+                                                                                toastMessage.value = "ERROR: La cuenta no ha podido ser creada,pruebe otro usuario"
+                                                                                showToast.value = true
+                                                                            }
+                                                                        }
+                                                                    )
+                                                                }
+                                                                else {
+                                                                    toastMessage.value = "ERROR: Las claves deben ser iguales"
+                                                                    showToast.value = true
+                                                                }
+                                                            }
+                                                            else {
+                                                                toastMessage.value = "ERROR: ${CommonErrors.incompleteFields}"
+                                                                showToast.value = true
+                                                            }
+                                                        }
                                                     )
                                                 }
 
@@ -228,7 +268,7 @@ fun MainRegister(
                                                                     loading.value = true
                                                                     ViewModelRegister.createUserWithEmailAndPassword (
                                                                         composableScope = composableScope,
-                                                                        newUser = NewUser("", emailText, createSha256(base = passwordText)!!),
+                                                                        newUser = NewUser("", emailText, passwordText , createSha256(base = passwordText)!!),
                                                                         onFinish = {
                                                                             if(it) {
                                                                                 loading.value = false

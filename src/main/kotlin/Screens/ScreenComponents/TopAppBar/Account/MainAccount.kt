@@ -77,8 +77,17 @@ fun MainAccount(
                 }
             )
         },
+        floatingActionButtonPosition = FabPosition.Center,
+        floatingActionButton = {
+            longButton(
+                text = "Aceptar",
+                onClick = {
+                    onCloseDialog(false)
+                }
+            )
+        },
         content = {
-            Spacer(modifier = Modifier.padding(20.dp))
+            Spacer(modifier = Modifier.padding(50.dp))
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -179,15 +188,6 @@ fun MainAccount(
                                                 )
                                             }
                                         )
-                                    }
-                                )
-                            }
-
-                            item {
-                                longButton(
-                                    text = "Aceptar",
-                                    onClick = {
-                                        onCloseDialog(false)
                                     }
                                 )
                             }

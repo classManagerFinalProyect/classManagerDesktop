@@ -5,7 +5,7 @@ import Screens.Course.Components.MainBody.Classes.classes
 import Screens.Course.Components.MainBody.Events.events
 import Screens.Course.Components.MainBody.Members.members
 import Screens.Course.Components.editCourse
-import Screens.MainAppScreen.Components.topBar
+import Screens.ScreenComponents.TopAppBar.topBar
 import Screens.ScreenComponents.Header.header
 import Screens.ScreenComponents.NavigationBar.navigationBar
 import Screens.ScreenItems.Dialogs.loadingDialog
@@ -115,7 +115,7 @@ fun MainCourse(
                     header(
                         content = {
                             Image(
-                                painter = painterResource(resourcePath = "books.jpg"),
+                                painter = painterResource(resourcePath = "libros_sin_fondo.png"),
                                 contentDescription = "logo",
                                 modifier = Modifier.size(100.dp)
                             )
@@ -181,6 +181,7 @@ fun MainCourse(
                                 MainContent(
                                     onClickClass = onClickClass,
                                     contentState = contentState,
+                                    onClickBeginning = onClickBeginning
                                 )
                             }
                         }
@@ -196,6 +197,7 @@ fun MainCourse(
 private fun MainContent(
     contentState: ContentState,
     onClickClass: (Class) -> Unit,
+    onClickBeginning: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -206,7 +208,8 @@ private fun MainContent(
             when (contentState) {
                 ContentState.CLASSES ->  {
                     classes(
-                        onClickClass = onClickClass
+                        onClickClass = onClickClass,
+                        onClickBeginning = onClickBeginning
                     )
                 }
                 ContentState.MEMBERS -> {

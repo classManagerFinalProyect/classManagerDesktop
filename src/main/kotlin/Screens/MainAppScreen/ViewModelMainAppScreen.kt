@@ -159,12 +159,12 @@ class ViewModelMainAppScreen {
         }
 
         //Content State
-        private val _contentState: MutableState<ContentState> = mutableStateOf(value = ContentState.COURSE)
-        val contentState: State<ContentState> = _contentState
+        private val contentState_: MutableState<ContentState> = mutableStateOf(value = ContentState.COURSE)
+        val contentState: State<ContentState> = contentState_
 
 
         fun updateContentState(newValue: ContentState) {
-            _contentState.value = newValue
+            contentState_.value = newValue
         }
 
     }

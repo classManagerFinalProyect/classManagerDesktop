@@ -1,4 +1,4 @@
-package Screens.MainAppScreen.Items
+package Screens.ScreenComponents.TopAppBar.items
 
 import Screens.ScreenComponents.TopAppBar.CreateClass.mainCreateClass
 import Screens.ScreenComponents.TopAppBar.CreateCourse.mainCreateCourse
@@ -26,6 +26,9 @@ fun dropDownMenuButton(
     var createNewCourse by remember { mutableStateOf(false) }
     var createNewClass by remember { mutableStateOf(false) }
 
+
+
+
     Column(
         content = {
             Button(
@@ -38,7 +41,7 @@ fun dropDownMenuButton(
                 },
                 content = {
                     Text(
-                        text = "${textOfButton}",
+                        text = textOfButton,
                         fontSize = 14.sp
                     )
                 }
@@ -82,6 +85,7 @@ fun dropDownMenuButton(
                         },
                         onCreateCourse = {
                             onCreateCourse(it)
+
                         }
                     )
                 }
@@ -93,10 +97,14 @@ fun dropDownMenuButton(
                 content = {
                     mainCreateClass(
                         onClickCancel = {
+
                             createNewClass = false
                             expanded = true
                         },
                         onCreateClass = {
+                            createNewClass = false
+
+
                             onCreateClass(it)
                         }
                     )

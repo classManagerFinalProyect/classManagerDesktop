@@ -3,6 +3,7 @@ package Screens.Course.Components.MainBody.Classes
 import Screens.Course.ViewModelCourse
 import Screens.ScreenItems.Dialogs.infoDialog
 import Screens.ScreenItems.Cards.bigRectangleCard
+import Screens.ScreenItems.Dialogs.confirmAlertDialog
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
@@ -21,7 +22,8 @@ import data.remote.Class
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun classes(
-    onClickClass: (Class) -> Unit
+    onClickClass: (Class) -> Unit,
+    onClickBeginning: () -> Unit
 ) {
     var reload by remember { mutableStateOf(false) }
 
@@ -31,6 +33,26 @@ fun classes(
     val showToast = remember { mutableStateOf(false) }
     var toastTitle by remember{ mutableStateOf("Title") }
     var toastText by remember{ mutableStateOf("Text") }
+    var leaveCourse by remember { mutableStateOf(false) }
+    val composableScope = rememberCoroutineScope()
+
+    if(leaveCourse) {
+        confirmAlertDialog(
+            title = "¿Estas seguro que desea abandonar el curso?",
+            subtitle = "Perderas el acceso a sus clases",
+            onValueChangeGoBack = { leaveCourse = false},
+            onClickAccept = {
+                leaveCourse = false
+                ViewModelCourse.leaveCourse(
+                    composableScope = composableScope,
+                    onFinished = {
+                        onClickBeginning()
+                    }
+
+                )
+            }
+        )
+    }
 
     LaunchedEffect(reload) {
         if (reload) {
@@ -138,6 +160,18 @@ fun classes(
                             }
                         )
                     }
+                    TextButton(
+                        modifier = Modifier
+                            .onGloballyPositioned { coordinates ->
+                                sizeDropMenu = coordinates.size
+                            },
+                        onClick = {
+                            leaveCourse = true
+                        },
+                        content = {
+                            Text( text = "Abandonar curso")
+                        }
+                    )
                 }
             )
 

@@ -1,6 +1,5 @@
 package Screens.Login
 
-import Navigation.Screen
 import Screens.ScreenItems.Inputs.bigPasswordInputWithErrorMessage
 import Screens.ScreenItems.Inputs.bigTextFieldWithErrorMessage
 import Screens.ScreenItems.Dialogs.infoDialog
@@ -158,6 +157,32 @@ fun MainLogin(
                                             validateError = { isValidPassword(it) },
                                             mandatory = false,
                                             keyboardType = KeyboardType.Text,
+                                            keyActionEnter = {
+                                                if(isValidPassword(passwordText) && isValidEmail(emailText)) {
+                                                    loadingError.value = true
+                                                    loading.value = true
+                                                    ViewModelLogin.login(
+                                                        composableScope = composableScope,
+                                                        email = emailText,
+                                                        password =  passwordText,
+                                                        onFinished = {
+                                                            if(it) {
+                                                                loading.value = false
+                                                                onLoginClick()
+                                                            }
+                                                            else{
+                                                                loading.value = false
+                                                                textToast.value = "ERROR: No se ha podido logear correctamente"
+                                                                showToast.value = true
+                                                            }
+                                                        }
+                                                    )
+                                                }
+                                                else {
+                                                    textToast.value = "ERROR: ${CommonErrors.incompleteFields}"
+                                                    showToast.value = true
+                                                }
+                                            }
                                         )
                                     }
 
@@ -186,35 +211,6 @@ fun MainLogin(
                                                             }
                                                         }
                                                     )
-/*
-                                                    if(ViewModelLogin.isValidUser(emailText, passwordText)) {
-
-
-
-                                                        ViewModelLogin.getCurrentUser(
-                                                            composableScope = composableScope,
-                                                            idOfUser = ViewModelLogin.user.id,
-                                                            onFinished = {
-                                                                if(it) {
-                                                                    loading.value = false
-                                                                    onLoginClick()
-                                                                }
-                                                                else{
-                                                                    loading.value = false
-                                                                    textToast.value = "ERROR: No se ha podido logear correctamente"
-                                                                    showToast.value = true
-                                                                }
-                                                            },
-                                                        )
-
-                                                    }
-                                                    else {
-                                                        textToast.value = "ERROR: El usuario no existe"
-                                                        showToast.value = true
-                                                        loadingError.value = false
-                                                        loading.value = false
-                                                    }
-                                                    */
                                                 }
                                                 else {
                                                     textToast.value = "ERROR: ${CommonErrors.incompleteFields}"

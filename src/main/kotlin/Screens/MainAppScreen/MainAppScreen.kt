@@ -3,7 +3,7 @@ package Screens.MainAppScreen
 import Screens.MainAppScreen.Components.ContentState
 import Screens.MainAppScreen.Components.MainBody.myClasses
 import Screens.MainAppScreen.Components.MainBody.myCourses
-import Screens.MainAppScreen.Components.topBar
+import Screens.ScreenComponents.TopAppBar.topBar
 import Screens.ScreenItems.Dialogs.infoDialog
 import Screens.ScreenItems.Dialogs.loadingDialog
 import Screens.theme.blue

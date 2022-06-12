@@ -1,6 +1,6 @@
 package Screens.Login
 
-import Utils.getSHA256
+import Utils.createSha256
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -29,7 +29,8 @@ class ViewModelLogin {
             composableScope.launch {
                 val apiService = ApiServiceAuthentication.getInstance()
                 try {
-                    val result = apiService.login(NewUser("", email, getSHA256(password)))
+                    val newPassword = createSha256(password)!!
+                    val result = apiService.login(NewUser("", email, password ,newPassword))
                     if (result.isSuccessful) {
                         user = result.body()!!
                         CurrentUser.currentUser = user

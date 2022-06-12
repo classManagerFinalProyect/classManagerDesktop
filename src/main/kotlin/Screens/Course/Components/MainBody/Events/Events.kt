@@ -62,7 +62,7 @@ fun events() {
                 size = DpSize(550.dp, 600.dp)
             ),
             content = {
-                if(ViewModelCourse.currentUser.rol == "admin" || ViewModelCourse.currentUser.rol == "profesor") {
+                if(ViewModelCourse.currentUser.rol == "admin") {
                     modifierEvent(
                         event = selectedEvent,
                         onDeleteEvent = {
@@ -73,6 +73,7 @@ fun events() {
                             toastText = "Se ha eliminado el evento correctamente"
                         },
                         onModifierEvent = {
+                            reload = true
                             modifierEvent = false
                             showToast.value = true
                             toastTitle = "Evento actualizado"
